@@ -1,5 +1,4 @@
-import 'package:example/controllers/auth_controller.dart';
-
+import '../controllers/auth_controller.dart';
 import '../controllers/htmler_controller.dart';
 import '../configs/setting.dart';
 import '../app.dart';
