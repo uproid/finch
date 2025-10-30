@@ -1,0 +1,84 @@
+{% extends 'template/template.j2.html' %}
+{% block title %}
+    {{ $t('sidebar.cookieExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="my-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('cookies.test') }}</h3>
+  <div class="my-3 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('cookies.key') }}</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('cookies.value') }}</th>
+            <th class="px-4 py-2 text-center text-sm font-semibold text-slate-700">{{ $t('cookies.action') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for cookie in session.cookies %}
+          <tr class="odd:bg-white even:bg-slate-50">
+            <td class="px-4 py-2 align-top text-sm text-slate-800">{{ cookie.name }}</td>
+            <td class="px-4 py-2 align-top text-sm text-slate-600">{{ cookie.value }}</td>
+            <td class="px-4 py-2 text-center">
+              <form method="post" class="inline">
+                <input type="hidden" name="name" value="{{ cookie.name }}" />
+                <input type="hidden" name="action" value="delete" />
+                <button type="submit" class="wave inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-500/30" aria-label="{{ $t('cookies.remove') }}">🗑️</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot class="bg-slate-50">
+          <tr>
+            <td colspan="3" class="px-4 py-3">
+              <form method="post" class="flex flex-col gap-2 sm:flex-row sm:items-center">
+                <input placeholder="{{ $t('cookies.placeholder.name') }}" class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 sm:max-w-xs" type="text" name="name" value="" />
+                <div class="flex w-full flex-1 flex-col gap-2 sm:flex-row sm:items-center">
+                  <input type="text" name="value" class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" placeholder="{{ $t('cookies.placeholder.value') }}">
+                  <label class="inline-flex h-10 items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-700">
+                    <input class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" name="safe" type="checkbox" value="1">
+                    <span>{{ $t('cookies.safe') }}</span>
+                  </label>
+                  <button class="wave inline-flex h-10 items-center rounded-md border border-primary-600 px-3 text-sm font-medium text-primary-700 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30" type="submit">{{ $t('cookies.add') }}</button>
+                </div>
+                <input type="hidden" name="action" value="add" />
+              </form>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <div class="my-3 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <ul class="divide-y divide-slate-200">
+      <li class="px-4 py-3">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <b class="md:w-48">{{ $t('auth.view') }}</b>
+          <i class="text-primary-600">example/lib/widgets/example/auth.j2.html</i>
+        </div>
+      </li>
+      <li class="px-4 py-3">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <b class="md:w-48">{{ $t('auth.controller') }}</b>
+          <i class="text-primary-600">example/lib/controllers/home_controller.dart</i>
+        </div>
+      </li>
+      <li class="px-4 py-3">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <b class="md:w-48">{{ $t('auth.authController') }}</b>
+          <i class="text-primary-600">example/lib/controllers/auth_controller.dart</i>
+        </div>
+      </li>
+      <li class="px-4 py-3">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <b class="md:w-48">{{ $t('auth.router') }}</b>
+          <i class="text-primary-600">example/lib/route/web_route.dart</i>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

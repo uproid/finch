@@ -1,0 +1,65 @@
+<div class="mt-8">
+  <h3 class="text-base font-semibold text-slate-800">{{ $t('mysql.categories.title') }}</h3>
+  <div class="mt-4 overflow-x-auto rounded-md border border-slate-200 bg-white shadow-sm">
+    <table class="min-w-full text-sm text-slate-700">
+      <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-600">
+        <tr class="divide-x divide-slate-200">
+          <th scope="col" class="w-16 px-3 py-2 text-left font-medium">{{ $t('mysql.table.header.id') }}</th>
+          <th scope="col" class="px-3 py-2 text-left font-medium">{{ $t('mysql.table.header.title') }}</th>
+          <th scope="col" class="w-32 px-3 py-2 text-center font-medium">{{ $t('mysql.table.header.booksCount') }}</th>
+          <th scope="col" class="w-20 px-3 py-2 text-center font-medium">{{ $t('mysql.table.header.actions') }}</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-200">
+        {% for category in categories|default([]) %}
+        <tr class="hover:bg-slate-50">
+          <td class="px-3 py-2 font-mono text-[13px] text-slate-500">{{ category.id }}</td>
+            <td class="px-3 py-2">{{ category.title }}</td>
+            <td class="px-3 py-2 text-center">
+              <a
+                class="wave inline-flex h-7 items-center rounded border border-cyan-600 bg-cyan-50 px-2 text-[11px] font-medium text-cyan-700 hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-500/30"
+                href="{{ $l.updateUrlQuery( {'filter_category_id': category.id|s}) }}"
+              >{{ category.count_books }}</a>
+            </td>
+            <td class="px-3 py-2 text-center">
+              <a
+                data-href="{{ $l.updateUrlQuery( {'id': category.id|s, 'action': 'delete_category'|s}) }}"
+                data-message="{{ $t('mysql.message.deleteCategory') ~ ' (' ~ category.title ~ ')' }}"
+                class="wave js-delete-links inline-flex h-7 w-7 items-center justify-center rounded border border-transparent text-rose-600 hover:border-rose-200 hover:bg-rose-50 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                aria-label="{{ $t('mysql.button.delete') }}"
+              >
+                <i class="fas fa-trash text-[13px]"></i>
+              </a>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="4" class="px-3 py-6 text-center text-sm text-slate-500">{{ $t('mysql.message.noCategories') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot class="bg-slate-50/60">
+        <tr>
+          <td colspan="4" class="px-3 py-3">
+            <form method="POST" action="{{ $l.updateUrlQuery( {'action': 'add_category'}) }}" class="flex flex-wrap items-start gap-2">
+              <div class="flex flex-col">
+                <input
+                  type="text"
+                  name="title"
+                  placeholder="{{ $t('mysql.placeholder.title') }}"
+                  required
+                  value="{{ $n('form/title/value') }}"
+                  class="h-9 w-56 rounded-md border bg-white px-3 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300' if $n('form/title/errors/0') else 'border-slate-300' }}"
+                />
+                <div class="mt-1 text-[10px] text-rose-600 {{ '' if $n('form/title/errors/0') else 'hidden' }}">{{ $n('form/title/errors/0') }}</div>
+              </div>
+              <button type="submit" class="wave inline-flex h-9 items-center rounded-md border border-primary-600 bg-primary-50 px-3 text-xs font-medium text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500/30">
+                {{ $t('database.table.button.add') }}
+              </button>
+            </form>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

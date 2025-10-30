@@ -1,0 +1,56 @@
+<div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-xs md:text-sm">
+  <div class="hidden md:block text-slate-600">
+    {{ $t('pagination.showing') }}
+    {{ (($v.page-1) * $v.pageSize)+1 if $v.total > 0 else 0 }}
+    {{ $t('pagination.to') }}
+    {{ $v.toEnd }}
+    {{ $t('pagination.of') }}
+    {{ $v.total }}
+    {{ $t('pagination.entries') }}
+  </div>
+  {% if($v.count > 1) %}
+  <nav aria-label="Pagination" class="{{ 'md:mr-auto' if $t('dir')=='rtl' else 'md:ml-auto' }}">
+    <ul class="flex items-center gap-1">
+      <li>
+  <a aria-label="First" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableFirst else '' }} inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-[11px] text-slate-500 hover:bg-slate-50 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30" href="?{{ $v.prefix }}={{ 1 }}{{ $v.other }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate({{ '180' if $t('dir')=='rtl' else '0' }}deg)">
+            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+  <a aria-label="Previous" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableFirst else '' }} inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-[11px] text-slate-500 hover:bg-slate-50 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30" href="?{{ $v.prefix }}={{ $v.page - 1 }}{{ $v.other }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate({{ '180' if $t('dir')=='rtl' else '0' }}deg)">
+            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
+          </svg>
+        </a>
+      </li>
+      {% for index in range($v.rangeFrom, $v.rangeTo + 1) %}
+      {% if index > 0 and index < $v.count+1 %}
+      <li>
+  <a href="?{{ $v.prefix }}={{ index }}{{ $v.other }}" aria-current="{{ 'page' if (index==$v.page) else 'false' }}" class="wave inline-flex h-7 min-w-7 items-center justify-center rounded-md border text-[10px] md:text-[11px] px-1.5 {{ 'bg-primary-600 border-primary-600 text-white font-semibold shadow-sm' if (index==$v.page) else 'border-slate-300 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-800' }} focus:outline-none focus:ring-2 focus:ring-primary-500/30">
+          {{ index }}
+        </a>
+      </li>
+      {% endif %}
+      {% endfor %}
+      <li>
+  <a aria-label="Next" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableLast else '' }} inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-[11px] text-slate-500 hover:bg-slate-50 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30" href="?{{ $v.prefix }}={{ $v.page + 1 }}{{ $v.other }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate({{ '180' if $t('dir')=='rtl' else '0' }}deg)">
+            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
+          </svg>
+        </a>
+      </li>
+      <li>
+  <a aria-label="Last" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableLast else '' }} inline-flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-[11px] text-slate-500 hover:bg-slate-50 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30" href="?{{ $v.prefix }}={{ $v.count }}{{ $v.other }}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate({{ '180' if $t('dir')=='rtl' else '0' }}deg)">
+            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
+            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
+          </svg>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  {% endif %}
+</div>

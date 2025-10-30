@@ -1,0 +1,270 @@
+<!-- Sidebar -->
+{% set dir = $t('dir') %}
+<aside id="sidebar" class="fixed top-[56px] ltr:left-0 rtl:right-0 bottom-0 z-40 w-[240px] overflow-y-auto ltr:border-r rtl:border-e border-outline/20 bg-surface text-on-surface/90 transform transition-transform duration-300 ease-in-out will-change-transform shadow-sm {{ 'translate-x-full' if dir=='rtl' else '-translate-x-full' }} no-transition" aria-hidden="true" style="scrollbar-width: thin; scrollbar-color: rgba(156, 163, 175, 0.5) transparent;">
+  <div class="h-full p-2">
+    <ul class="flex list-none flex-col gap-1 p-0">
+      <!-- Navigation Category -->
+      <li>
+        <details class="group" {{ $e.hasKey(['root.info', 'root.home']) ? 'open' : '' }}>
+          <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-primary-50">
+            <span class="inline-flex items-center gap-2">
+              <i class="fa-solid fa-compass w-5 text-black"></i>
+              <span>{{ $t('sidebar.navigation') }}</span>
+            </span>
+            <i class="fas fa-angle-down transition-transform group-open:rotate-180"></i>
+          </summary>
+          <ul class="mt-1 space-y-1 px-4">
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.home') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.isKey('root.home') ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-house w-5 text-black"></i>
+                <span>{{ $t('sidebar.home') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.info') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.isKey('root.info') ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-circle-info w-5 text-black"></i>
+                <span>{{ $t('sidebar.info') }}</span>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+
+      <!-- Web Examples Category -->
+      <li>
+        <details class="group" {{ $e.hasKey(['root.form','root.form.post','root.cookie','root.cookie.post','root.route','root.socket','root.email','root.email.post','root.panel','root.language']) ? 'open' : '' }}>
+          <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-primary-50">
+            <span class="inline-flex items-center gap-2">
+              <i class="fa-solid fa-globe w-5 text-black"></i>
+              <span>{{ $t('sidebar.webExamples') }}</span>
+            </span>
+            <i class="fas fa-angle-down transition-transform group-open:rotate-180"></i>
+          </summary>
+          <ul class="mt-1 space-y-1 border-e border-outline/20 px-4">
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.form') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.form','root.form.post']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-pen-to-square w-5 text-black"></i>
+                <span>{{ $t('sidebar.formExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.cookie') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.cookie','root.cookie.post']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-cookie-bite w-5 text-black"></i>
+                <span>{{ $t('sidebar.cookieExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.route') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.route']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-route w-5 text-black"></i>
+                <span>{{ $t('sidebar.routeExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.socket') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.socket']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-plug w-5 text-black"></i>
+                <span>{{ $t('sidebar.socketExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.email') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.email','root.email.post']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-envelope w-5 text-black"></i>
+                <span>{{ $t('sidebar.emailExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.panel') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.panel']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-user-shield w-5 text-black"></i>
+                <span>{{ $t('sidebar.authExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.language') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.language']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-language w-5 text-black"></i>
+                <span>{{ $t('sidebar.languageExample') }}</span>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+
+      <!-- Database Examples Category -->
+      {% if mongoActive ?? mysqlActive %}
+      <li>
+        <details class="group" {{ $e.hasKey(['root.database','root.person.delete','root.persons', 'root.person.show', 'root.person.post','root.mysql', 'root.sqlite']) ? 'open' : '' }}>
+          <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-primary-50">
+            <span class="inline-flex items-center gap-2">
+              <i class="fa-solid fa-database w-5 text-black"></i>
+              <span>{{ $t('sidebar.databaseExamples') }}</span>
+            </span>
+            <i class="fas fa-angle-down transition-transform group-open:rotate-180"></i>
+          </summary>
+          <ul class="mt-1 space-y-1 border-e border-outline/20 px-4">
+            {% if mongoActive %}
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.database') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.database']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-leaf w-5 text-black"></i>
+                <span>{{ $t('sidebar.monogdbExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.persons') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.persons','root.person.show','root.person.delete']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-user-group w-5 text-black"></i>
+                <span>{{ $t('sidebar.freeModelDbExample') }}</span>
+              </a>
+            </li>
+            {% endif %}
+            {% if mysqlActive %}
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.mysql') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.mysql']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-server w-5 text-black"></i>
+                <span>{{ $t('sidebar.mysqlExample') }}</span>
+              </a>
+            </li>
+            {% endif %}
+            {% if mysqlActive %}
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.sqlite') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.sqlite']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-database w-5 text-black"></i>
+                <span>{{ $t('SQLite Example') }}</span>
+              </a>
+            </li>
+            {% endif %}
+          </ul>
+        </details>
+      </li>
+      {% endif %}
+
+      <!-- Development Tools Category -->
+      <li>
+        <details class="group" {{ 'open' if $e.hasKey(['root.pagination', 'root.htmler', 'root.swagger']) else '' }}>
+          <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-primary-50">
+            <span class="inline-flex items-center gap-2">
+              <i class="fa-solid fa-tools w-5 text-black"></i>
+              <span>{{ $t('sidebar.developmentTools') }}</span>
+            </span>
+            <i class="fas fa-angle-down transition-transform group-open:rotate-180"></i>
+          </summary>
+          <ul class="mt-1 space-y-1 border-e border-outline/20 px-4">
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.pagination') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.pagination']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-list-ol w-5 text-black"></i>
+                <span>{{ $t('sidebar.paginationExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.htmler') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.htmler']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-theater-masks w-5 text-black"></i>
+                <span>{{ $t('sidebar.htmlerExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.swagger') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.swagger']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-file-code w-5 text-black"></i>
+                <span>{{ $t('sidebar.swaggerExample') }}</span>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+
+      <!-- Testing Category -->
+      <li>
+        <details class="group" {{ $e.hasKey(['root.error', 'root.dump']) ? 'open' : '' }}>
+          <summary class="flex cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 text-sm hover:bg-primary-50">
+            <span class="inline-flex items-center gap-2">
+              <i class="fa-solid fa-bug w-5 text-black"></i>
+              <span>{{ $t('sidebar.debugTesting') }}</span>
+            </span>
+            <i class="fas fa-angle-down transition-transform group-open:rotate-180"></i>
+          </summary>
+          <ul class="mt-1 space-y-1 border-e border-outline/20 px-4">
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.error') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.error']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-triangle-exclamation w-5 text-black"></i>
+                <span>{{ $t('sidebar.errorExample') }}</span>
+              </a>
+            </li>
+            <li>
+              <a
+                href="{{ $e.routeUrl('root.dump') }}"
+                class="wave flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm hover:bg-primary-50 hover:text-primary-700 {{ $e.hasKey(['root.dump']) ? 'bg-primary-50 font-medium text-primary-700' : '' }}"
+                aria-current="page"
+              >
+                <i class="fa-solid fa-code w-5 text-black"></i>
+                <span>{{ $t('sidebar.dumpExample') }}</span>
+              </a>
+            </li>
+          </ul>
+        </details>
+      </li>
+    </ul>
+  </div>
+</aside>

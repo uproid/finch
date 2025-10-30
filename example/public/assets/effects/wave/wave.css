@@ -1,0 +1,32 @@
+.wave {
+    overflow: hidden;
+    position: relative;
+}
+
+.wave-ripple {
+    border-radius: 50%;
+    background-color: rgba(0, 29, 87, 0.33);
+    transform: scale(0);
+    animation: wave-ripple 0.6s linear;
+}
+
+@keyframes wave-ripple {
+    to {
+        transform: scale(3);
+        opacity: 0;
+    }
+}
+
+.wave-ripple-light {
+    border-radius: 50%;
+    background-color: rgba(86, 255, 117, 0.33);
+    transform: scale(0);
+    animation: wave-ripple 0.6s linear;
+}
+
+@keyframes wave-ripple-light {
+    to {
+        transform: scale(3);
+        opacity: 0;
+    }
+}

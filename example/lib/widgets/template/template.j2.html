@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="{{ $e.ln }}" dir="{{ $t('dir') }}">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}{% endblock %} | {{ $t(title) }}</title>
+  <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="/assets/effects/wave/wave.css" />
+  <!-- Local built Tailwind CSS (generated via Tailwind CLI) -->
+  <link rel="stylesheet" href="/assets/generated-tailwind.css" />
+  <link rel="stylesheet" href="/assets/app.css" crossorigin="anonymous" />
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  {% block stylesheets %}
+  {{ assets.css() }}
+  {% endblock %}
+</head>
+
+<body>
+  {% block navbar %}
+  {% include 'template/navbar.j2.html' %}
+  {% endblock %}
+
+  <div class="wrapper no-transition min-h-screen w-full bg-gray-50 transition-[padding] duration-300 ease-in-out">
+    {% block sidebar %}
+    {% include 'template/sidebar.j2.html' %}
+    {% endblock %}
+    <!-- Main Component -->
+    <div class="main flex-1 ">
+      <main class="content px-3 py-4 lg:px-6">
+        <div class="mx-auto w-full max-w-7xl">
+          {% block flash %}
+          {% if $l.hasFlash() %}
+          {% for flash in $l.getFlashs() %}
+          <div
+            class="mb-4 rounded-md border p-4 text-sm
+            {% if flash.type == 'success' %} bg-emerald-50 border-emerald-200 text-emerald-800 {% endif %}
+            {% if flash.type == 'info' %} bg-primary-50 border-primary-200 text-primary-800 {% endif %}
+            {% if flash.type == 'warning' %} bg-amber-50 border-amber-200 text-amber-900 {% endif %}
+            {% if flash.type == 'danger' ?? flash.type == 'error' %} bg-rose-50 border-rose-200 text-rose-800 {% endif %}
+            {% if flash.type != 'success' and flash.type != 'info' and flash.type != 'warning' and flash.type != 'danger' and flash.type != 'error' %} bg-slate-50 border-slate-200 text-slate-800 {% endif %}
+            ">
+            {{ flash.text }}
+          </div>
+          {% endfor %}
+          {% endif %}
+          {% endblock %}
+          {% block content %}
+          {% endblock %}
+        </div>
+      </main>
+    </div>
+  </div>
+
+  {% block footer %}
+  {% include 'template/footer.j2.html' %}
+  {% endblock %}
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var toggle = document.querySelector('.button-sidebar');
+      var sidebar = document.getElementById('sidebar');
+      var backdrop = document.getElementById('sidebar-backdrop');
+      if (!toggle || !sidebar) return;
+
+      var htmlDir = document.documentElement.getAttribute('dir') || 'ltr';
+      var isRTL = htmlDir === 'rtl';
+      var lgQuery = window.matchMedia('(min-width: 1024px)');
+
+      function setSidebarOpen(open) {
+        var large = lgQuery.matches;
+        var closedClass = isRTL ? 'translate-x-full' : '-translate-x-full';
+        if (open) {
+          sidebar.classList.remove(closedClass);
+          sidebar.dataset.state = 'open';
+          sidebar.setAttribute('aria-hidden', 'false');
+          toggle.setAttribute('aria-expanded', 'true');
+          document.body.classList.add('sidebar-open');
+          if (!large && backdrop) backdrop.classList.remove('hidden');
+        } else {
+          if (!sidebar.classList.contains(closedClass)) sidebar.classList.add(closedClass);
+          sidebar.dataset.state = 'closed';
+          sidebar.setAttribute('aria-hidden', 'true');
+          toggle.setAttribute('aria-expanded', 'false');
+          document.body.classList.remove('sidebar-open');
+          if (backdrop) backdrop.classList.add('hidden');
+        }
+      }
+
+      toggle.addEventListener('click', function () {
+        var isClosed = sidebar.dataset.state !== 'open';
+        setSidebarOpen(isClosed);
+      });
+
+  var prefersOpen = lgQuery.matches; // lg and up
+  setSidebarOpen(prefersOpen);
+  // Remove initial no-transition class after first paint to avoid opening animation on load
+  requestAnimationFrame(function(){ sidebar.classList.remove('no-transition'); });
+
+  if (backdrop) {
+        backdrop.addEventListener('click', function(){ setSidebarOpen(false); });
+      }
+
+      // Remove initial transition suppression after first frame (sidebar + content wrapper)
+      requestAnimationFrame(function(){
+        sidebar.classList.remove('no-transition');
+        var wrapper = document.querySelector('.wrapper');
+        if (wrapper) wrapper.classList.remove('no-transition');
+      });
+
+      lgQuery.addEventListener('change', function(e){
+        if (e.matches) {
+          if (backdrop) backdrop.classList.add('hidden');
+          setSidebarOpen(true); // auto-open when entering large
+        } else {
+          setSidebarOpen(false); // collapse leaving large
+        }
+      });
+    });
+  </script>
+
+  <style>
+    .no-transition { transition: none !important; }
+    /* Push content only on large screens */
+    @media (min-width: 1024px) {
+      html[dir='ltr'] body.sidebar-open .wrapper { padding-left: 260px; }
+      html[dir='rtl'] body.sidebar-open .wrapper { padding-right: 260px; }
+    }
+  </style>
+
+  {% block script %}{% endblock %}
+  <div id="sidebar-backdrop" class="fixed top-[56px] bottom-0 left-0 right-0 z-30 hidden bg-black/30 backdrop-blur-sm"></div>
+</body>
+
+</html>

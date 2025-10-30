@@ -1,0 +1,17 @@
+{% set asc = ((data.order == 'asc') and (data.sort == sortby)) %}
+<a
+    href="{{ $l.updateUrlQuery( {'sort': sortby, 'order': 'desc' if asc else 'asc'}) }}"
+    class="wave inline-flex items-center gap-1 font-medium rounded text-slate-600 hover:text-slate-900 focus:outline-none no-underline group"
+    title="{{ $t(title) }}"
+>
+    <span>{{ $t(title) }}</span>
+    {% if data.sort == sortby %}
+        {% if data.order != 'asc' %}
+            <i class="fas fa-sort-up ml-1 text-primary-600 group-hover:text-primary-700"></i>
+        {% else %}
+            <i class="fas fa-sort-down ml-1 text-primary-600 group-hover:text-primary-700"></i>
+        {% endif %}
+    {% else %}
+        <i class="fas fa-sort ml-1 text-slate-400 group-hover:text-slate-500"></i>
+    {% endif %}
+</a>

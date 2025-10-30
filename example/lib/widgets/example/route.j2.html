@@ -1,0 +1,58 @@
+{% extends 'template/template.j2.html' %}
+
+{% block title %}
+    {{ $t('sidebar.routeExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="my-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('webRouteExample.title') }}</h3>
+  <div class="my-3 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200">
+        <thead class="bg-slate-50">
+          <tr>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">#</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.path') }}</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.type') }}</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.permissions') }}</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.auth') }}</th>
+            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.controller') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-200">
+          {% for route in routes %}
+          <tr class="odd:bg-white even:bg-slate-50">
+            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ loop.index }}</td>
+            <td class="px-4 py-2 align-top text-sm">
+              <div>
+                <a class="text-primary-700 hover:underline" href="{{ route.fullPath }}">
+                  [{{ route.method }}]
+                  {{ route.fullPath }}
+                </a>
+              </div>
+              <div class="text-xs text-slate-500">{{ route.key }}</div>
+            </td>
+            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ route.type }}</td>
+            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ route.permissions }}</td>
+            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ route.hasAuth | string }}</td>
+            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ route.controller }}{{ route.index }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="my-3 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <ul class="divide-y divide-slate-200">
+      <li class="px-4 py-3">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <b class="md:w-48">{{ $t('webRouteExample.router') }}</b>
+          <i class="text-primary-600">example/lib/route/web_route.dart</i>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

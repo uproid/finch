@@ -1,0 +1,26 @@
+{% extends 'template/template.j2.html' %}
+
+{% block title %}
+    {{ $t('sidebar.paginationExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="my-6 space-y-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('sidebar.paginationExample') }}</h3>
+  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="p-5 space-y-5 text-sm">
+      <div>
+        {{ paginationA }}
+      </div>
+      <div class="h-px bg-slate-200"></div>
+      <div>
+        {{ paginationB }}
+      </div>
+      <div class="h-px bg-slate-200"></div>
+      <div>
+        {{ paginationC }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

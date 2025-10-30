@@ -1,0 +1,84 @@
+{% extends 'template/template.j2.html' %}
+{% block title %}
+    {{ $t('sidebar.formExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="my-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('form.validation.title') }}</h3>
+  <div class="my-3 rounded-md border border-slate-200 bg-white p-3 text-slate-700">
+    {{ $t('form.validation.credentials.email') }}: example@uproid.com<br />
+    {{ $t('form.validation.credentials.password') }}: @Test123
+  </div>
+  {% if loginResult != true and user == null %}
+  <div class="my-3 rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="p-5">
+      <form action="{{ $e.routeUrl('root.form.post') }}" method="post" class="space-y-4">
+        <div>
+          <label for="email" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('form.validation.email') }}</label>
+          <input
+            value="{{ $n('loginForm/email/value') }}"
+            type="email"
+            name="email"
+            id="email"
+            placeholder="{{ $t('form.validation.emailPlaceholder') }}"
+            class="block h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('loginForm/email/failed') else '' }}"
+          />
+          <div class="mt-1 hidden text-sm text-rose-700 {{ 'block' if $n('loginForm/email/failed') else '' }}">
+            {{ $t($n('loginForm/email/errors/0')) }}
+          </div>
+        </div>
+        <div>
+          <label for="password" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('form.validation.password') }}</label>
+          <input
+            value="{{ $n('loginForm/password/value') }}"
+            type="password"
+            name="password"
+            id="password"
+            placeholder="{{ $t('form.validation.passwordPlaceholder') }}"
+            class="block h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('loginForm/password/failed') else '' }}"
+          />
+          <div class="mt-1 hidden text-sm text-rose-700 {{ 'block' if $n('loginForm/password/failed') else '' }}">
+            {{ $t($n('loginForm/password/errors/0')) }}
+          </div>
+        </div>
+        <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">
+          {{ $t('form.validation.login') }}
+        </button>
+        {% if loginError %}
+        <div class="mt-3 rounded-md border border-rose-200 bg-rose-50 p-3 text-rose-800">{{ $t('form.validation.loginError') }}</div>
+        {% endif %}
+      </form>
+    </div>
+  </div>
+  {% else %}
+  <div class="my-3 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-emerald-800">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        {{ $t('form.validation.loginSuccess') }} <i>{{ user.name }}</i>
+      </div>
+      <div class="text-left sm:text-right">
+        <a href="{{ $e.routeUrl('root.logout') }}" class="wave inline-flex items-center rounded-md bg-rose-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/30">{{ $t('form.validation.logout') }}</a>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="my-3 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <ul class="divide-y divide-slate-200">
+      <li class="px-4 py-3">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <b class="md:w-48">{{ $t('form.validation.view') }}</b>
+          <i class="text-primary-600">example/lib/widgets/example/form.j2.html</i>
+        </div>
+      </li>
+      <li class="px-4 py-3">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
+          <b class="md:w-48">{{ $t('form.validation.controller') }}</b>
+          <i class="text-primary-600">example/lib/controllers/home_controller.dart</i>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

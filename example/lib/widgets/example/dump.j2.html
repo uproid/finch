@@ -1,0 +1,15 @@
+{% extends 'template/template.j2.html' %} {% block title %} {{
+$t('sidebar.info') }} {% endblock %} {% block content %}
+<div class="my-6">
+  <div class="mt-4 space-y-3">
+    {{ dump(variable) }}
+    <div>
+      <code class="text-sm text-slate-500">
+        {% raw  %}
+          {{ dump(variable) }}
+        {% endraw %}
+      </code>
+    </div>
+  </div>
+</div>
+{% endblock %}

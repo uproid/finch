@@ -1,0 +1,15 @@
+-- 2025-07-18 17:52:59.051496 
+-- ## NEW VERSION:
+-- 1. Users table
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    email VARCHAR(100),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+
+-- ## ROLL BACK:
+DROP TABLE IF EXISTS users;
+
+

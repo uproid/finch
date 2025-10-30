@@ -1,0 +1,64 @@
+<form method="get" class="contents">
+    <th class="p-1 align-top" style="max-width:80px;">
+        <input
+            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_b.id/value') else '' }}"
+            type="number"
+            name="filter_b.id"
+            placeholder="{{ $t('mysql.placeholder.id') }}"
+            value="{{ $n('filter_books/filter_b.id/value') }}"
+        />
+    </th>
+    <th class="p-1 align-top">
+        <input
+            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_title/value') else '' }}"
+            type="text"
+            name="filter_title"
+            placeholder="{{ $t('mysql.placeholder.title') }}"
+            value="{{ $n('filter_books/filter_title/value') }}"
+        />
+    </th>
+    <th class="p-1 align-top">
+        <input
+            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_author/value') else '' }}"
+            type="text"
+            name="filter_author"
+            placeholder="{{ $t('mysql.placeholder.author') }}"
+            value="{{ $n('filter_books/filter_author/value') }}"
+        />
+    </th>
+    <th class="p-1 align-top">
+        <input
+            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_published_date/value') else '' }}"
+            type="date"
+            name="filter_published_date"
+            placeholder="{{ $t('mysql.placeholder.publishedDate') }}"
+            value="{{ $n('filter_books/filter_published_date/value') }}"
+        />
+    </th>
+    <th class="p-1 align-top">
+        <select
+            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_category_id/value') else '' }}"
+            name="filter_category_id"
+            aria-label="Filter Category ID"
+        >
+            {% set selected = $n('filter_books/filter_category_id/value')  %}
+            <option value="">{{ $t('mysql.filter.allCategories') }}</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {{ 'selected' if selected == category.id else '' }}>{{ category.title }}</option>
+            {% endfor %}
+        </select>
+    </th>
+    <th colspan="2" class="p-1 align-top text-end">
+        {% set filterIsDirty = $l.existUrlQuery(['filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) %}
+        <a
+            href="{{ $l.removeUrlQuery(['page','filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) }}"
+            class="wave inline-flex h-8 items-center rounded-md border px-3 text-xs font-medium shadow-sm {{ 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' if not filterIsDirty else 'border-slate-700 bg-slate-700 text-white hover:bg-slate-800' }}"
+            type="reset"
+        >{{ $t('mysql.button.reset') }}</a>
+        <input
+            class="wave ml-2 inline-flex h-8 cursor-pointer items-center rounded-md bg-primary-600 px-3 text-xs font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+            type="submit"
+            value="{{ $t('mysql.button.filter') }}"
+        />
+    </th>
+</form>

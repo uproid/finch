@@ -1,0 +1,69 @@
+<form method="post" action="{{ $e.uriString }}" class="contents">
+    <input type="hidden" name="action" value="{{ 'update' if(action == 'edit' ?? action == 'update') else 'add' }}" />
+    <tr>
+        <td colspan="7" class="p-2">
+            <div class="flex flex-wrap items-start gap-2">
+                <div class="flex min-w-[160px] flex-col">
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="{{ $t('mysql.placeholder.title') }}"
+                        required
+                        value="{{ $n('form_book/title/value') }}"
+                        class="h-9 rounded-md border bg-white px-3 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300' if $n('form_book/title/errors/0') else 'border-slate-300' }}"
+                    />
+                    <div class="mt-1 text-[10px] text-rose-600 {{ '' if $n('form_book/title/errors/0') else 'hidden' }}">{{ $n('form_book/title/errors/0') }}</div>
+                </div>
+                <div class="flex min-w-[140px] flex-col">
+                    <input
+                        type="text"
+                        name="author"
+                        placeholder="{{ $t('mysql.placeholder.author') }}"
+                        required
+                        value="{{ $n('form_book/author/value') }}"
+                        class="h-9 rounded-md border bg-white px-3 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300' if $n('form_book/author/errors/0') else 'border-slate-300' }}"
+                    />
+                    <div class="mt-1 text-[10px] text-rose-600 {{ '' if $n('form_book/author/errors/0') else 'hidden' }}">{{ $n('form_book/author/errors/0') }}</div>
+                </div>
+                <div class="flex min-w-[160px] flex-col">
+                    <input
+                        type="date"
+                        name="published_date"
+                        placeholder="{{ $t('mysql.placeholder.publishedDate') }}"
+                        required
+                        value="{{ $n('form_book/published_date/value') }}"
+                        class="h-9 rounded-md border bg-white px-3 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300' if $n('form_book/published_date/errors/0') else 'border-slate-300' }}"
+                    />
+                    <div class="mt-1 text-[10px] text-rose-600 {{ '' if $n('form_book/published_date/errors/0') else 'hidden' }}">{{ $n('form_book/published_date/errors/0') }}</div>
+                </div>
+                <div class="flex min-w-[140px] flex-col">
+                    <select
+                        name="category_id"
+                        class="h-9 rounded-md border bg-white px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300' if $n('form_book/category_id/errors/0') else 'border-slate-300' }}"
+                    >
+                        <option value=""></option>
+                        {% set selected = $n('form_book/category_id/value') %}
+                        {% for category in $n('form_book/category_id/options') %}
+                            <option value="{{ category.id }}" {{ 'selected' if selected == category.id else '' }}>{{ category.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="mt-1 text-[10px] text-rose-600 {{ '' if $n('form_book/category_id/errors/0') else 'hidden' }}">{{ $n('form_book/category_id/errors/0') }}</div>
+                </div>
+                <!-- CSRF Token -->
+                <input type="hidden" name="token" value="{{ $n('form_book/token/value') }}" />
+                
+                {% if(action == 'edit' ?? action == 'update') %}
+                <input type="hidden" name="id" value="{{ id }}" />
+                <button type="submit" class="wave inline-flex h-9 items-center rounded-md border border-primary-600 bg-primary-50 px-3 text-xs font-medium text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('mysql.button.update') }}</button>
+                {% else %}
+                <button type="submit" class="wave inline-flex h-9 items-center rounded-md border border-primary-600 bg-primary-50 px-3 text-xs font-medium text-primary-700 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('database.table.button.add') }}</button>
+                {% endif %}
+
+                <div class="mt-1 text-[10px] text-rose-600 {{ $n('form_book/token/errors/0') ? '' : 'hidden' }}">{{ $n('form_book/token/errors/0') }}</div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="7" class="p-2 text-xs text-slate-600">{{ paging }}</td>
+    </tr>
+</form>

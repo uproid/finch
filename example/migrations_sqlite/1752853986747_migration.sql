@@ -1,0 +1,15 @@
+-- 2025-07-18 17:53:06.747950 
+-- ## NEW VERSION:
+-- 3. Orders table
+CREATE TABLE orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    order_date TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
+-- ## ROLL BACK:
+DROP TABLE IF EXISTS orders;
+
+

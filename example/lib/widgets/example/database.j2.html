@@ -1,0 +1,62 @@
+{% extends 'template/template.j2.html' %}
+{% block title %}
+  {{ $t('sidebar.mongo') }}
+{% endblock %}
+
+{% block content %}
+<div class="my-6 space-y-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('database.test.title') }}</h3>
+
+  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-slate-200 text-sm">
+        <thead class="bg-slate-50">
+          <tr class="text-left font-semibold text-slate-700">
+            <th class="px-4 py-2">{{ $t('database.table.header.title') }}</th>
+            <th class="px-4 py-2">{{ $t('database.table.header.slug') }}</th>
+            <th class="px-4 py-2 text-center">{{ $t('database.table.header.action') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for record in allRecords %}
+          <tr class="hover:bg-slate-50">
+            <td class="px-4 py-2 align-top font-medium text-slate-800">{{ record.title }}</td>
+            <td class="px-4 py-2 align-top text-slate-600">{{ record.slug }}</td>
+            <td class="px-4 py-2 text-center">
+              <a
+                href="/example/database?page={{ data.page if data.page else 1 }}&action=delete&id={{ record.id }}"
+                class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-rose-600 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                title="{{ $t('database.table.header.action') }}"
+              >🗑️</a>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if not allRecords ?? allRecords|length == 0 %}
+          <tr>
+            <td colspan="3" class="px-4 py-6 text-center text-slate-500">{{ $t('database.table.empty') if $t('database.table.empty') else '—' }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    <div class="border-t border-slate-200 bg-slate-50 p-4 space-y-4">
+      <form method="post" class="flex flex-col gap-3 sm:flex-row">
+        <input type="hidden" name="action" value="add" />
+        <input
+          type="text"
+          name="title"
+          placeholder="{{ $t('database.table.input.placeholder.title') }}"
+          class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30"
+        />
+        <button
+          type="submit"
+          class="wave inline-flex items-center justify-center rounded-md bg-primary-600 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+        >{{ $t('database.table.button.add') }}</button>
+      </form>
+      <div class="pt-2 text-sm text-slate-600">
+        {{ pagination }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

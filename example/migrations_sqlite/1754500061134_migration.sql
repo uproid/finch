@@ -1,0 +1,13 @@
+-- 2025-08-06 19:07:41.138264 
+-- ## NEW VERSION:
+CREATE TABLE books (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  title TEXT NOT NULL,
+  author TEXT NOT NULL,
+  published_date TEXT NOT NULL
+);
+
+-- ## ROLL BACK:
+DROP TABLE IF EXISTS books;
+
+

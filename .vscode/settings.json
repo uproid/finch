@@ -1,0 +1,90 @@
+{
+  "workbench.colorTheme": "Default Dark Modern",
+  "dart.flutterHotReloadOnSave": "all",
+  "dart.hotReloadOnSave": "all",
+  "html.validate.styles": false,
+  "i18n-ally.localesPaths": "./example/languages",
+  "i18n-ally.sourceLanguage": "en",
+  "i18n-ally.keystyle": "flat",
+  "i18n-ally.preferredDelimiter": "_",
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.keepFulfilled": true,
+  "i18n-ally.translate.promptSource": true,
+  "i18n-ally.pathMatcher": "{locale}.json",
+  "i18n-ally.translate.saveAsCandidates": true,
+  "i18n-ally.editor.preferEditor": true,
+  "i18n-ally.keysInUse": [
+    "view.progress_submenu.translated_keys",
+    "view.progress_submenu.missing_keys",
+    "view.progress_submenu.empty_keys"
+  ],
+  "i18n-ally.usage.scanningIgnore": [
+    "examples"
+  ],
+  "i18n-ally.regex.usageMatchAppend": [
+    "/\\*\\s*i18n\\s*\\*/\\s*['\"`]({key})['\"`]",
+    "'{key}'.tr",
+  ],
+  "i18n-ally.regex.usageMatch": [
+    "\"([^\"]+)\"(.tr|.trArgs|.trPlural|.trParams|.trPluralParams)",
+    "'([^']+)'(.tr|.trArgs|.trPlural|.trParams|.trPluralParams)",
+    "DS\\.tr\\(\"([^\"]+)\"\\)",
+    "DS\\.tr\\('([^']+)'\\)",
+    "\\$t\\('([^']+)'\\)",
+    "\\$t\\(\"([^\"]+)\"\\)",
+  ],
+  "i18n-ally.enabledFrameworks": [
+    "vscode",
+    "vue",
+    "general",
+    "flutter",
+    "globalize"
+  ],
+  "i18n-ally.theme.annotation": "rgba(0, 255, 0, 1)",
+  "i18n-ally.theme.annotationBorder": "rgba(0, 150, 150, 1)",
+  "i18n-ally.theme.annotationMissing": "#FF5500",
+  "i18n-ally.theme.annotationMissingBorder": "#0055FF",
+  "eslint.validate": [
+    "javascript",
+    "typescript",
+    "javascriptreact",
+    "typescriptreact",
+    "vue",
+    "html",
+    "flutter"
+  ],
+  "search.exclude": {
+    "**/frontend_dashboard": true
+  },
+  "files.exclude": {
+    "**/frontend_dashboard": true
+  },
+  "highlight.regex.regexes": [
+    {
+      "languageIds": [
+        "dart"
+      ],
+      "regexes": [
+        {
+          "regex": "/\\*HTML\\*\\/\\s*\"\"\"([\\s\\S]*?)\"\"\"",
+          "regexFlag": "gmi",
+          "filterLanguageRegex": "html",
+          "decorations": [
+            {
+              "index": 1,
+              "borderRadius": "4px",
+              "overviewRulerLane": 4,
+              "light": {
+                "backgroundColor": "#FF990022",
+              },
+              "dark": {
+                "backgroundColor": "#FF990022",
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "yaml.schemaStore.enable": false
+}

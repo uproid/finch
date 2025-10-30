@@ -1,0 +1,32 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Dart: Run Example",
+            "type": "dart",
+            "request": "launch",
+            "program": "./example/lib/watcher.dart",
+            "args": [
+                "--enable-asserts",
+                "--watch"
+            ],
+            "console": "debugConsole"
+        },
+        {
+            "name": "Dart: Run on Terminal",
+            "type": "dart",
+            "request": "launch",
+            "program": "./example/lib/watcher.dart",
+            "args": [
+                // "migration",
+                // "--init",
+                "--enable-asserts",
+                "--watch",
+            ],
+            "console": "terminal"
+        }
+    ]
+}

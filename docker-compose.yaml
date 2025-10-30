@@ -1,0 +1,75 @@
+services:
+  finch:
+    hostname: finch
+    container_name: finch
+    image: dart:stable
+    restart: always
+    ports:
+      - "8085:8085"
+      - "8181:8181"
+    build:
+      context: .
+    environment:
+      # DATABASE Configuration
+      MONGO_CONNECTION: mongodb
+      MONGO_PORT: 27017
+      NODE_ENV: development
+      LOCAL_DEBUG: true
+      DOMAIN_PORT: 8085
+      MYSQL_HOST: mysql
+      WIDGETS_PATH: ./lib/widgets
+      WIDGETS_TYPE: j2.html
+      LANGUAGE_PATH: ./lib/languages
+      PUBLIC_DIR: ./public
+      SQLITE_PATH: ./example/sqlite/example_database.sqlite
+      ENABLE_DATABASE: true
+    volumes:
+      - ${PWD-.}/lib:/www/finch/lib
+      - ${PWD-.}/bin:/www/finch/bin
+      - ${PWD-.}/test:/www/finch/test
+      - ${PWD-.}/example/lib:/www/finch/example/lib
+      - ${PWD-.}/example/migrations:/www/finch/example/migrations
+      - ${PWD-.}/example/migrations_sqlite:/www/finch/example/migrations_sqlite
+      - ${PWD-.}/example/public:/www/finch/example/public
+      - ${PWD-.}/example/sqlite/:/www/finch/example/sqlite
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    hostname: nginx
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - ${PWD-.}/example/public/:/var/www/html/public
+      - ${PWD-.}/example/docker/nginx.conf:/etc/nginx/conf.d/default.conf
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    hostname: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: PasswordMongoDB
+    ports:
+      - "27018:27017"
+    volumes:
+      - ${PWD-.}/example/mongodb:/data/db
+
+  mysql:
+    image: mysql:latest
+    container_name: mysql
+    hostname: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example_password
+      MYSQL_DATABASE: example_db
+      MYSQL_USER: example_user
+      MYSQL_PASSWORD: example_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - ${PWD-.}/example/mysql:/var/lib/mysql
+    networks:
+      - default

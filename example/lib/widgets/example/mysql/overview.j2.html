@@ -1,0 +1,115 @@
+{% extends 'template/template.j2.html' %}
+{% block title %} {{ $t('mysql.example.title') }} {% endblock %}
+
+{% block content %}
+<div class="my-6 space-y-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('mysql.example.title') }}</h3>
+  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-xs md:text-sm divide-y divide-slate-200">
+        <thead class="bg-slate-50">
+          <tr>
+            <th colspan="6" class="px-3 py-2">
+              {% set pageSize = data.pageSize | default("10") %}
+              {% set randonString = $e.randomString() %}
+              <div class="flex flex-wrap items-center justify-end gap-2">
+                <button type="button" class="wave inline-flex h-8 items-center rounded-md border border-rose-600 bg-rose-50 px-3 text-[11px] font-medium text-rose-700 hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-500/30" onclick="deleteSelectedBooks_{{randonString}}()">{{ $t('mysql.button.deleteSelected') }}</button>
+                <select name="pageSize" class="h-8 rounded-md border border-slate-300 bg-white px-2 text-[11px] shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" onchange="changePageSize_{{randonString}}(this.value)">
+                  <option {{ 'selected' if pageSize == '10' else '' }}>10</option>
+                  <option {{ 'selected' if pageSize == '20' else '' }}>20</option>
+                  <option {{ 'selected' if pageSize == '50' else '' }}>50</option>
+                  <option {{ 'selected' if pageSize == '100' else '' }}>100</option>
+                </select>
+              </div>
+              <script>
+                function changePageSize_{{randonString}}(value) {
+                  var url = new URL(window.location.href);
+                  url.searchParams.set('pageSize', value);
+                  window.location.href = url.toString();
+                }
+                function deleteSelectedBooks_{{randonString}}() {
+                  var selectedBooks = [];
+                  document.querySelectorAll('input[name="selected_books"]:checked').forEach(function(el){selectedBooks.push(el.value);});
+                  if (selectedBooks.length > 0) {
+                    if (confirm("{{ $t('mysql.message.deleteSelectedBooks') }}")) {
+                      var form = document.createElement('form');
+                      form.method = 'POST';
+                      form.style.display = 'none';
+                      var actionInput = document.createElement('input');
+                      actionInput.type = 'hidden';
+                      actionInput.name = 'action';
+                      actionInput.value = 'delete_all';
+                      form.appendChild(actionInput);
+                      var booksInput = document.createElement('input');
+                      booksInput.type = 'hidden';
+                      booksInput.name = 'selected_books';
+                      booksInput.value = selectedBooks.join(',');
+                      form.appendChild(booksInput);
+                      document.body.appendChild(form);
+                      form.submit();
+                    }
+                  } else {
+                    alert("{{ $t('mysql.message.noBooksSelected') }}");
+                  }
+                }
+              </script>
+            </th>
+          </tr>
+          <tr class="text-left font-semibold text-slate-700">
+            <th class="px-3 py-2">
+              <div class="flex items-center gap-1">
+                <input class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" type="checkbox" id="select_all" onchange="document.querySelectorAll(`input[name='selected_books']`).forEach(cb=>cb.checked=this.checked);" />
+                {{ $l.macro("/template/ui/sorting", {'sortby': 'b.id', 'title': 'mysql.table.header.id'} ) }}
+              </div>
+            </th>
+            <th class="px-3 py-2">{{ $l.macro("/template/ui/sorting", {'sortby': 'title', 'title': 'mysql.table.header.title'} ) }}</th>
+            <th class="px-3 py-2">{{ $l.macro("/template/ui/sorting", {'sortby': 'author', 'title': 'mysql.table.header.author'} ) }}</th>
+            <th class="px-3 py-2">{{ $l.macro("/template/ui/sorting", {'sortby': 'published_date', 'title': 'mysql.table.header.publishedDate'} ) }}</th>
+            <th class="px-3 py-2">{{ $l.macro("/template/ui/sorting", {'sortby': 'category_id', 'title': 'mysql.table.header.categoryId'} ) }}</th>
+            <th class="px-3 py-2 text-end">{{ $t('database.table.header.action') }}</th>
+          </tr>
+          <tr>
+            {% include 'example/mysql/_filtering.j2.html' %}
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for book in books %}
+          <tr class="hover:bg-slate-50">
+            <td class="px-3 py-2 align-top"><input class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" type="checkbox" name="selected_books" value="{{ book.id }}" /> <span class="ml-1 font-medium text-slate-800">{{ book.id }}</span></td>
+            <td class="px-3 py-2 text-slate-700">{{ book.title }}</td>
+            <td class="px-3 py-2 text-slate-600">{{ book.author }}</td>
+            <td class="px-3 py-2 text-slate-600">{{ book.published_date | dateFormat('dd/MM/y') }}</td>
+            <td class="px-3 py-2 text-slate-600"><em>{{ book.category_title }}</em></td>
+            <td class="px-3 py-2 text-end">
+              <div class="flex items-end justify-end gap-2">
+                <a
+                  data-href="{{ $l.updateUrlQuery( {'id':book.id|s, 'action': 'delete'|s}) }}"
+                  data-message="{{ $t('mysql.message.deleteBook') ~ ' (' ~ book.title ~ ')' }}"
+                  class="wave cursor-pointer js-delete-links inline-flex h-7 w-7 items-center justify-center rounded-full border border-rose-200 text-[11px] text-rose-600 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                  title="{{ $t('mysql.button.delete') }}"
+                >🗑️</a>
+                <a
+                  href="{{ $l.updateUrlQuery( {'id':book.id|s, 'action': 'edit'|s}) }}"
+                  class="wave inline-flex h-7 w-7 items-center justify-center rounded-full border border-primary-200 text-[11px] text-primary-600 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+                  title="{{ $t('mysql.button.edit') }}"
+                >✏️</a>
+              </div>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="6" class="px-3 py-6 text-center text-slate-500">{{ $t('mysql.message.noRecords') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+        <tfoot class="bg-slate-50">
+          {% include form_book.widget | unscape %}
+        </tfoot>
+      </table>
+    </div>
+    <div class="border-t border-slate-200 bg-slate-50 p-4 text-sm">
+      {% include 'example/mysql/_categories.j2.html' %}
+    </div>
+  </div>
+</div>
+{% endblock %}

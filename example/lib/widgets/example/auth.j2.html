@@ -1,0 +1,51 @@
+{% extends 'template/template.j2.html' %}
+{% block title %}
+{{ $t('sidebar.authExample') }}
+{% endblock %}
+{% block content %}
+<div class="my-6 space-y-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('auth.test') }}</h3>
+
+  <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="p-4 text-sm text-slate-700">
+      {{ $t('auth.welcome') }}
+      <span class="font-medium text-primary-600">{{ user.name }}</span>
+    </div>
+  </div>
+
+  <div>
+    <a href="/logout" class="wave inline-flex items-center rounded-md bg-rose-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/30">
+      {{ $t('auth.logout') }}
+    </a>
+  </div>
+
+  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <ul class="divide-y divide-slate-200 text-sm">
+      <li class="p-3 hover:bg-slate-50">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center">
+          <b class="w-40 shrink-0 text-slate-700">{{ $t('auth.view') }}</b>
+          <i class="text-primary-600">example/lib/widgets/example/auth.j2.html</i>
+        </div>
+      </li>
+      <li class="p-3 hover:bg-slate-50">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center">
+          <b class="w-40 shrink-0 text-slate-700">{{ $t('auth.controller') }}</b>
+          <i class="text-primary-600">example/lib/controllers/home_controller.dart</i>
+        </div>
+      </li>
+      <li class="p-3 hover:bg-slate-50">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center">
+          <b class="w-40 shrink-0 text-slate-700">{{ $t('auth.authController') }}</b>
+          <i class="text-primary-600">example/lib/controllers/auth_controller.dart</i>
+        </div>
+      </li>
+      <li class="p-3 hover:bg-slate-50">
+        <div class="flex flex-col gap-1 md:flex-row md:items-center">
+          <b class="w-40 shrink-0 text-slate-700">{{ $t('auth.router') }}</b>
+          <i class="text-primary-600">example/lib/route/web_route.dart</i>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

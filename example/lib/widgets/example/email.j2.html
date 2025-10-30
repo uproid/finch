@@ -1,0 +1,185 @@
+{% extends 'template/template.j2.html' %}
+{% block title %}
+    {{ $t('sidebar.emailExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="my-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('email.test') }}</h3>
+  <div class="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="p-5">
+      <form method="post" action="{{ $e.routeUrl('root.email.post') }}" class="space-y-6">
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <label for="from" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.from') }}</label>
+            <input
+              value="{{ $n('emailForm/from/value') }}"
+              type="text"
+              name="from"
+              id="from"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.from.failed else '' }}"
+            />
+            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.from.failed else 'hidden' }}">
+              {{ $t($n('emailForm/from/errors/0')) }}
+            </div>
+          </div>
+          <div>
+            <label for="fromName" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.fromName') }}</label>
+            <input
+              value="{{ $n('emailForm/fromName/value') }}"
+              type="text"
+              name="fromName"
+              id="fromName"
+              placeholder="{{ $t('email.placeholder.name') }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.fromName.failed else '' }}"
+            />
+            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.fromName.failed else 'hidden' }}">
+              {{ $t($n('emailForm/fromName/errors/0')) }}
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label for="email" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.to') }}</label>
+          <input
+            value="{{ emailForm.email.value }}"
+            type="email"
+            name="email"
+            id="email"
+            placeholder="{{ $t('email.placeholder.to') }}"
+            class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.email.failed else '' }}"
+          />
+          <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.email.failed else 'hidden' }}">
+            {{ $t($n('emailForm/email/errors/0')) }}
+          </div>
+        </div>
+
+        <div>
+          <label for="subject" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.subject') }}</label>
+            <input
+              value="{{ emailForm.subject.value }}"
+              type="text"
+              name="subject"
+              id="subject"
+              placeholder="{{ $t('email.placeholder.subject') }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.subject.failed else '' }}"
+            />
+          <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.subject.failed else 'hidden' }}">
+            {{ $t($n('emailForm/subject/errors/0')) }}
+          </div>
+        </div>
+
+        <div>
+          <label for="message" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.message') }}</label>
+          <textarea
+            name="message"
+            id="message"
+            placeholder="{{ $t('email.placeholder.message') }}"
+            class="min-h-[140px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.message.failed else '' }}"
+          >{{ emailForm.message.value }}</textarea>
+          <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.message.failed else 'hidden' }}">
+            {{ $t($n('emailForm/message/errors/0')) }}
+          </div>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-[1fr,140px]">
+          <div>
+            <label for="host" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.host') }}</label>
+            <input
+              value="{{ emailForm.host.value }}"
+              type="text"
+              name="host"
+              id="host"
+              placeholder="{{ $t('email.placeholder.host') }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.host.failed else '' }}"
+            />
+            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.host.failed else 'hidden' }}">
+              {{ $t($n('emailForm/host/errors/0')) }}
+            </div>
+          </div>
+          <div>
+            <label for="port" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.port') }}</label>
+            <input
+              value="{{ emailForm.port.value if emailForm.port.value else '1025' }}"
+              type="number"
+              name="port"
+              id="port"
+              placeholder="{{ $t('email.placeholder.port') }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.port.failed else '' }}"
+            />
+            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.port.failed else 'hidden' }}">
+              {{ $t($n('emailForm/port/errors/0')) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <label for="username" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.username') }}</label>
+            <input
+              value="{{ emailForm.username.value }}"
+              type="text"
+              name="username"
+              id="username"
+              placeholder="{{ $t('email.placeholder.username') }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.username.failed else '' }}"
+            />
+            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.username.failed else 'hidden' }}">
+              {{ $t($n('emailForm/username/errors/0')) }}
+            </div>
+          </div>
+          <div>
+            <label for="password" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.password') }}</label>
+            <input
+              value="{{ emailForm.password.value }}"
+              type="password"
+              name="password"
+              id="password"
+              placeholder="{{ $t('email.placeholder.password') }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.password.failed else '' }}"
+            />
+            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.password.failed else 'hidden' }}">
+              {{ $t($n('emailForm/password/errors/0')) }}
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-6">
+          <label for="allowInsecure" class="inline-flex items-center gap-2 text-sm text-slate-700">
+            <input
+              value="{{ emailForm.allowInsecure.value }}"
+              type="checkbox"
+              name="allowInsecure"
+              id="allowInsecure"
+              class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+            />
+            <span>{{ $t('email.allowInsecure') }}</span>
+          </label>
+          <label for="ssl" class="inline-flex items-center gap-2 text-sm text-slate-700">
+            <input
+              value="{{ emailForm.ssl.value }}"
+              type="checkbox"
+              name="ssl"
+              id="ssl"
+              class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
+            />
+            <span>{{ $t('email.ssl') }}</span>
+          </label>
+        </div>
+
+        {% if sendEmailSuccess %}
+        <div class="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{{ $t('email.success') }}</div>
+        {% endif %}
+
+        {% if sendEmailFailed %}
+        <div class="rounded-md border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{{ $t('email.failed') }}</div>
+        {% endif %}
+
+        <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">
+          {{ $t('email.send') }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

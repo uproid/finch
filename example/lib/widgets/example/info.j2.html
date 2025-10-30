@@ -1,0 +1,48 @@
+{% extends 'template/template.j2.html' %} {% block title %} {{
+$t('sidebar.info') }} 
+{% endblock %} 
+
+{% block content %}
+<a href="{{ $l.route('root.example.form') }}">{{ $l.route('root.example.form') }}</a>
+<div class="my-6">
+  <h3 class="text-xl font-semibold text-slate-800">
+    {{ $t('finchInfo.title') }}
+  </h3>
+  <div class="mt-4 space-y-3">
+    {% for key, value in server %}
+    <style>
+      /* local styles to animate details slide-down */
+      .animate-details .details-content {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(-6px);
+        transition: max-height 320ms cubic-bezier(.2,.8,.2,1), opacity 240ms ease, transform 320ms cubic-bezier(.2,.8,.2,1);
+      }
+      .animate-details[open] .details-content {
+        /* large enough to fit content; adjust if necessary */
+        max-height: 1000px;
+        opacity: 1;
+        transform: translateY(0);
+      }
+    </style>
+
+    <details class="animate-details group rounded-lg border border-slate-200 bg-white shadow-sm">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 hover:bg-slate-50">
+        <b class="text-primary-700">{{ $t('finchInfo.key', {'key': key}) }}</b>
+        <i class="fas fa-chevron-down text-slate-500 transition-transform group-open:rotate-180"></i>
+      </summary>
+
+      <div class="details-content px-4 pb-4 pt-0">
+        {% for info, details in value | items() %}
+        <div class="border-t border-slate-100 py-3">
+          <b class="block text-slate-800">{{ $t('finchInfo.info', {'info': info}) }}</b>
+          <p class="mt-1 pl-2 text-slate-600">{{ $t('finchInfo.details', {'details': details}) }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </details>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

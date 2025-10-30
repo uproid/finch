@@ -1,0 +1,78 @@
+{% extends 'template/template.j2.html' %}
+{% block title %}
+  {{ $t('Example Free model DB') }}
+{% endblock %}
+
+{% block content %}
+<div class="my-6 space-y-6">
+  <h3 class="text-xl font-semibold text-slate-800">{{ $t('person.example.title') }}</h3>
+
+  {% if data._id == null %}
+  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-xs md:text-sm divide-y divide-slate-200">
+        <thead class="bg-slate-50">
+          <tr class="text-left font-semibold text-slate-700">
+            <th class="px-3 py-2">{{ $t('person.table.header.name') }}</th>
+            <th class="px-3 py-2">{{ $t('person.table.header.age') }}</th>
+            <th class="px-3 py-2">{{ $t('person.table.header.married') }}</th>
+            <th class="px-3 py-2">{{ $t('person.table.header.email') }}</th>
+            <th class="px-3 py-2">{{ $t('person.table.header.height') }}</th>
+            <th class="px-3 py-2">{{ $t('person.table.header.birthday') }}</th>
+            <th class="px-3 py-2">{{ $t('person.table.header.job') }}</th>
+            <th class="px-3 py-2">{{ $t('person.table.header.skills') }}</th>
+            <th class="px-3 py-2 text-end">{{ $t('person.table.header.action') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+          {% for person in allPerson %}
+          <tr class="hover:bg-slate-50">
+            <td class="px-3 py-2 font-medium text-slate-800">
+              <span style="background-color: {{ person.color }};" class="mr-2 inline-block h-3 w-3 rounded-full align-middle"></span>
+              {{ person.name }}
+            </td>
+            <td class="px-3 py-2 text-slate-600">{{ person.age }}</td>
+            <td class="px-3 py-2 text-slate-600">{{ person.married }}</td>
+            <td class="px-3 py-2 text-slate-600">{{ person.email }}</td>
+            <td class="px-3 py-2 text-slate-600">{{ person.height }}</td>
+            <td class="px-3 py-2 text-slate-600">{{ person.birthday | dateFormat('dd/MM/yyyy, HH:mm') }}</td>
+            <td class="px-3 py-2 text-slate-600">{{ person.job.title | default('Unknown') }}</td>
+            <td class="px-3 py-2 text-slate-600">{{ person.jobs|length }}</td>
+            <td class="px-3 py-2 text-right">
+              <div class="flex items-center justify-end gap-2">
+                <form onsubmit="return confirm('Are you sure to delete `{{ person.name }}`?')" action="/example/person/delete/{{ person._id }}" method="POST">
+                  <input type="hidden" name="action" value="DELETE" />
+                  <button type="submit" class="wave inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 text-[11px] text-rose-600 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/30" title="Delete">
+                    🗑️
+                  </button>
+                </form>
+                <a href="/example/person/{{ person._id }}" class="wave inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 text-[11px] text-primary-600 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30" title="Edit">✏️</a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if not allPerson ?? allPerson|length == 0 %}
+          <tr>
+            <td colspan="100%" class="px-3 py-8 text-center text-slate-500">{{ $t('person.table.empty') }}</td>
+          </tr>
+          {% endif %}
+        </tbody>
+        <tfoot class="bg-slate-50">
+          <tr>
+            <td colspan="100%" class="px-3 py-3 text-sm text-slate-600">
+              {{ paging }}
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+  <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
+    <div class="p-5">
+      {% include $e.widgetPath('example/forms/form_person') %}
+    </div>
+  </div>
+</div>
+{% endblock %}

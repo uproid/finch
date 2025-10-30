@@ -1,0 +1,9 @@
+-- 2025-08-09 00:15:48.604706 
+-- ## NEW VERSION:
+ALTER TABLE books
+ADD COLUMN category_id INTEGER DEFAULT NULL;
+
+
+-- ## ROLL BACK:
+ALTER TABLE books
+DROP COLUMN category_id;
