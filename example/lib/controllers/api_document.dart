@@ -34,8 +34,8 @@ class ApiDocuments {
           ApiResponse<MockUserModel>(
             'users',
             def: [
-              await MockUserModel().toParams(db: app.db),
-              await MockUserModel().toParams(db: app.db),
+              await MockUserModel().toParams(db: app.mongoDb),
+              await MockUserModel().toParams(db: app.mongoDb),
             ],
           ),
           ApiResponse<Map>('usersPaging', def: {}),

@@ -53,8 +53,8 @@ FinchConfigs configs = FinchConfigs(
 );
 
 final app = FinchApp(configs: configs);
-var jobCollectionFree = JobCollectionFree(db: app.db);
-var personCollectionFree = PersonCollectionFree(db: app.db);
+var jobCollectionFree = JobCollectionFree(db: app.mongoDb);
+var personCollectionFree = PersonCollectionFree(db: app.mongoDb);
 
 final socketManager = SocketManager(
   app,
@@ -139,7 +139,7 @@ void main([List<String>? args]) async {
     FinchCron(
       schedule: FinchCron.evryDay(2),
       onCron: (index, cron) async {
-        if (app.db.isConnected) {
+        if (app.mongoDb.isConnected) {
           ExampleCollections().deleteAll();
         }
       },
@@ -152,7 +152,7 @@ void main([List<String>? args]) async {
     FinchCron(
       schedule: "0 * * * *",
       onCron: (index, cron) async {
-        if (app.db.isConnected) {
+        if (app.mongoDb.isConnected) {
           ExampleCollections().insertExample(ExampleModel(
             title: DateTime.now().toString(),
             slug: 'slug-$index',

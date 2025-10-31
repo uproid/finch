@@ -77,9 +77,9 @@ class ProjectCommands {
     );
 
     var help = "Project is running (${proccess.pid})...\n\n"
-        "┌┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬──────────┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┐\n"
-        "││││││││││││││││││││││  WEBAPP  │││││││││││││││││││││\n"
-        "├┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴──────────┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┤\n"
+        "┌┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬───────────┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┐\n"
+        "│││││││││││││││││││││ @> FINCH  │││││││││││││││││││││\n"
+        "├┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴───────────┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┴┤\n"
         "│  * Press 'r' to Reload  the project               │\n"
         "├───────────────────────────────────────────────────┤\n"
         "│  * Press 'c' to clear screen                      │\n"
@@ -142,7 +142,7 @@ class ProjectCommands {
         if (report.isNotEmpty) ...['--reporter', report],
       ],
       environment: {
-        'WEBAPP_IS_TEST': 'true',
+        'FINCH_IS_TEST': 'true',
       },
       mode: ProcessStartMode.inheritStdio,
     );
@@ -215,8 +215,8 @@ class ProjectCommands {
       var envFile = File(joinPaths([output, 'lib', '.env']));
       envFile.createSync(recursive: true);
       envFile.writeAsStringSync([
-        "WEBAPP_VERSION='${FinchApp.info.version}'",
-        "WEBAPP_BUILD_DATE='${DateTime.now().toUtc()}'",
+        "FINCH_VERSION='${FinchApp.info.version}'",
+        "FINCH_BUILD_DATE='${DateTime.now().toUtc()}'",
       ].join('\n'));
     }
 

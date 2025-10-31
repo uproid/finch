@@ -228,7 +228,7 @@ In this project, all controllers and related classes have been updated to use a 
     finch run [ENTER]
     help [ENTER]
     
-       WEBAPP CLI
+       FINCH CLI
 
        * Press 'r' to Reload  the project                
        * Press 'c' to clear screen                       

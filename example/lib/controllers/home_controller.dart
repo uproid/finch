@@ -363,7 +363,7 @@ class HomeController extends Controller {
       'title': 'logo.title',
       'year': DateTime.now().year,
       'user': await user?.toParams(),
-      'mongoActive': app.db.isConnected,
+      'mongoActive': app.mongoDb.isConnected,
       'mysqlActive': app.mysqlDb.connected,
       'version': 'v${FinchApp.info.version}',
     });
@@ -429,14 +429,16 @@ class HomeController extends Controller {
   }
 
   Future<String> info() async {
-    Map dbInfo = app.db.isConnected ? await app.db.getBuildInfo() : {};
+    Map dbInfo =
+        app.mongoDb.isConnected ? await app.mongoDb.getBuildInfo() : {};
     var languageCount = [];
     FinchApp.appLanguages.forEach((key, value) {
       languageCount.add("$key (${value.length})");
     });
 
-    var collections =
-        app.db.isConnected ? await app.db.modernListCollections().toList() : [];
+    var collections = app.mongoDb.isConnected
+        ? await app.mongoDb.modernListCollections().toList()
+        : [];
     var collectionNames = collections.map((e) => e['name']);
 
     var headers = <String, List<String>>{};
@@ -464,7 +466,7 @@ class HomeController extends Controller {
             "${Platform.operatingSystem.toUpperCase()} ${Platform.operatingSystemVersion}",
       },
       'Database': {
-        'MongoDB connected': app.db.isConnected,
+        'MongoDB connected': app.mongoDb.isConnected,
         if (configs.isLocalDebug)
           'MongoDB Host': "${configs.dbConfig.host}:${configs.dbConfig.port}",
         'MongoDB DB name': configs.dbConfig.dbName,

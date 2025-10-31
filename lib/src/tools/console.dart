@@ -133,7 +133,7 @@ class Console {
   /// Checks if the application is running in test mode.
   ///
   /// This method determines if the current execution environment is a test
-  /// environment by checking the WEBAPP_IS_TEST environment variable.
+  /// environment by checking the FINCH_IS_TEST environment variable.
   /// When running tests, certain logging and debugging features may be
   /// disabled to avoid interference with test output.
   ///
@@ -146,6 +146,6 @@ class Console {
   /// }
   /// ```
   static bool isTestRunning() {
-    return Platform.environment['WEBAPP_IS_TEST'] == 'true';
+    return Platform.environment['FINCH_IS_TEST'] == 'true';
   }
 }

@@ -60,7 +60,7 @@ class FinchApp {
   bool get hasSocket => socketManager != null;
 
   /// The MongoDB database instance.
-  mongo.Db? _db;
+  mongo.Db? _mongoDb;
 
   /// The MySQL database connection instance.
   MySQLConnection? _mysqlDb;
@@ -128,13 +128,13 @@ class FinchApp {
   /// Gets the MongoDB database instance.
   /// If the database is not connected, this method will attempt to connect to MongoDB.
   /// Throws an exception if the database is not running.
-  mongo.Db get db {
-    if (_db == null) {
-      connectMongoDb().then((value) => _db = value);
+  mongo.Db get mongoDb {
+    if (_mongoDb == null) {
+      connectMongoDb().then((value) => _mongoDb = value);
       throw ('Error DB is not running');
     }
 
-    return _db!;
+    return _mongoDb!;
   }
 
   MySQLConnection get mysqlDb {
@@ -158,11 +158,11 @@ class FinchApp {
       await server!.close(force: force);
     }
 
-    await db.close();
+    await mongoDb.close();
     await mysqlDb.close();
     sqliteDb.dispose();
 
-    _db = null;
+    _mongoDb = null;
     _mysqlDb = null;
     _sqliteDb = null;
     server = null;
@@ -220,7 +220,7 @@ class FinchApp {
       await Future.delayed(Duration(seconds: 30));
     }
 
-    _db = await connectMongoDb().onError((_, __) {
+    _mongoDb = await connectMongoDb().onError((_, __) {
       throw ("Error connect to MongoDB");
     });
 
@@ -265,12 +265,13 @@ class FinchApp {
 
           runZonedGuarded(() async {
             if (config.dbConfig.enable) {
-              if (_db == null) {
-                _db = await connectMongoDb().onError((error, stackTrace) async {
+              if (_mongoDb == null) {
+                _mongoDb =
+                    await connectMongoDb().onError((error, stackTrace) async {
                   throw ("Error connect to DB");
                 });
-              } else if (!_db!.isConnected) {
-                await _db!.open().onError((error, stackTrace) async {
+              } else if (!_mongoDb!.isConnected) {
+                await _mongoDb!.open().onError((error, stackTrace) async {
                   throw ("Error connect to DB");
                 });
               }

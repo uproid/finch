@@ -3,7 +3,7 @@ import '../models/example_model.dart';
 import 'package:finch/finch_model.dart';
 
 class ExampleCollections extends DBCollection {
-  ExampleCollections() : super(db: app.db, name: 'example');
+  ExampleCollections() : super(db: app.mongoDb, name: 'example');
 
   Future<ExampleModel> insertExample(ExampleModel model) async {
     var res = await collection.insert(model.toJson());

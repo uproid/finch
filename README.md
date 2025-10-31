@@ -8,7 +8,11 @@ A lightweight, robust, and feature-rich web framework for Dart that makes server
 
 ## Overview
 
-Finch is a powerful web application framework built with Dart that emphasizes simplicity and stability. It provides everything you need to create robust, multi-platform server-side applications and websites with minimal setup and maximum efficiency. Whether you're building websites, APIs, or full-fledged apps, Finch offers a clean and intuitive way to handle routing, databases, WebSockets, and more, all while leveraging Dart's native performance.
+Finch is a powerful and modern web application framework built with Dart, designed with a focus on performance, simplicity, security, and stability. It provides everything you need to build robust, multi-platform, and scalable server-side applications and websites with minimal setup and maximum efficiency.
+
+Using the static and powerful Dart language, Finch helps developers create portable and maintainable applications that perform consistently across environments. Its modular architecture enables easy extension and customization while keeping boilerplate code to a minimum.
+
+Whether you're building websites, APIs, microservices, or embedded systems (such as Raspberry Pi) that demand high performance and low latency, Finch offers a clean and intuitive way to manage routing, databases, WebSockets, and more — all while leveraging Dart’s native performance and
 
 ## Features
 

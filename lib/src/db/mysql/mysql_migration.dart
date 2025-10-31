@@ -191,7 +191,7 @@ class MysqlMigration {
     CappConsole.writeTable(
       [
         ['Migration file created at:'],
-        [file.filePath],
+        [file.path],
       ],
       dubleBorder: true,
       color: CappColors.success,

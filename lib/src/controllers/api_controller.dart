@@ -266,27 +266,7 @@ class ApiController extends Controller {
   }) async {
     var config = FinchApp.config;
     if (showPublic || config.isLocalDebug) {
-      return rq.renderView(
-        path: /*HTML*/ """<!DOCTYPE html>
-                <html lang="en">
-                  <head>
-                    <meta charset="UTF-8">
-                    <title>Swagger UI</title>
-                    <link rel="stylesheet" type="text/css" href="${rq.url('$swaggerUIPath/swagger-ui.css')}" />
-                    <link rel="stylesheet" type="text/css" href="${rq.url('$swaggerUIPath/index.css')}" />
-                    <link rel="icon" type="image/png" href="${rq.url('$swaggerUIPath/favicon-32x32.png')}" sizes="32x32" />
-                    <link rel="icon" type="image/png" href="${rq.url('$swaggerUIPath/favicon-16x16.png')}" sizes="16x16" />
-                  </head>
-
-                  <body>
-                    <div data-url="$docUrl" id="swagger-ui"></div>
-                    <script src="${rq.url('$swaggerUIPath/swagger-ui-bundle.js')}" charset="UTF-8"> </script>
-                    <script src="${rq.url('$swaggerUIPath/swagger-ui-standalone-preset.js')}" charset="UTF-8"> </script>
-                    <script src="${rq.url('$swaggerUIPath/swagger-initializer.js')}" charset="UTF-8"> </script>
-                  </body>
-                </html>""",
-        isFile: false,
-      );
+      return SwaggerController(docUrl).index();
     }
 
     return rq.renderError(403);
