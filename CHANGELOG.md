@@ -225,7 +225,7 @@ In this project, all controllers and related classes have been updated to use a 
 ## WebApp-1.0.26
 - Improved the Finch CLI
     - Fixed bug for OpenApi
-    - An example for Swagger has been added: 'https://finch.uproid.com/swagger'
+    - An example for Swagger has been added: 'https://example.uproid.com/swagger'
     - A utility menu has been developed for when the project is running to make controlling the project through the CLI easier.
     ```bash
     finch run [ENTER]

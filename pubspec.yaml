@@ -2,7 +2,7 @@ name: finch
 description: The Finch package simplifies fast and efficient server-side web app development with Dart, offering tools for APIs, MongoDB/MySQL/SQLite databases, WebSockets, and scalable projects
 
 version: 1.0.0
-homepage: https://finch.uproid.com/
+homepage: https://finchdart.com/
 repository: https://github.com/uproid/finch.git
 issue_tracker: https://github.com/uproid/finch/issues
 

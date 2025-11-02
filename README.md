@@ -239,7 +239,7 @@ For in-depth guides and API references:
 - [Official Documentation](https://github.com/uproid/finch/tree/master/doc)
 - [API Reference](https://pub.dev/documentation/finch/latest/)
 - [Examples Repository](https://github.com/uproid/finch/tree/master/example)
-- [Live Demo](https://finch.uproid.com)
+- [Live Demo](https://example.uproid.com)
 
 ## Docker Support
 
