@@ -57,7 +57,7 @@ dependencies:
   capp: ^1.1.2
   mysql_client: ^0.0.27
   sqlite3: ^2.9.4
-  sqler: 1.2.0
+  sqler: ^1.2.0
   html_unescape: ^2.0.0
 executables:
   finch: finch
