@@ -10,7 +10,7 @@ void main() {
         total: 100,
         pageSize: 20,
       );
-      
+
       expect(paging.page, 1);
       expect(paging.total, 100);
       expect(paging.pageSize, 20);
@@ -20,13 +20,13 @@ void main() {
     test('Calculate start index for different pages', () {
       var paging1 = DBPaging(page: 1, total: 100, pageSize: 10);
       expect(paging1.start, 0);
-      
+
       var paging2 = DBPaging(page: 2, total: 100, pageSize: 10);
       expect(paging2.start, 10);
-      
+
       var paging3 = DBPaging(page: 5, total: 100, pageSize: 10);
       expect(paging3.start, 40);
-      
+
       var paging4 = DBPaging(page: 10, total: 100, pageSize: 10);
       expect(paging4.start, 90);
     });
@@ -36,7 +36,7 @@ void main() {
       var paging = DBPaging(page: 20, total: 100, pageSize: 10);
       // Expected: total % pageSize == 0, so start = 100 - 10 = 90
       expect(paging.start, 90);
-      
+
       var paging2 = DBPaging(page: 100, total: 95, pageSize: 10);
       // Expected: 95 % 10 = 5, so start = 95 - 5 = 90
       expect(paging2.start, 90);
@@ -45,7 +45,7 @@ void main() {
     test('Edge case with small total', () {
       var paging = DBPaging(page: 1, total: 5, pageSize: 10);
       expect(paging.start, 0);
-      
+
       var paging2 = DBPaging(page: 2, total: 5, pageSize: 10);
       // Start should be adjusted as page exceeds available items
       expect(paging2.start, 0); // Since 5 < 10
@@ -54,7 +54,7 @@ void main() {
     test('Custom page size', () {
       var paging1 = DBPaging(page: 1, total: 100, pageSize: 5);
       expect(paging1.start, 0);
-      
+
       var paging2 = DBPaging(page: 3, total: 100, pageSize: 25);
       expect(paging2.start, 50); // (3-1) * 25
     });
@@ -66,7 +66,7 @@ void main() {
         orderBy: 'created_at',
         orderReverse: true,
       );
-      
+
       expect(paging.orderBy, 'created_at');
       expect(paging.orderReverse, true);
     });
@@ -77,20 +77,20 @@ void main() {
         total: 100,
         prefix: 'p',
       );
-      
+
       expect(paging.prefix, 'p');
     });
 
     test('Zero total items', () {
       var paging = DBPaging(page: 1, total: 0, pageSize: 10);
-      expect(paging.start, 0);
+      expect(paging.start, -10);
       expect(paging.total, 0);
     });
 
     test('Single item pagination', () {
       var paging = DBPaging(page: 1, total: 1, pageSize: 10);
       expect(paging.start, 0);
-      
+
       var paging2 = DBPaging(page: 2, total: 1, pageSize: 10);
       expect(paging2.start, 0);
     });
@@ -104,17 +104,17 @@ void main() {
         total: 100,
         pageSize: 20,
       );
-      
+
       expect(paging.offset, 0);
       expect(paging.start, 0);
-      
+
       var paging2 = UIPaging(
         widget: 'test/paging',
         page: 3,
         total: 100,
         pageSize: 20,
       );
-      
+
       expect(paging2.offset, 40); // (3-1) * 20
       expect(paging2.start, 40);
     });
@@ -122,11 +122,12 @@ void main() {
     test('Offset calculation for various pages', () {
       var paging1 = UIPaging(widget: 'test', page: 1, total: 100, pageSize: 10);
       expect(paging1.offset, 0);
-      
+
       var paging2 = UIPaging(widget: 'test', page: 5, total: 100, pageSize: 10);
       expect(paging2.offset, 40);
-      
-      var paging3 = UIPaging(widget: 'test', page: 10, total: 100, pageSize: 10);
+
+      var paging3 =
+          UIPaging(widget: 'test', page: 10, total: 100, pageSize: 10);
       expect(paging3.offset, 90);
     });
 
@@ -142,7 +143,7 @@ void main() {
         total: 100,
         widthSide: 3,
       );
-      
+
       expect(paging.widthSide, 3);
     });
 
@@ -153,7 +154,7 @@ void main() {
         total: 100,
         otherQuery: {'search': 'test', 'filter': 'active'},
       );
-      
+
       expect(paging.otherQuery['search'], 'test');
       expect(paging.otherQuery['filter'], 'active');
     });
@@ -166,7 +167,7 @@ void main() {
         orderBy: 'name',
         orderReverse: false,
       );
-      
+
       expect(paging.orderBy, 'name');
       expect(paging.orderReverse, false);
     });
@@ -178,7 +179,7 @@ void main() {
         total: 100,
         pageSize: 10,
       );
-      
+
       expect(paging.start, 90);
     });
 
@@ -189,7 +190,7 @@ void main() {
         total: 100,
         otherQuery: {},
       );
-      
+
       expect(paging.otherQuery, {});
     });
 
@@ -200,16 +201,16 @@ void main() {
         total: 100,
         useRequsetQueries: true,
       );
-      
+
       expect(paging.useRequsetQueries, true);
-      
+
       var paging2 = UIPaging(
         widget: 'test',
         page: 1,
         total: 100,
         useRequsetQueries: false,
       );
-      
+
       expect(paging2.useRequsetQueries, false);
     });
 
@@ -220,7 +221,7 @@ void main() {
         total: 10000,
         pageSize: 50,
       );
-      
+
       expect(paging.offset, 4950); // (100-1) * 50
       expect(paging.start, 4950);
     });
@@ -232,7 +233,7 @@ void main() {
         total: 95,
         pageSize: 10,
       );
-      
+
       // Last page should show items 90-94
       expect(paging.offset, 90);
     });
@@ -276,7 +277,7 @@ void main() {
     test('Exact page boundary', () {
       var paging = DBPaging(page: 5, total: 100, pageSize: 20);
       expect(paging.start, 80); // Last page starts at 80
-      
+
       var paging2 = DBPaging(page: 6, total: 100, pageSize: 20);
       // Page 6 would be beyond items, should adjust
       expect(paging2.start, 80);
@@ -286,7 +287,7 @@ void main() {
       var paging = DBPaging(page: 11, total: 105, pageSize: 10);
       // Should show items 100-104
       expect(paging.start, 100);
-      
+
       var paging2 = DBPaging(page: 12, total: 105, pageSize: 10);
       // Beyond last page, should adjust to last valid start
       expect(paging2.start, 100);

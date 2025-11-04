@@ -9,14 +9,14 @@ void main() {
     test('fromJson with valid DateTime', () {
       const converter = DateTimeConverter();
       var date = DateTime(2024, 1, 15, 10, 30);
-      
+
       var result = converter.fromJson(date);
       expect(result, date);
     });
 
     test('fromJson with null returns default', () {
       const converter = DateTimeConverter();
-      
+
       var result = converter.fromJson(null);
       expect(result, DateTime.parse('2000-01-01 00:00'));
     });
@@ -24,7 +24,7 @@ void main() {
     test('toJson preserves DateTime', () {
       const converter = DateTimeConverter();
       var date = DateTime(2024, 6, 15, 14, 30, 45);
-      
+
       var result = converter.toJson(date);
       expect(result, date);
     });
@@ -32,17 +32,17 @@ void main() {
     test('Round-trip conversion', () {
       const converter = DateTimeConverter();
       var original = DateTime.now();
-      
+
       var json = converter.toJson(original);
       var restored = converter.fromJson(json);
-      
+
       expect(restored, original);
     });
 
     test('Default DateTime has expected value', () {
       const converter = DateTimeConverter();
       var defaultDate = converter.fromJson(null);
-      
+
       expect(defaultDate.year, 2000);
       expect(defaultDate.month, 1);
       expect(defaultDate.day, 1);
@@ -55,21 +55,21 @@ void main() {
     test('fromJson with valid ObjectId', () {
       const converter = IDConverter();
       var testId = ObjectId.parse('507f1f77bcf86cd799439011');
-      
+
       var result = converter.fromJson(testId);
       expect(result, '507f1f77bcf86cd799439011');
     });
 
     test('fromJson with null returns empty string', () {
       const converter = IDConverter();
-      
+
       var result = converter.fromJson(null);
       expect(result, '');
     });
 
     test('toJson with valid string', () {
       const converter = IDConverter();
-      
+
       var result = converter.toJson('507f1f77bcf86cd799439011');
       expect(result, isNotNull);
       expect(result!.oid, '507f1f77bcf86cd799439011');
@@ -77,14 +77,14 @@ void main() {
 
     test('toJson with empty string returns null', () {
       const converter = IDConverter();
-      
+
       var result = converter.toJson('');
       expect(result, isNull);
     });
 
     test('toJson with invalid string returns null', () {
       const converter = IDConverter();
-      
+
       var result = converter.toJson('invalid-id');
       expect(result, isNull);
     });
@@ -92,10 +92,10 @@ void main() {
     test('Round-trip conversion', () {
       const converter = IDConverter();
       var originalId = ObjectId();
-      
+
       var stringId = converter.fromJson(originalId);
       var restored = converter.toJson(stringId);
-      
+
       expect(restored, isNotNull);
       expect(restored!.oid, originalId.oid);
     });
@@ -107,12 +107,12 @@ void main() {
         '507f191e810c19729de860ea',
         '507f191e810c19729de860eb',
       ];
-      
+
       for (var id in ids) {
         var objectId = converter.toJson(id);
         expect(objectId, isNotNull);
         expect(objectId!.oid, id);
-        
+
         var stringId = converter.fromJson(objectId);
         expect(stringId, id);
       }
@@ -127,14 +127,10 @@ void main() {
     });
 
     test('encodeMaps converts Symbol keys to Strings', () {
-      var map = {
-        #name: 'John',
-        #age: 30,
-        'status': 'active'
-      };
-      
+      var map = {#name: 'John', #age: 30, 'status': 'active'};
+
       var encoded = FinchJson.encodeMaps(map);
-      
+
       expect(encoded['#name'], 'John');
       expect(encoded['#age'], 30);
       expect(encoded['status'], 'active');
@@ -143,7 +139,7 @@ void main() {
 
     test('jsonEncoder handles basic types', () {
       var data = {'name': 'Test', 'count': 42, 'active': true};
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, isNotNull);
       expect(json, contains('name'));
@@ -153,21 +149,21 @@ void main() {
 
     test('jsonEncoder handles DateTime', () {
       var data = {'created': DateTime(2024, 1, 15)};
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, contains('2024-01-15'));
     });
 
     test('jsonEncoder handles ObjectId', () {
       var data = {'_id': ObjectId.parse('507f1f77bcf86cd799439011')};
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, contains('507f1f77bcf86cd799439011'));
     });
 
     test('jsonEncoder handles null values', () {
       var data = {'value': null};
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, contains('null'));
     });
@@ -179,7 +175,7 @@ void main() {
           'profile': {'age': 30}
         }
       };
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, contains('John'));
       expect(json, contains('30'));
@@ -190,7 +186,7 @@ void main() {
         'items': [1, 2, 3],
         'tags': ['a', 'b', 'c']
       };
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, contains('[1,2,3]'));
       expect(json, contains('["a","b","c"]'));
@@ -202,7 +198,7 @@ void main() {
         'stringKey': 'value2',
         #anotherSymbol: 123
       };
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, contains('symbolKey'));
       expect(json, contains('stringKey'));
@@ -214,7 +210,7 @@ void main() {
     test('encodeMaps handles empty map', () {
       var map = {};
       var encoded = FinchJson.encodeMaps(map);
-      
+
       expect(encoded, {});
     });
 
@@ -223,9 +219,9 @@ void main() {
         'key1': 'value1',
         'key2': 'value2',
       };
-      
+
       var encoded = FinchJson.encodeMaps(map);
-      
+
       expect(encoded['key1'], 'value1');
       expect(encoded['key2'], 'value2');
     });
@@ -233,10 +229,10 @@ void main() {
     test('symbolToKey handles various symbol formats', () {
       // Basic symbol
       expect(FinchJson.symbolToKey(#simple), '#simple');
-      
+
       // Symbol with underscores
       expect(FinchJson.symbolToKey(#snake_case), '#snake_case');
-      
+
       // Symbol with numbers
       expect(FinchJson.symbolToKey(#item123), '#item123');
     });
@@ -245,14 +241,14 @@ void main() {
   group('JSON Encoding Edge Cases', () {
     test('Handle Duration type', () {
       var data = {'duration': Duration(hours: 2, minutes: 30)};
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, contains('2:30:00'));
     });
 
     test('Handle integers in encoding', () {
       var data = {'count': 42, 'negative': -10, 'zero': 0};
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, contains('42'));
       expect(json, contains('-10'));
@@ -272,10 +268,10 @@ void main() {
           }
         }
       };
-      
+
       var json = FinchJson.jsonEncoder(data);
       expect(json, isNotNull);
-      expect(json.length > 0, true);
+      expect(json.isNotEmpty, true);
     });
 
     test('Empty structures', () {

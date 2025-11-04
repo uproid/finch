@@ -20,10 +20,7 @@ extension SafeString on String {
   ///
   /// Returns a string with HTML tags removed or replaced.
   String removeHtmlTags({String replace = ''}) {
-    RegExp exp = RegExp(r"<[^>]*>([^<]*)<\/[^>]*>",
-        multiLine: true, caseSensitive: true);
-    String sanitized = replaceAll(exp, replace);
-    return sanitized;
+    return replaceAll(RegExp(r'<[^>]*>'), replace);
   }
 
   /// Escapes HTML special characters in the string to their corresponding HTML entities.
@@ -49,21 +46,16 @@ extension SafeString on String {
   String removeScripts() {
     final RegExp scriptTagRegExp =
         RegExp(r'<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>');
-    final RegExp scriptAttrRegExp = RegExp(r'(?:\b|_)on\w+');
+    final RegExp scriptAttrRegExp =
+        RegExp(r'''\s+on\w+\s*=\s*["'][^"']*["']|\s+on\w+\s*=\s*[^\s>]+''');
 
     // Remove any script tags from the input
     var input = replaceAll(scriptTagRegExp, '');
 
     // Remove any event handler attributes (e.g. onmousedown, onclick) from all elements
-    final StringBuffer sb = StringBuffer();
-    int start = 0;
-    for (Match match in scriptAttrRegExp.allMatches(input)) {
-      sb.write(input.substring(start, match.start));
-      start = match.end;
-    }
-    sb.write(input.substring(start));
+    input = input.replaceAll(scriptAttrRegExp, '');
 
-    return sb.toString();
+    return input;
   }
 
   /// Encrypts the string using AES encryption with a provided password.

@@ -5,7 +5,7 @@ void main() {
   group('FieldValidateResult Tests', () {
     test('Create successful validation result', () {
       var result = FieldValidateResult(success: true);
-      
+
       expect(result.success, true);
       expect(result.error, '');
       expect(result.errors, []);
@@ -16,7 +16,7 @@ void main() {
         success: false,
         error: 'Invalid value',
       );
-      
+
       expect(result.success, false);
       expect(result.error, 'Invalid value');
     });
@@ -26,7 +26,7 @@ void main() {
         success: false,
         errors: ['Error 1', 'Error 2', 'Error 3'],
       );
-      
+
       expect(result.success, false);
       expect(result.errors.length, 3);
       expect(result.errors, contains('Error 1'));
@@ -40,7 +40,7 @@ void main() {
         error: 'Main error',
         errors: ['Detail 1', 'Detail 2'],
       );
-      
+
       expect(result.success, false);
       expect(result.error, 'Main error');
       expect(result.errors, contains('Detail 1'));
@@ -55,9 +55,9 @@ void main() {
         'age': {'value': 30, 'success': true},
         'email': {'value': 'john@example.com', 'success': true},
       };
-      
+
       var extracted = FormValidator.extractValues(form);
-      
+
       expect(extracted['name'], 'John');
       expect(extracted['age'], 30);
       expect(extracted['email'], 'john@example.com');
@@ -67,17 +67,17 @@ void main() {
       var form = {
         'optional': {'value': null, 'success': true},
       };
-      
+
       var extracted = FormValidator.extractValues(form);
-      
+
       expect(extracted['optional'], isNull);
     });
 
     test('Extract from empty form', () {
       var form = <String, Object?>{};
-      
+
       var extracted = FormValidator.extractValues(form);
-      
+
       expect(extracted, {});
     });
 
@@ -86,12 +86,16 @@ void main() {
         'string': {'value': 'text'},
         'number': {'value': 42},
         'bool': {'value': true},
-        'list': {'value': [1, 2, 3]},
-        'map': {'value': {'nested': 'data'}},
+        'list': {
+          'value': [1, 2, 3]
+        },
+        'map': {
+          'value': {'nested': 'data'}
+        },
       };
-      
+
       var extracted = FormValidator.extractValues(form);
-      
+
       expect(extracted['string'], 'text');
       expect(extracted['number'], 42);
       expect(extracted['bool'], true);
@@ -104,9 +108,9 @@ void main() {
         'valid': {'value': 'test'},
         'invalid': 'not a map',
       };
-      
+
       var extracted = FormValidator.extractValues(form);
-      
+
       expect(extracted.containsKey('valid'), true);
       expect(extracted.containsKey('invalid'), false);
     });
@@ -118,9 +122,9 @@ void main() {
         'name': {'value': 'John'},
         'city': {'value': 'New York'},
       };
-      
+
       var extracted = FormValidator.extractString(form);
-      
+
       expect(extracted['name'], 'John');
       expect(extracted['city'], 'New York');
     });
@@ -131,9 +135,9 @@ void main() {
         'active': {'value': true},
         'price': {'value': 19.99},
       };
-      
+
       var extracted = FormValidator.extractString(form);
-      
+
       expect(extracted['age'], '30');
       expect(extracted['active'], 'true');
       expect(extracted['price'], '19.99');
@@ -145,9 +149,9 @@ void main() {
         'empty': {'value': ''},
         'nullValue': {'value': null},
       };
-      
+
       var extracted = FormValidator.extractString(form);
-      
+
       expect(extracted.containsKey('name'), true);
       expect(extracted.containsKey('empty'), false);
       expect(extracted.containsKey('nullValue'), false);
@@ -159,9 +163,9 @@ void main() {
         'empty': {'value': ''},
         'nullValue': {'value': null},
       };
-      
+
       var extracted = FormValidator.extractString(form, true);
-      
+
       expect(extracted.containsKey('name'), true);
       expect(extracted.containsKey('empty'), true);
       expect(extracted.containsKey('nullValue'), true);
@@ -171,9 +175,9 @@ void main() {
 
     test('Extract from empty form', () {
       var form = <String, Object?>{};
-      
+
       var extracted = FormValidator.extractString(form);
-      
+
       expect(extracted, {});
     });
 
@@ -182,7 +186,7 @@ void main() {
         'spaces': {'value': '   '},
         'tabs': {'value': '\t\t'},
       };
-      
+
       // With allowEmpty false, whitespace-only strings are kept
       var extracted = FormValidator.extractString(form);
       expect(extracted['spaces'], '   ');
@@ -192,7 +196,7 @@ void main() {
 
   group('SimpleValidatorEvent Extension Tests', () {
     test('Convert validator to simple function', () async {
-      ValidatorEvent<String> validator = (value) async {
+      Future<FieldValidateResult> validator(value) async {
         if (value.isEmpty) {
           return FieldValidateResult(
             success: false,
@@ -200,54 +204,54 @@ void main() {
           );
         }
         return FieldValidateResult(success: true);
-      };
-      
+      }
+
       var simpleValidator = validator.toSimple();
-      
+
       var result1 = await simpleValidator('test');
       expect(result1, '');
-      
+
       var result2 = await simpleValidator('');
       expect(result2, 'Field is required');
     });
 
     test('Simple validator combines multiple errors', () async {
-      ValidatorEvent<String> validator = (value) async {
+      Future<FieldValidateResult> validator(value) async {
         return FieldValidateResult(
           success: false,
           errors: ['Error 1', 'Error 2', 'Error 3'],
         );
-      };
-      
+      }
+
       var simpleValidator = validator.toSimple();
       var result = await simpleValidator('test');
-      
+
       expect(result, 'Error 1,Error 2,Error 3');
     });
 
     test('Simple validator prefers error over errors list', () async {
-      ValidatorEvent<String> validator = (value) async {
+      Future<FieldValidateResult> validator(value) async {
         return FieldValidateResult(
           success: false,
           error: 'Main error',
           errors: ['Detail 1', 'Detail 2'],
         );
-      };
-      
+      }
+
       var simpleValidator = validator.toSimple();
       var result = await simpleValidator('test');
-      
+
       expect(result, 'Main error');
     });
 
     test('Simple validator returns empty on success', () async {
-      ValidatorEvent<int> validator = (value) async {
+      Future<FieldValidateResult> validator(value) async {
         return FieldValidateResult(success: true);
-      };
-      
+      }
+
       var simpleValidator = validator.toSimple();
       var result = await simpleValidator(42);
-      
+
       expect(result, '');
     });
   });
@@ -258,7 +262,7 @@ void main() {
         success: false,
         errors: [],
       );
-      
+
       expect(result.success, false);
       expect(result.errors, []);
     });
@@ -268,9 +272,9 @@ void main() {
         'field1': {'success': true}, // No 'value' key
         'field2': {'value': 'test', 'success': true},
       };
-      
+
       var extracted = FormValidator.extractValues(form);
-      
+
       expect(extracted['field1'], isNull);
       expect(extracted['field2'], 'test');
     });
@@ -278,12 +282,16 @@ void main() {
     test('Extract string with complex nested values', () {
       var form = {
         'simple': {'value': 'text'},
-        'nested': {'value': {'inner': 'data'}},
-        'list': {'value': [1, 2, 3]},
+        'nested': {
+          'value': {'inner': 'data'}
+        },
+        'list': {
+          'value': [1, 2, 3]
+        },
       };
-      
+
       var extracted = FormValidator.extractString(form);
-      
+
       expect(extracted['simple'], 'text');
       // Nested structures are converted to string representation
       expect(extracted['nested'], contains('inner'));
