@@ -9,7 +9,7 @@ A lightweight, robust, and feature-rich web framework for Dart that makes server
 [![issues-open](https://img.shields.io/github/issues-raw/uproid/finch)](https://github.com/uproid/finch/issues) 
 [![Contributions](https://img.shields.io/github/contributors/uproid/finch)](https://github.com/uproid/finch/blob/master/CONTRIBUTING.md)
 
-📦 [**Pub Package**](https://pub.dev/packages/finch) • 📖 [**Documentation**](https://finchdart.com) • 🚀 [**Live Demo**](https://example.uproid.com)
+ [**Pub Package**](https://pub.dev/packages/finch) •  [**Documentation**](https://finchdart.com) •  [**Live Demo**](https://example.finchdart.com)
 
 **The Finch package was developed as an adaptation of the WebApp package. We made extensive improvements to [*WebApp*](https://pub.dev/packages/webapp), focusing on simplicity in coding and overall stability, and released the enhanced version under the name Finch. From now on, all future updates will be made to this package, and WebApp will soon be deprecated.**
 
@@ -25,43 +25,43 @@ Whether you're building websites, APIs, microservices, or embedded systems (such
 
 Finch comes packed with essential tools to streamline your development process. Here's a detailed breakdown of its key capabilities:
 
-### 🚀 WebSocket Support
+###  WebSocket Support
 - Real-time bidirectional communication for interactive applications.
 - Easy integration with server-side events and client connections.
 - Built-in event handling for connect, message, and disconnect scenarios.
 
-### 🗄️ Database Integration
+###  Database Integration
 - **MongoDB Support**: Seamless integration with MongoDB for flexible NoSQL storage.
 - **MySQL Integration**: Full support for relational databases with query builders and connection pooling.
 - **SQLite for Lightweight Storage**: Ideal for embedded or small-scale applications with file-based databases.
 - Unified API for database operations across all supported types.
 
-### ⚡ Fast Routing
+###  Fast Routing
 - Intuitive and flexible routing system with support for nested routes, parameters, and middleware.
 - Method-based routing (GET, POST, PUT, DELETE, etc.) with easy path matching.
 - Extra path support for API versioning and multiple endpoints.
 
-### 🌐 Internationalization (i18n)
+###  Internationalization (i18n)
 - Built-in support for multiple languages with easy translation management.
 - Dynamic language switching and locale-based content rendering.
 - Template-based translation with parameter substitution.
 
-### 🔒 Form Validation
+###  Form Validation
 - Comprehensive form validation tools with customizable rules.
 - Field-level validation for emails, passwords, numbers, dates, and more.
 - Error handling and feedback integration with templates.
 
-### 📝 HTML Tools
+###  HTML Tools
 - Rapid HTML page development with Jinja2-inspired templating.
 - Widget system for reusable components and layouts.
 - Built-in macros for common UI elements like sorting and pagination.
 
-### 📊 Database Models
+###  Database Models
 - Easy creation and management of database models with ORM-like features.
 - Support for collections, queries, and relationships.
 - Automatic parameter conversion for API responses.
 
-### 📚 OpenAPI Documentation
+###  OpenAPI Documentation
 - Automatic generation of API documentation with Swagger UI integration.
 - Real-time API specs for better developer experience.
 - Customizable documentation with route metadata.
@@ -241,7 +241,7 @@ For in-depth guides and API references:
 - [Official Documentation](https://github.com/uproid/finch/tree/master/doc)
 - [API Reference](https://pub.dev/documentation/finch/latest/)
 - [Examples Repository](https://github.com/uproid/finch/tree/master/example)
-- [Live Demo](https://example.uproid.com)
+- [Live Demo](https://example.finchdart.com)
 
 ## Docker Support
 
