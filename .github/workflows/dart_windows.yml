@@ -32,7 +32,7 @@ jobs:
       - name: Check example structure
         run: |
           $forbidden_text = "package:example"
-          $found = Select-String -Path "example/lib/*" -Pattern $forbidden_text -Recurse
+          $found = Get-ChildItem -Path "example/lib" -Filter "*.dart" -Recurse | Select-String -Pattern $forbidden_text
           if ($found) {
               Write-Host "Error: Forbidden text found in Dart files"
               exit 1
