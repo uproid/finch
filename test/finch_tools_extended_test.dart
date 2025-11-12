@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:finch/finch_model.dart';
 import 'package:test/test.dart';
 import 'package:finch/finch_tools.dart';
@@ -616,7 +618,8 @@ void main() {
 
   group('Path Utilities Extended Tests', () {
     test('pathNorm with various inputs', () {
-      expect(pathNorm('/path/to/file'), 'path/to/file');
+      expect(pathNorm('/path/to/file'),
+          Platform.isWindows ? 'path\\to\\file' : 'path/to/file');
       expect(pathNorm('\\path\\to\\file'), 'path\\to\\file');
       expect(pathNorm('/path/to/file', normSlashs: true), 'path/to/file');
       expect(pathNorm('\\path\\to\\file', normSlashs: true), 'path/to/file');
@@ -627,8 +630,8 @@ void main() {
     test('joinPaths with multiple segments', () {
       var result = joinPaths(['a', 'b', 'c']);
       expect(result, contains('a'));
-      expect(result, contains('/b'));
-      expect(result, contains('/c'));
+      expect(result, contains(Platform.isWindows ? '\\b' : '/b'));
+      expect(result, contains(Platform.isWindows ? '\\c' : '/c'));
 
       result = joinPaths(['']);
       expect(result, isEmpty);
