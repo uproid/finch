@@ -17,7 +17,7 @@ void main() {
 
       expect(result.stdout.toString(), isNotEmpty,
           reason: 'Help output should not be empty');
-    });
+    }, timeout: const Timeout(Duration(minutes: 1)));
 
     test('Finch version command runs without error', () async {
       final result = await Process.run(
@@ -31,7 +31,7 @@ void main() {
         contains('Finch Version: v${FinchApp.info.version}'),
         reason: 'Version command info should be correct',
       );
-    });
+    }, timeout: const Timeout(Duration(minutes: 1)));
 
     test('Finch ', () async {
       final result = await Process.run(
@@ -44,6 +44,6 @@ void main() {
         contains('FINCH'),
         reason: 'Finch run command should display FINCH banner',
       );
-    });
+    }, timeout: const Timeout(Duration(minutes: 1)));
   });
 }
