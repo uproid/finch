@@ -1,7 +1,7 @@
 ---
 doc_meta:
     group: "Getting Started"
-    icon: "ph-duotone ph-books"
+    icon: "ph-bold ph-books"
 ---
 # Finch Documentation
 

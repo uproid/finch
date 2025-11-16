@@ -1,7 +1,7 @@
 ---
 doc_meta:
     group: "شروع به کار"
-    icon: "ph-duotone ph-books"
+    icon: "ph-bold ph-books"
 ---
 # مستندات فینچ
 
