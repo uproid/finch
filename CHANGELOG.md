@@ -1,4 +1,8 @@
 
+## 1.0.1
+- Improved documentations (EN/FA/ZH) #12
+- Fixed addCookie, removeCookie & getLanguage #11
+
 ## 1.0.0
 - First release of Finch
 - The Finch package was developed as an adaptation of the WebApp package. We made extensive improvements to WebApp, focusing on simplicity in coding and overall stability, and released the enhanced version under the name Finch. From now on, all future updates will be made to this package, and WebApp will soon be deprecated.
