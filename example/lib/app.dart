@@ -1,6 +1,5 @@
-import 'package:example/languages/languages.dart';
+import 'languages/languages.dart';
 import 'package:finch/model.dart';
-
 import '../core/local_events.dart';
 import 'package:finch/finch_route.dart';
 import 'db/job_collection_free.dart';
