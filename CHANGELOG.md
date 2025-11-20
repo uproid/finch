@@ -1,4 +1,8 @@
 
+## 1.0.2
+- Updated documentation for localization and i18n (EN/FA/ZH) #16
+- Added new feauture for i18n with dart language source #16
+
 ## 1.0.1
 - Improved documentations (EN/FA/ZH) #12
 - Fixed addCookie, removeCookie & getLanguage #11
