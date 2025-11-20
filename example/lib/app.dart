@@ -1,3 +1,6 @@
+import 'package:example/languages/languages.dart';
+import 'package:finch/model.dart';
+
 import '../core/local_events.dart';
 import 'package:finch/finch_route.dart';
 import 'db/job_collection_free.dart';
@@ -16,6 +19,8 @@ FinchConfigs configs = FinchConfigs(
   widgetsPath: pathTo(env['WIDGETS_PATH'] ?? "./lib/widgets"),
   widgetsType: env['WIDGETS_TYPE'] ?? 'j2.html',
   languagePath: pathTo(env['LANGUAGE_PATH'] ?? "./lib/languages"),
+  languageSource: LanguageSource.dart,
+  dartLanguages: languages,
   publicDir: pathTo(env['PUBLIC_DIR'] ?? './public'),
   dbConfig: FinchDBConfig(
     enable: true, //env['ENABLE_DATABASE'] == 'true',
