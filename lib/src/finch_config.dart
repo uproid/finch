@@ -1,4 +1,5 @@
 import 'package:dotenv/dotenv.dart';
+import 'package:finch/finch_model.dart';
 import 'package:finch/src/tools/convertor/string_validator.dart';
 import 'package:finch/src/tools/path.dart';
 import 'package:finch/finch_console.dart';
@@ -60,6 +61,8 @@ class FinchConfigs {
     this.noStop = true,
     this.serverName = "webserver",
     this.pathFilemanager = '/upload/filemanager',
+    this.languageSource = LanguageSource.json,
+    this.dartLanguages = const {},
     String? publicDir,
     String? domain,
     String? domainScheme,
@@ -109,6 +112,8 @@ class FinchConfigs {
   late final String backupPath;
   late final String widgetsPath;
   late final String languagePath;
+  final LanguageSource languageSource;
+  Map<String, Map<String, String>> dartLanguages;
   final int port;
   final int portSocket;
   final int portNginx;

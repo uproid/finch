@@ -214,7 +214,11 @@ class FinchApp {
     List<String>? args, {
     bool awaitCommands = true,
   }) async {
-    appLanguages = await MultiLanguage(config.languagePath).init();
+    appLanguages = await MultiLanguage(
+      languagePath: config.languagePath,
+      source: config.languageSource,
+      dartLanguages: config.dartLanguages,
+    ).init();
     // Waiting to load database after a few secounds in live or staging
     if (!config.isLocalDebug) {
       await Future.delayed(Duration(seconds: 30));
@@ -608,8 +612,11 @@ class FinchApp {
                 var res = await CappConsole.progress<String>(
                   "Reloading language...",
                   () async {
-                    appLanguages =
-                        await MultiLanguage(config.languagePath).init();
+                    appLanguages = await MultiLanguage(
+                      languagePath: config.languagePath,
+                      source: config.languageSource,
+                      dartLanguages: config.dartLanguages,
+                    ).init();
                     return appLanguages.length.toString();
                   },
                 );
@@ -818,7 +825,11 @@ class FinchApp {
             }, path: 'get_routes');
           }),
           'update_languages': SocketEvent(onMessage: (socket, data) async {
-            appLanguages = await MultiLanguage(config.languagePath).init();
+            appLanguages = await MultiLanguage(
+              languagePath: config.languagePath,
+              source: config.languageSource,
+              dartLanguages: config.dartLanguages,
+            ).init();
             await debugger?.sendToAll(
               {'message': 'Language updated'},
               path: 'update_languages',

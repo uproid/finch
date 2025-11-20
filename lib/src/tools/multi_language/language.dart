@@ -15,9 +15,21 @@ import 'package:path/path.dart' as p;
 class MultiLanguage {
   /// The directory path where the language JSON files are stored.
   String languagePath;
+  LanguageSource source;
+  Map<String, Map<String, String>> dartLanguages = {};
 
   /// Creates an instance of [MultiLanguage] with the given [languagePath].
-  MultiLanguage(this.languagePath);
+  MultiLanguage({
+    this.languagePath = '',
+    this.source = LanguageSource.json,
+    this.dartLanguages = const {},
+  }) {
+    if (languagePath.isEmpty && source == LanguageSource.json) {
+      throw Exception(
+        'Language path must be provided when using JSON source.',
+      );
+    }
+  }
 
   /// Initializes the multi-language system by reading all JSON files from
   /// the directory and subdirectories specified in [languagePath].
@@ -26,6 +38,10 @@ class MultiLanguage {
   /// filenames (without extensions) and the values are the language
   /// key-value pairs from the JSON files.
   Future<Map<String, Map<String, String>>> init() async {
+    if (source == LanguageSource.dart) {
+      return dartLanguages;
+    }
+
     final directory = Directory(languagePath);
     Map<String, Map<String, String>> result = await _findFiles(directory, {});
     return result;
@@ -102,4 +118,9 @@ class MultiLanguage {
 
     return {};
   }
+}
+
+enum LanguageSource {
+  json,
+  dart,
 }
