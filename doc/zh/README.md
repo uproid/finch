@@ -9,7 +9,7 @@ doc_meta:
 
 ## 目录
 
-1. [Finch 安装指南](1.install_femch.md)
+1. [Finch 安装指南](1.install_finch.md)
 2. [Finch CLI](2.finch_cli.md)
 3. [Finch 配置指南](3.configuration.md)
 4. [Finch 运行指南](4.run_app.md)

@@ -9,7 +9,7 @@ Welcome to the Finch Documentation! This documentation will walk you through the
 
 ## Table of Contents
 
-1. [Finch Installation Guide](1.install_femch.md)
+1. [Finch Installation Guide](1.install_finch.md)
 2. [Finch CLI](2.finch_cli.md)
 3. [Finch Configuration Guide](3.configuration.md)
 4. [Finch Running Guide](4.run_app.md)
