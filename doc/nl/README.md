@@ -1,6 +1,6 @@
 ---
 doc_meta:
-    group: "Getting Started"
+    group: "Aan de slag"
     icon: "ph-bold ph-books"
 ---
 # Finch Documentatie
