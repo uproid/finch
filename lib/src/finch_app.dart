@@ -219,10 +219,6 @@ class FinchApp {
       source: config.languageSource,
       dartLanguages: config.dartLanguages,
     ).init();
-    // Waiting to load database after a few secounds in live or staging
-    if (!config.isLocalDebug) {
-      await Future.delayed(Duration(seconds: 30));
-    }
 
     _mongoDb = await connectMongoDb().onError((_, __) {
       throw ("Error connect to MongoDB");
@@ -1069,5 +1065,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.0.2';
+  final String version = '1.0.3';
 }

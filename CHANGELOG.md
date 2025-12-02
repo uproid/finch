@@ -1,4 +1,7 @@
 
+## 1.0.3
+- Improved runing app speed in production mode #18
+
 ## 1.0.2
 - Updated documentation for localization and i18n (EN/FA/ZH) #16
 - Added new feauture for i18n with dart language source #16

@@ -1,7 +1,7 @@
 name: finch
 description: A fast, lightweight Dart web framework for building scalable server-side apps and APIs with MongoDB, MySQL, SQLite, WebSockets,...
 
-version: 1.0.2
+version: 1.0.3
 homepage: https://finchdart.com/
 repository: https://github.com/uproid/finch.git
 issue_tracker: https://github.com/uproid/finch/issues
