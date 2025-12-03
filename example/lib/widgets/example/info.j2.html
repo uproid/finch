@@ -3,43 +3,43 @@ $t('sidebar.info') }}
 {% endblock %} 
 
 {% block content %}
-<a href="{{ $l.route('root.example.form') }}">{{ $l.route('root.example.form') }}</a>
-<div class="my-6">
-  <h3 class="text-xl font-semibold text-slate-800">
-    {{ $t('finchInfo.title') }}
-  </h3>
-  <div class="mt-4 space-y-3">
-    {% for key, value in server %}
-    <style>
-      /* local styles to animate details slide-down */
-      .animate-details .details-content {
-        max-height: 0;
-        overflow: hidden;
-        opacity: 0;
-        transform: translateY(-6px);
-        transition: max-height 320ms cubic-bezier(.2,.8,.2,1), opacity 240ms ease, transform 320ms cubic-bezier(.2,.8,.2,1);
-      }
-      .animate-details[open] .details-content {
-        /* large enough to fit content; adjust if necessary */
-        max-height: 1000px;
-        opacity: 1;
-        transform: translateY(0);
-      }
-    </style>
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center gap-3">
+    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">{{ $t('finchInfo.title') }}</h1>
+      <p class="text-sm text-gray-600">{{ $t('Server information and configuration') }}</p>
+    </div>
+  </div>
 
-    <details class="animate-details group rounded-lg border border-slate-200 bg-white shadow-sm">
-      <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 hover:bg-slate-50">
-        <b class="text-primary-700">{{ $t('finchInfo.key', {'key': key}) }}</b>
-        <i class="fas fa-chevron-down text-slate-500 transition-transform group-open:rotate-180"></i>
+  <!-- Server Info Accordions -->
+  <div class="space-y-3">
+    {% for key, value in server %}
+    <details class="animate-details group rounded-xl border border-gray-200 bg-white shadow-lg">
+      <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-6 py-4 transition-colors duration-150">
+        <div class="flex items-center gap-3">
+          <div class="h-2 w-2 rounded-full bg-blue-600"></div>
+          <b class="text-base font-semibold text-gray-800">{{ $t('finchInfo.key', {'key': key}) }}</b>
+        </div>
+        <svg class="h-5 w-5 text-gray-500 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
       </summary>
 
-      <div class="details-content px-4 pb-4 pt-0">
-        {% for info, details in value | items() %}
-        <div class="border-t border-slate-100 py-3">
-          <b class="block text-slate-800">{{ $t('finchInfo.info', {'info': info}) }}</b>
-          <p class="mt-1 pl-2 text-slate-600">{{ $t('finchInfo.details', {'details': details}) }}</p>
+      <div class="px-6 pb-5 pt-0">
+        <div class="space-y-3">
+          {% for info, details in value | items() %}
+          <div class="rounded-lg border border-gray-200 bg-gradient-to-r from-gray-50 to-white p-4">
+            <b class="block text-sm font-semibold text-gray-800">{{ $t('finchInfo.info', {'info': info}) }}</b>
+            <p class="mt-2 text-sm text-gray-700 pl-3 border-l-2 border-blue-500">{{ $t('finchInfo.details', {'details': details}) }}</p>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
       </div>
     </details>
     {% endfor %}

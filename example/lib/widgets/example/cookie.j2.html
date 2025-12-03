@@ -4,45 +4,73 @@
 {% endblock %}
 
 {% block content %}
-<div class="my-6">
-  <h3 class="text-xl font-semibold text-slate-800">{{ $t('cookies.test') }}</h3>
-  <div class="my-3 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center gap-3">
+    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"></path>
+      </svg>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">{{ $t('cookies.test') }}</h1>
+      <p class="text-sm text-gray-600">{{ $t('Cookie management example') }}</p>
+    </div>
+  </div>
+  <!-- Cookies Table Card -->
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-slate-200">
-        <thead class="bg-slate-50">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gradient-to-r from-gray-50 to-white">
           <tr>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('cookies.key') }}</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('cookies.value') }}</th>
-            <th class="px-4 py-2 text-center text-sm font-semibold text-slate-700">{{ $t('cookies.action') }}</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('cookies.key') }}</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('cookies.value') }}</th>
+            <th class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('cookies.action') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-200">
+        <tbody class="divide-y divide-gray-100 bg-white">
           {% for cookie in session.cookies %}
-          <tr class="odd:bg-white even:bg-slate-50">
-            <td class="px-4 py-2 align-top text-sm text-slate-800">{{ cookie.name }}</td>
-            <td class="px-4 py-2 align-top text-sm text-slate-600">{{ cookie.value }}</td>
-            <td class="px-4 py-2 text-center">
+          <tr class="group transition-colors duration-150 hover:bg-blue-50">
+            <td class="px-6 py-4 align-top">
+              <div class="flex items-center gap-2">
+                <div class="h-2 w-2 rounded-full bg-amber-600"></div>
+                <span class="font-semibold text-gray-800">{{ cookie.name }}</span>
+              </div>
+            </td>
+            <td class="px-6 py-4 align-top">
+              <code class="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700">{{ cookie.value }}</code>
+            </td>
+            <td class="px-6 py-4 text-center">
               <form method="post" class="inline">
                 <input type="hidden" name="name" value="{{ cookie.name }}" />
                 <input type="hidden" name="action" value="delete" />
-                <button type="submit" class="wave inline-flex h-8 w-8 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 hover:text-rose-600 focus:outline-none focus:ring-2 focus:ring-rose-500/30" aria-label="{{ $t('cookies.remove') }}">🗑️</button>
+                <button type="submit" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-all duration-150 hover:bg-rose-50 hover:border-rose-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-rose-500/30" aria-label="{{ $t('cookies.remove') }}">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </button>
               </form>
             </td>
           </tr>
           {% endfor %}
         </tbody>
-        <tfoot class="bg-slate-50">
+        <tfoot class="border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
           <tr>
-            <td colspan="3" class="px-4 py-3">
-              <form method="post" class="flex flex-col gap-2 sm:flex-row sm:items-center">
-                <input placeholder="{{ $t('cookies.placeholder.name') }}" class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 sm:max-w-xs" type="text" name="name" value="" />
-                <div class="flex w-full flex-1 flex-col gap-2 sm:flex-row sm:items-center">
-                  <input type="text" name="value" class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" placeholder="{{ $t('cookies.placeholder.value') }}">
-                  <label class="inline-flex h-10 items-center gap-2 rounded-md border border-slate-300 bg-white px-3 text-sm text-slate-700">
-                    <input class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" name="safe" type="checkbox" value="1">
+            <td colspan="3" class="px-6 py-5">
+              <form method="post" class="flex flex-col gap-3 lg:flex-row lg:items-center">
+                <input placeholder="{{ $t('cookies.placeholder.name') }}" class="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 lg:max-w-xs" type="text" name="name" value="" />
+                <div class="flex w-full flex-1 flex-col gap-3 lg:flex-row lg:items-center">
+                  <input type="text" name="value" class="h-11 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20" placeholder="{{ $t('cookies.placeholder.value') }}">
+                  <label class="inline-flex h-11 items-center gap-3 rounded-lg border border-gray-300 bg-white px-4 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-50">
+                    <input class="h-5 w-5 rounded border-gray-300 text-blue-600 transition-all duration-200 focus:ring-4 focus:ring-blue-500/20" name="safe" type="checkbox" value="1">
                     <span>{{ $t('cookies.safe') }}</span>
                   </label>
-                  <button class="wave inline-flex h-10 items-center rounded-md border border-primary-600 px-3 text-sm font-medium text-primary-700 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30" type="submit">{{ $t('cookies.add') }}</button>
+                  <button class="wave group inline-flex h-11 shrink-0 items-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/30" type="submit">
+                    <svg class="h-5 w-5 transition-transform duration-200 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    <span>{{ $t('cookies.add') }}</span>
+                  </button>
                 </div>
                 <input type="hidden" name="action" value="add" />
               </form>

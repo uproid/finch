@@ -4,20 +4,31 @@
 {% endblock %}
 
 {% block content %}
-<div class="mt-8 space-y-6">
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-    <h3 class="text-lg font-semibold text-slate-800">{{ $t('i18n.title') }}</h3>
-    <details class="relative" dir="ltr">
-      <summary class="list-none inline-flex cursor-pointer select-none items-center gap-2 rounded-md border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">
-        <span class="font-mono text-[11px]">{{ $e.ln | upper }}</span>
-        <svg class="h-3 w-3 text-slate-500" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<div class="space-y-6">
+  <!-- Page Header with Language Selector -->
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3">
+      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-2xl font-bold text-gray-800">{{ $t('i18n.title') }}</h1>
+        <p class="text-sm text-gray-600">{{ $t('Localization and internationalization') }}</p>
+      </div>
+    </div>
+    <details class="group relative">
+      <summary class="list-none inline-flex cursor-pointer select-none items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500/20">
+        <span class="font-mono text-xs uppercase">{{ $e.ln }}</span>
+        <svg class="h-4 w-4 text-gray-500 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </summary>
-      <ul class="absolute right-0 z-20 mt-2 w-56 max-h-72 overflow-y-auto rounded-md border border-slate-200 bg-white p-1 text-xs shadow-lg">
+      <ul class="absolute end-0 z-20 mt-2 w-64 max-h-80 overflow-y-auto rounded-lg border border-gray-200 bg-white p-1.5 shadow-xl">
         {% for key, language in languages %}
         <li>
-          <a href="{{ $e.urlToLanguage(key) }}" class="wave flex items-center gap-2 rounded px-2 py-1.5 transition-colors {{ 'bg-primary-600 text-white' if $e.ln == key else 'text-slate-700 hover:bg-slate-100' }}">
-            <b class="text-base leading-none">{{ language.flag }}</b>
-            <span class="truncate">{{ language.name }}</span>
+          <a href="{{ $e.urlToLanguage(key) }}" class="wave flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-150 {{ 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md' if $e.ln == key else 'text-gray-700 hover:bg-blue-50' }}">
+            <b class="text-xl leading-none">{{ language.flag }}</b>
+            <span class="font-medium truncate">{{ language.name }}</span>
           </a>
         </li>
         {% endfor %}
@@ -25,42 +36,86 @@
     </details>
   </div>
 
-  <div class="space-y-3">
-    <div class="rounded-md border-l-4 border-emerald-500 bg-emerald-50 px-4 py-2 text-[13px] text-emerald-700">
-      {{ $t('i18n.exampleTString') }}
-    </div>
-    <div class="rounded-md border-l-4 border-emerald-500 bg-emerald-50 px-4 py-2 text-[13px] text-emerald-700">
-      {{ $t('i18n.examplePath') }}
-    </div>
-    <div class="rounded-md border-l-4 border-emerald-500 bg-emerald-50 px-4 py-2 text-[13px] text-emerald-700">
-      {{ $t('i18n.examplePathString') }}
-    </div>
-    <div class="rounded-md border-l-4 border-emerald-500 bg-emerald-50 px-4 py-2 text-[13px] text-emerald-700">
-      {{ $t('example.params') }}
-    </div>
-    <div class="rounded-md border-l-4 border-emerald-500 bg-emerald-50 px-4 py-2 text-[13px] text-emerald-700">
-      {{ $t('i18n.exampleParams', {'name': 'Jack', 'age': 20}) }}
-    </div>
-    <div class="rounded-md border-l-4 border-emerald-500 bg-emerald-50 px-4 py-2 text-[13px] text-emerald-700">
-      {{ $t(exampleTranslateDynamic) }}
+  <!-- Translation Examples Card -->
+  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
+    <div class="space-y-3">
+      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
+        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="text-sm font-medium text-emerald-800">{{ $t('i18n.exampleTString') }}</span>
+      </div>
+      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
+        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="text-sm font-medium text-emerald-800">{{ $t('i18n.examplePath') }}</span>
+      </div>
+      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
+        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="text-sm font-medium text-emerald-800">{{ $t('i18n.examplePathString') }}</span>
+      </div>
+      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
+        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="text-sm font-medium text-emerald-800">{{ $t('example.params') }}</span>
+      </div>
+      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
+        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="text-sm font-medium text-emerald-800">{{ $t('i18n.exampleParams', {'name': 'Jack', 'age': 20}) }}</span>
+      </div>
+      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
+        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="text-sm font-medium text-emerald-800">{{ $t(exampleTranslateDynamic) }}</span>
+      </div>
     </div>
   </div>
 
-  <div class="rounded-md border border-slate-200 bg-white shadow-sm">
-    <ul class="divide-y divide-slate-200 text-sm">
-      <li class="px-4 py-3 flex flex-col gap-1 sm:flex-row sm:items-center">
-        <b class="w-40 shrink-0 text-slate-600">{{ $t('i18n.view') }}</b>
-        <i class="text-[13px] text-primary-600">example/lib/widgets/example/i18n.j2.html</i>
-      </li>
-      <li class="px-4 py-3 flex flex-col gap-1 sm:flex-row sm:items-center">
-        <b class="w-40 shrink-0 text-slate-600">{{ $t('i18n.controller') }}</b>
-        <i class="text-[13px] text-primary-600">example/lib/controllers/home_controller.dart</i>
-      </li>
-      <li class="px-4 py-3 flex flex-col gap-1 sm:flex-row sm:items-center">
-        <b class="w-40 shrink-0 text-slate-600">{{ $t('i18n.languagesDirectory') }}</b>
-        <i class="text-[13px] text-primary-600">example/lib/languages</i>
-      </li>
-    </ul>
+  <!-- File References Card -->
+  <div class="rounded-xl border border-gray-200 bg-white shadow-lg">
+    <div class="divide-y divide-gray-100">
+      <div class="flex items-center gap-4 px-6 py-4 transition-colors duration-150 hover:bg-blue-50">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-gray-700">{{ $t('i18n.view') }}</p>
+          <code class="text-xs text-blue-600 truncate block">example/lib/widgets/example/i18n.j2.html</code>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 px-6 py-4 transition-colors duration-150 hover:bg-blue-50">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-gray-700">{{ $t('i18n.controller') }}</p>
+          <code class="text-xs text-purple-600 truncate block">example/lib/controllers/home_controller.dart</code>
+        </div>
+      </div>
+      <div class="flex items-center gap-4 px-6 py-4 transition-colors duration-150 hover:bg-blue-50">
+        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
+          </svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-gray-700">{{ $t('i18n.languagesDirectory') }}</p>
+          <code class="text-xs text-amber-600 truncate block">example/lib/languages</code>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 ---
 doc_meta:
     group: "شروع به کار"
-    icon: "ph-duotone ph-books"
+    icon: "ph-bold ph-books"
 ---
 # مستندات فینچ
 
@@ -9,7 +9,7 @@ doc_meta:
 
 ## فهرست مطالب
 
-1. [راهنمای نصب فینچ](1.install_femch.md)
+1. [راهنمای نصب فینچ](1.install_finch.md)
 2. [دستورات CLI فینچ](2.finch_cli.md)
 3. [راهنمای پیکربندی فینچ](3.configuration.md)
 4. [راهنمای اجرای برنامه](4.run_app.md)
