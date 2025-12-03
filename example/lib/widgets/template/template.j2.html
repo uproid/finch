@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ $e.ln }}" dir="{{ $t('dir') }}">
+<html lang="{{ $e.ln }}" dir="{{ $t('dir') }}" class="h-full">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}{% endblock %} | {{ $t(title) }}</title>
+  <meta name="robots" content="noindex, nofollow">
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="/assets/effects/wave/wave.css" />
@@ -17,31 +18,42 @@
   {% endblock %}
 </head>
 
-<body>
+<body class="h-full bg-gray-50 font-sans antialiased">
   {% block navbar %}
   {% include 'template/navbar.j2.html' %}
   {% endblock %}
 
-  <div class="wrapper no-transition min-h-screen w-full bg-gray-50 transition-[padding] duration-300 ease-in-out">
+  <div class="flex min-h-screen w-full bg-gradient-to-br from-gray-50 to-blue-50/30">
     {% block sidebar %}
     {% include 'template/sidebar.j2.html' %}
     {% endblock %}
     <!-- Main Component -->
-    <div class="main flex-1 ">
-      <main class="content px-3 py-4 lg:px-6">
+    <div class="main flex-1 flex flex-col lg:ms-[280px]">
+      <main class="content flex-1 px-4 py-6 mt-16 lg:px-8 lg:py-8">
         <div class="mx-auto w-full max-w-7xl">
           {% block flash %}
           {% if $l.hasFlash() %}
           {% for flash in $l.getFlashs() %}
           <div
-            class="mb-4 rounded-md border p-4 text-sm
-            {% if flash.type == 'success' %} bg-emerald-50 border-emerald-200 text-emerald-800 {% endif %}
-            {% if flash.type == 'info' %} bg-primary-50 border-primary-200 text-primary-800 {% endif %}
-            {% if flash.type == 'warning' %} bg-amber-50 border-amber-200 text-amber-900 {% endif %}
-            {% if flash.type == 'danger' ?? flash.type == 'error' %} bg-rose-50 border-rose-200 text-rose-800 {% endif %}
-            {% if flash.type != 'success' and flash.type != 'info' and flash.type != 'warning' and flash.type != 'danger' and flash.type != 'error' %} bg-slate-50 border-slate-200 text-slate-800 {% endif %}
+            class="mb-6 flex items-start gap-3 rounded-lg border p-4 text-sm shadow-sm animate-in fade-in slide-in-from-top-2 duration-300
+            {% if flash.type == 'success' %} bg-emerald-50 border-emerald-300 text-emerald-900 {% endif %}
+            {% if flash.type == 'info' %} bg-blue-50 border-blue-300 text-blue-900 {% endif %}
+            {% if flash.type == 'warning' %} bg-amber-50 border-amber-300 text-amber-900 {% endif %}
+            {% if flash.type == 'danger' ?? flash.type == 'error' %} bg-rose-50 border-rose-300 text-rose-900 {% endif %}
+            {% if flash.type != 'success' and flash.type != 'info' and flash.type != 'warning' and flash.type != 'danger' and flash.type != 'error' %} bg-slate-50 border-slate-300 text-slate-900 {% endif %}
             ">
-            {{ flash.text }}
+            <span class="shrink-0">
+              {% if flash.type == 'success' %}
+              <svg class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              {% elif flash.type == 'info' %}
+              <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              {% elif flash.type == 'warning' %}
+              <svg class="h-5 w-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              {% else %}
+              <svg class="h-5 w-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              {% endif %}
+            </span>
+            <span class="flex-1">{{ flash.text }}</span>
           </div>
           {% endfor %}
           {% endif %}
@@ -67,47 +79,37 @@
       var htmlDir = document.documentElement.getAttribute('dir') || 'ltr';
       var isRTL = htmlDir === 'rtl';
       var lgQuery = window.matchMedia('(min-width: 1024px)');
+      var closedClass = isRTL ? 'translate-x-full' : '-translate-x-full';
 
       function setSidebarOpen(open) {
         var large = lgQuery.matches;
-        var closedClass = isRTL ? 'translate-x-full' : '-translate-x-full';
         if (open) {
           sidebar.classList.remove(closedClass);
           sidebar.dataset.state = 'open';
           sidebar.setAttribute('aria-hidden', 'false');
           toggle.setAttribute('aria-expanded', 'true');
-          document.body.classList.add('sidebar-open');
           if (!large && backdrop) backdrop.classList.remove('hidden');
         } else {
           if (!sidebar.classList.contains(closedClass)) sidebar.classList.add(closedClass);
           sidebar.dataset.state = 'closed';
           sidebar.setAttribute('aria-hidden', 'true');
           toggle.setAttribute('aria-expanded', 'false');
-          document.body.classList.remove('sidebar-open');
           if (backdrop) backdrop.classList.add('hidden');
         }
       }
+
+      // Initialize sidebar state based on screen size
+      var prefersOpen = lgQuery.matches; // lg and up
+      setSidebarOpen(prefersOpen);
 
       toggle.addEventListener('click', function () {
         var isClosed = sidebar.dataset.state !== 'open';
         setSidebarOpen(isClosed);
       });
 
-  var prefersOpen = lgQuery.matches; // lg and up
-  setSidebarOpen(prefersOpen);
-  // Remove initial no-transition class after first paint to avoid opening animation on load
-  requestAnimationFrame(function(){ sidebar.classList.remove('no-transition'); });
-
-  if (backdrop) {
+      if (backdrop) {
         backdrop.addEventListener('click', function(){ setSidebarOpen(false); });
       }
-
-      // Remove initial transition suppression after first frame (sidebar + content wrapper)
-      requestAnimationFrame(function(){
-        sidebar.classList.remove('no-transition');
-        var wrapper = document.querySelector('.wrapper');
-        if (wrapper) wrapper.classList.remove('no-transition');
-      });
 
       lgQuery.addEventListener('change', function(e){
         if (e.matches) {
@@ -120,17 +122,10 @@
     });
   </script>
 
-  <style>
-    .no-transition { transition: none !important; }
-    /* Push content only on large screens */
-    @media (min-width: 1024px) {
-      html[dir='ltr'] body.sidebar-open .wrapper { padding-left: 260px; }
-      html[dir='rtl'] body.sidebar-open .wrapper { padding-right: 260px; }
-    }
-  </style>
+  
 
   {% block script %}{% endblock %}
-  <div id="sidebar-backdrop" class="fixed top-[56px] bottom-0 left-0 right-0 z-30 hidden bg-black/30 backdrop-blur-sm"></div>
+  <div id="sidebar-backdrop" class="fixed top-0 bottom-0 left-0 right-0 z-30 hidden bg-black/40 backdrop-blur-sm transition-opacity duration-300"></div>
 </body>
 
 </html>

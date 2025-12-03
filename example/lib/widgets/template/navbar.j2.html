@@ -1,24 +1,24 @@
 <nav
   id="navbar"
-  class="sticky top-0 z-50 backdrop-blur border-b transition-all duration-300"
+  class="fixed w-full top-0 z-50 border-b border-gray-200/80 bg-white/80 backdrop-blur-md shadow-sm transition-all duration-300"
 >
   <div class="mx-auto w-full">
-    <div class="flex w-full items-center justify-between gap-4 py-2 px-[12px]">
-      <div class="flex items-center gap-3">
+    <div class="flex w-full items-center justify-between gap-4 py-3 px-4 lg:px-6">
+      <div class="flex items-center gap-2">
         <button
-          class="wave button-sidebar hover:text-primary-900 inline-flex h-10 w-10 items-center justify-center rounded-md text-primary-800 hover:bg-primary-100 focus:outline-none focus:ring-2 focus:ring-primary-400"
+          class="wave button-sidebar lg:hidden group inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-600 transition-all duration-200 hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30"
           type="button"
           aria-label="{{ $t('navbar.toggleSidebar') }}"
           aria-controls="sidebar"
-          aria-expanded="true"
+          aria-expanded="false"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             fill="currentColor"
             viewBox="0 0 16 16"
-            class="shrink-0"
+            class="shrink-0 transition-transform duration-200 group-hover:scale-110"
           >
             <path
               fill-rule="evenodd"
@@ -27,39 +27,36 @@
           </svg>
         </button>
         <a
-          class="wave inline-flex items-center gap-2 rounded-md px-2 py-1.5 text-primary-800"
+          class="wave group inline-flex items-center gap-3 rounded-lg px-1 transition-all duration-200 hover:bg-blue-50"
           href="{{ $e.routeUrl('root.home') }}"
         >
           <img
             src="{{ $e.url('logo.svg') }}"
             alt="{{ $t('logo.title') }}"
-            class="h-8 w-8 shrink-0"
+            class="h-10 w-10 shrink-0"
           />
-          <span
-            class="text-lg font-semibold text-primary-800 hover:text-primary-900"
-            >{{ $t('logo.title') }}</span
-          >
-          <span class="text-xs text-primary-300 hover:text-primary-900"
-            >{{ version }}</span
-          >
+          <div class="hidden items-baseline gap-2 sm:flex">
+            <span class="text-lg font-bold text-gray-800 transition-colors duration-200 group-hover:text-blue-600">{{ $t('logo.title') }}</span>
+            <span class="text-xs font-medium text-gray-400">{{ version }}</span>
+          </div>
         </a>
       </div>
 
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-3">
         <a
           href="https://github.com/uproid/finch"
-          class="wave inline-flex h-10 items-center rounded-md px-3 text-primary-800 hover:bg-primary-100 hover:text-primary-900"
+          class="wave group inline-flex h-10 w-10 items-center justify-center rounded-lg text-gray-600 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400/30"
           aria-label="GitHub"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="22"
-            height="22"
+            width="20"
+            height="20"
             viewBox="0 0 512 499.36"
             role="img"
-            class="shrink-0"
+            class="shrink-0 transition-transform duration-200 group-hover:scale-110"
           >
-            <title>GitHub</title>
+            <title>{{ $t('GitHub') }}</title>
             <path
               fill="currentColor"
               fill-rule="evenodd"
@@ -69,22 +66,27 @@
         </a>
 
         {% if user %}
-        <details class="relative">
+        <details class="group relative">
           <summary
-            class="list-none inline-flex h-10 gap-2 px-3 cursor-pointer items-center rounded-md text-primary-800 hover:bg-primary-100 hover:text-primary-900"
+            class="list-none inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400/30"
           >
-            <i class="fas fa-user shrink-0"></i>
+            <div class="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-sm">
+              <i class="fas fa-user text-xs"></i>
+            </div>
             <span class="hidden md:block">{{ user.name }}</span>
+            <svg class="h-4 w-4 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
           </summary>
           <ul
-            class="absolute right-0 mt-2 w-48 overflow-y-auto rounded-md border border-outline/30 bg-surface py-1 text-on-surface shadow-lg ring-1 ring-black/5"
+            class="absolute end-0 mt-2 w-56 origin-top-end scale-95 opacity-0 overflow-hidden rounded-lg border border-gray-200 bg-white py-2 shadow-xl ring-1 ring-black/5 transition-all duration-200 group-open:scale-100 group-open:opacity-100"
           >
             <li>
               <a
-                class="wave flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-red-50 text-red-600"
+                class="wave flex items-center gap-3 px-4 py-2.5 text-sm font-medium text-rose-600 transition-colors duration-150 hover:bg-rose-50"
                 href="{{ $e.routeUrl('root.logout') }}"
               >
-                <i class="fas fa-sign-out-alt shrink-0"></i>
+                <i class="fas fa-sign-out-alt w-4 shrink-0"></i>
                 <span>{{ $t('auth.logout') }}</span>
               </a>
             </li>
@@ -93,28 +95,35 @@
         {% endif %}
 
         <details
-          class="relative"
-          dir="{{ $t('dir') == 'rtl' ? 'ltr' : 'rtl' }}"
+          class="group relative"
         >
           <summary
-            class="list-none inline-flex h-10 cursor-pointer items-center rounded-md px-3 text-primary-800 hover:bg-primary-100 hover:text-primary-900"
+            class="list-none inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-medium text-gray-700 transition-all duration-200 hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-400/30"
           >
-            {{ $e.ln | upper }}
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
+            </svg>
+            <span class="hidden sm:block">{{ $e.ln | upper }}</span>
+            <svg class="h-4 w-4 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
           </summary>
           <ul
-            dir="ltr"
-            class="absolute mt-2 w-48 overflow-y-auto rounded-md border border-outline/30 bg-gray-50 py-1 text-on-surface shadow-lg ring-1 ring-black/5 max-h-72"
+            class="absolute end-0 mt-2 w-48 max-h-80 origin-top-end scale-95 opacity-0 overflow-y-auto rounded-lg border border-gray-200 bg-white py-2 shadow-xl ring-1 ring-black/5 transition-all duration-200 group-open:scale-100 group-open:opacity-100"
           >
             {% for key, language in languages %}
             <li>
               <a
-                class="wave flex items-center gap-2 px-3 py-2 text-sm rounded-md hover:bg-primary-50 {{ 'bg-primary-50 font-medium text-primary-700' if $e.ln == key }}"
+                class="wave flex items-center gap-3 px-4 py-2.5 text-sm transition-colors duration-150 hover:bg-blue-50 {{ 'bg-blue-50 font-semibold text-blue-700' if $e.ln == key else 'text-gray-700' }}"
                 href="{{ $e.urlToLanguage(key) }}"
               >
-                <b class="inline-flex w-5 items-center justify-center"
-                  >{{ language.flag }}</b
-                >
+                <span class="inline-flex w-6 items-center justify-center text-base">{{ language.flag }}</span>
                 <span>{{ language.name }}</span>
+                {% if $e.ln == key %}
+                <svg class="ml-auto h-4 w-4 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                {% endif %}
               </a>
             </li>
             {% endfor %}

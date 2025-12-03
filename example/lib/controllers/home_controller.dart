@@ -669,23 +669,24 @@ class HomeController extends Controller {
 
         addFlash(
           res.success
-              ? 'Category added successfully'
-              : 'Error adding category: ${res.errorMsg}',
+              ? 'Category added successfully'.tr.write()
+              : 'Error adding category:'.tr.write() + res.errorMsg,
           type: res.success ? FlashType.SUCCESS : FlashType.ERROR,
         );
       } else {
-        addFlash('Category title is required', type: FlashType.ERROR);
+        addFlash('Category title is required'.tr.write(),
+            type: FlashType.ERROR);
       }
       return rq.redirect(FinchRoute.getPath('root.mysql'));
     } else if (action == 'delete_category') {
       final id = rq.get<String>('id', def: '');
       await tableCategories.deleteCategory(id);
-      addFlash('Category deleted successfully');
+      addFlash('Category deleted successfully'.tr.write());
     } else if (action == 'delete') {
       final id = rq.get<String>('id', def: '');
       await tableBooks.deleteBook(id);
 
-      addFlash('Book deleted successfully', type: FlashType.ERROR);
+      addFlash('Book deleted successfully'.tr.write(), type: FlashType.ERROR);
     } else if (action == 'delete_all') {
       var ids = rq.get<String>('selected_books', def: '').split(',');
       await tableBooks.deleteAllBooks(ids);
@@ -718,7 +719,9 @@ class HomeController extends Controller {
 
         if (res != null) {
           addFlash(
-            res.success ? 'Book saved successfully' : 'Error saving book',
+            res.success
+                ? 'Book saved successfully'.tr.write()
+                : 'Error saving book'.tr.write(),
             type: res.success ? FlashType.SUCCESS : FlashType.ERROR,
           );
           return rq.redirect(FinchRoute.getPath('root.mysql'));
@@ -809,12 +812,13 @@ class HomeController extends Controller {
 
         addFlash(
           res.success
-              ? 'Category added successfully'
-              : 'Error adding category: ${res.errorMsg}',
+              ? 'Category added successfully'.tr.write()
+              : 'Error adding category:'.tr.write() + res.errorMsg,
           type: res.success ? FlashType.SUCCESS : FlashType.ERROR,
         );
       } else {
-        addFlash('Category title is required', type: FlashType.ERROR);
+        addFlash('Category title is required'.tr.write(),
+            type: FlashType.ERROR);
       }
       return rq.redirect(FinchRoute.getPath('root.sqlite'));
     } else if (action == 'delete_category') {
@@ -825,7 +829,7 @@ class HomeController extends Controller {
       final id = rq.get<String>('id', def: '');
       await tableBooks.deleteBook(id);
 
-      addFlash('Book deleted successfully', type: FlashType.ERROR);
+      addFlash('Book deleted successfully'.tr.write(), type: FlashType.ERROR);
     } else if (action == 'delete_all') {
       var ids = rq.get<String>('selected_books', def: '').split(',');
       await tableBooks.deleteAllBooks(ids);
@@ -858,7 +862,9 @@ class HomeController extends Controller {
 
         if (res != null) {
           addFlash(
-            res.success ? 'Book saved successfully' : 'Error saving book',
+            res.success
+                ? 'Book saved successfully'.tr.write()
+                : 'Error saving book'.tr.write(),
             type: res.success ? FlashType.SUCCESS : FlashType.ERROR,
           );
           return rq.redirect(FinchRoute.getPath('root.sqlite'));
