@@ -4,62 +4,91 @@
 {% endblock %}
 
 {% block content %}
-<div class="my-6 space-y-6">
-  <h3 class="text-xl font-semibold text-slate-800">{{ $t('person.example.title') }}</h3>
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center gap-3">
+    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-lg">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+      </svg>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">{{ $t('person.example.title') }}</h1>
+      <p class="text-sm text-gray-600">{{ $t('Free model database example') }}</p>
+    </div>
+  </div>
 
   {% if data._id == null %}
-  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+  <!-- Person List Table Card -->
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
     <div class="overflow-x-auto">
-      <table class="min-w-full text-xs md:text-sm divide-y divide-slate-200">
-        <thead class="bg-slate-50">
-          <tr class="text-left font-semibold text-slate-700">
-            <th class="px-3 py-2">{{ $t('person.table.header.name') }}</th>
-            <th class="px-3 py-2">{{ $t('person.table.header.age') }}</th>
-            <th class="px-3 py-2">{{ $t('person.table.header.married') }}</th>
-            <th class="px-3 py-2">{{ $t('person.table.header.email') }}</th>
-            <th class="px-3 py-2">{{ $t('person.table.header.height') }}</th>
-            <th class="px-3 py-2">{{ $t('person.table.header.birthday') }}</th>
-            <th class="px-3 py-2">{{ $t('person.table.header.job') }}</th>
-            <th class="px-3 py-2">{{ $t('person.table.header.skills') }}</th>
-            <th class="px-3 py-2 text-end">{{ $t('person.table.header.action') }}</th>
+      <table class="min-w-full text-xs md:text-sm divide-y divide-gray-200">
+        <thead class="bg-gradient-to-r from-gray-50 to-white">
+          <tr class="text-left">
+            <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.name') }}</th>
+            <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.age') }}</th>
+            <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.married') }}</th>
+            <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.email') }}</th>
+            <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.height') }}</th>
+            <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.birthday') }}</th>
+            <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.job') }}</th>
+            <th class="px-4 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.skills') }}</th>
+            <th class="px-4 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('person.table.header.action') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-gray-100 bg-white">
           {% for person in allPerson %}
-          <tr class="hover:bg-slate-50">
-            <td class="px-3 py-2 font-medium text-slate-800">
-              <span style="background-color: {{ person.color }};" class="mr-2 inline-block h-3 w-3 rounded-full align-middle"></span>
-              {{ person.name }}
+          <tr class="group transition-colors duration-150 hover:bg-blue-50">
+            <td class="px-4 py-3 font-semibold text-gray-800">
+              <div class="flex items-center gap-2">
+                <span style="background-color: {{ person.color }};" class="inline-block h-3 w-3 rounded-full shadow-sm"></span>
+                <span>{{ person.name }}</span>
+              </div>
             </td>
-            <td class="px-3 py-2 text-slate-600">{{ person.age }}</td>
-            <td class="px-3 py-2 text-slate-600">{{ person.married }}</td>
-            <td class="px-3 py-2 text-slate-600">{{ person.email }}</td>
-            <td class="px-3 py-2 text-slate-600">{{ person.height }}</td>
-            <td class="px-3 py-2 text-slate-600">{{ person.birthday | dateFormat('dd/MM/yyyy, HH:mm') }}</td>
-            <td class="px-3 py-2 text-slate-600">{{ person.job.title | default('Unknown') }}</td>
-            <td class="px-3 py-2 text-slate-600">{{ person.jobs|length }}</td>
-            <td class="px-3 py-2 text-right">
-              <div class="flex items-center justify-end gap-2">
-                <form onsubmit="return confirm('Are you sure to delete `{{ person.name }}`?')" action="/example/person/delete/{{ person._id }}" method="POST">
+            <td class="px-4 py-3 text-gray-700">{{ person.age }}</td>
+            <td class="px-4 py-3 text-gray-700">{{ person.married }}</td>
+            <td class="px-4 py-3 text-gray-700">{{ person.email }}</td>
+            <td class="px-4 py-3 text-gray-700">{{ person.height }}</td>
+            <td class="px-4 py-3 text-gray-700">{{ person.birthday | dateFormat('dd/MM/yyyy, HH:mm') }}</td>
+            <td class="px-4 py-3 text-gray-700">{{ person.job.title | default('Unknown') }}</td>
+            <td class="px-4 py-3 text-gray-700">{{ person.jobs|length }}</td>
+            <td class="px-4 py-3">
+              <div class="flex items-center justify-center gap-2">
+                <form onsubmit="return confirm('{{ $t('Are you sure to delete') }} `{{ person.name }}`?')" action="/example/person/delete/{{ person._id }}" method="POST">
                   <input type="hidden" name="action" value="DELETE" />
-                  <button type="submit" class="wave inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 text-[11px] text-rose-600 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/30" title="Delete">
-                    🗑️
+                  <button type="submit" class="wave inline-flex h-8 w-8 items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-all duration-150 hover:bg-rose-50 hover:border-rose-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-rose-500/30" title="{{ $t('Delete') }}">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
                   </button>
                 </form>
-                <a href="/example/person/{{ person._id }}" class="wave inline-flex h-7 w-7 items-center justify-center rounded-full border border-slate-200 text-[11px] text-primary-600 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30" title="Edit">✏️</a>
+                <a href="/example/person/{{ person._id }}" class="wave inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200 text-blue-600 transition-all duration-150 hover:bg-blue-50 hover:border-blue-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/30" title="{{ $t('Edit') }}">
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </a>
               </div>
             </td>
           </tr>
           {% endfor %}
           {% if not allPerson ?? allPerson|length == 0 %}
           <tr>
-            <td colspan="100%" class="px-3 py-8 text-center text-slate-500">{{ $t('person.table.empty') }}</td>
+            <td colspan="100%" class="px-4 py-12 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <div class="flex h-16 w-16 items-center justify-center rounded-xl bg-gray-100">
+                  <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
+                  </svg>
+                </div>
+                <p class="text-sm text-gray-500">{{ $t('person.table.empty') }}</p>
+              </div>
+            </td>
           </tr>
           {% endif %}
         </tbody>
-        <tfoot class="bg-slate-50">
+        <tfoot class="border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white">
           <tr>
-            <td colspan="100%" class="px-3 py-3 text-sm text-slate-600">
+            <td colspan="100%" class="px-4 py-4 text-sm text-gray-700">
               {{ paging }}
             </td>
           </tr>
@@ -69,10 +98,9 @@
   </div>
   {% endif %}
 
-  <div class="rounded-lg border border-slate-200 bg-white shadow-sm">
-    <div class="p-5">
-      {% include $e.widgetPath('example/forms/form_person') %}
-    </div>
+  <!-- Person Form Card -->
+  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
+    {% include $e.widgetPath('example/forms/form_person') %}
   </div>
 </div>
 {% endblock %}

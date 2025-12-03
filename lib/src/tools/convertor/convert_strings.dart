@@ -51,7 +51,7 @@ extension ConvertString on String {
   /// This method converts the string to bytes and then encodes those bytes to Base64.
   /// Returns a [String] representing the Base64 encoded version of the original string.
   String toBase64() {
-    return base64.encode(codeUnits);
+    return base64.encode(utf8.encode(this));
   }
 
   /// Encodes the string to Base32 format.

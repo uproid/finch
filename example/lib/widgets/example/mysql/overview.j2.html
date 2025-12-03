@@ -2,24 +2,45 @@
 {% block title %} {{ $t('mysql.example.title') }} {% endblock %}
 
 {% block content %}
-<div class="my-6 space-y-6">
-  <h3 class="text-xl font-semibold text-slate-800">{{ $t('mysql.example.title') }}</h3>
-  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center gap-3">
+    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+      </svg>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">{{ $t('mysql.example.title') }}</h1>
+      <p class="text-sm text-gray-600">{{ $t('MySQL database operations with advanced features') }}</p>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
     <div class="overflow-x-auto">
-      <table class="min-w-full text-xs md:text-sm divide-y divide-slate-200">
-        <thead class="bg-slate-50">
+      <table class="min-w-full divide-y divide-gray-200 text-xs md:text-sm">
+        <thead class="bg-gradient-to-r from-gray-50 to-white">
           <tr>
-            <th colspan="6" class="px-3 py-2">
+            <th colspan="6" class="px-4 py-3">
               {% set pageSize = data.pageSize | default("10") %}
               {% set randonString = $e.randomString() %}
-              <div class="flex flex-wrap items-center justify-end gap-2">
-                <button type="button" class="wave inline-flex h-8 items-center rounded-md border border-rose-600 bg-rose-50 px-3 text-[11px] font-medium text-rose-700 hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-500/30" onclick="deleteSelectedBooks_{{randonString}}()">{{ $t('mysql.button.deleteSelected') }}</button>
-                <select name="pageSize" class="h-8 rounded-md border border-slate-300 bg-white px-2 text-[11px] shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" onchange="changePageSize_{{randonString}}(this.value)">
-                  <option {{ 'selected' if pageSize == '10' else '' }}>10</option>
-                  <option {{ 'selected' if pageSize == '20' else '' }}>20</option>
-                  <option {{ 'selected' if pageSize == '50' else '' }}>50</option>
-                  <option {{ 'selected' if pageSize == '100' else '' }}>100</option>
-                </select>
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div class="text-sm font-semibold text-gray-700">{{ $t('Books Management') }}</div>
+                <div class="flex items-center gap-2">
+                  <button type="button" class="wave group inline-flex h-9 items-center gap-2 rounded-lg border border-rose-300 bg-rose-50 px-4 text-xs font-semibold text-rose-700 transition-all duration-200 hover:bg-rose-100 hover:border-rose-400 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-rose-500/20" onclick="deleteSelectedBooks_{{randonString}}()">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                    <span>{{ $t('mysql.button.deleteSelected') }}</span>
+                  </button>
+                  <select name="pageSize" class="h-9 rounded-lg border border-gray-300 bg-white px-3 text-xs font-medium shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20" onchange="changePageSize_{{randonString}}(this.value)">
+                    <option {{ 'selected' if pageSize == '10' else '' }}>10</option>
+                    <option {{ 'selected' if pageSize == '20' else '' }}>20</option>
+                    <option {{ 'selected' if pageSize == '50' else '' }}>50</option>
+                    <option {{ 'selected' if pageSize == '100' else '' }}>100</option>
+                  </select>
+                </div>
               </div>
               <script>
                 function changePageSize_{{randonString}}(value) {
@@ -55,59 +76,90 @@
               </script>
             </th>
           </tr>
-          <tr class="text-left font-semibold text-slate-700">
-            <th class="px-3 py-2">
-              <div class="flex items-center gap-1">
-                <input class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" type="checkbox" id="select_all" onchange="document.querySelectorAll(`input[name='selected_books']`).forEach(cb=>cb.checked=this.checked);" />
-                {{ $l.macro("/template/ui/sorting", {'sortby': 'b.id', 'title': 'mysql.table.header.id'} ) }}
+          <tr class="text-left">
+            <th class="px-4 py-3">
+              <div class="flex items-center gap-2">
+                <input class="h-4 w-4 rounded border-gray-300 text-blue-600 transition-all duration-200 focus:ring-4 focus:ring-blue-500/20" type="checkbox" id="select_all" onchange="document.querySelectorAll(`input[name='selected_books']`).forEach(cb=>cb.checked=this.checked);" />
+                <span class="text-xs font-bold uppercase tracking-wider text-gray-700">{{ $l.macro("/template/ui/sorting", {'sortby': 'b.id', 'title': 'mysql.table.header.id'} ) }}</span>
               </div>
             </th>
-            <th class="px-3 py-2">{{ $l.macro("/template/ui/sorting", {'sortby': 'title', 'title': 'mysql.table.header.title'} ) }}</th>
-            <th class="px-3 py-2">{{ $l.macro("/template/ui/sorting", {'sortby': 'author', 'title': 'mysql.table.header.author'} ) }}</th>
-            <th class="px-3 py-2">{{ $l.macro("/template/ui/sorting", {'sortby': 'published_date', 'title': 'mysql.table.header.publishedDate'} ) }}</th>
-            <th class="px-3 py-2">{{ $l.macro("/template/ui/sorting", {'sortby': 'category_id', 'title': 'mysql.table.header.categoryId'} ) }}</th>
-            <th class="px-3 py-2 text-end">{{ $t('database.table.header.action') }}</th>
+            <th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $l.macro("/template/ui/sorting", {'sortby': 'title', 'title': 'mysql.table.header.title'} ) }}</th>
+            <th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $l.macro("/template/ui/sorting", {'sortby': 'author', 'title': 'mysql.table.header.author'} ) }}</th>
+            <th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $l.macro("/template/ui/sorting", {'sortby': 'published_date', 'title': 'mysql.table.header.publishedDate'} ) }}</th>
+            <th class="px-4 py-3 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $l.macro("/template/ui/sorting", {'sortby': 'category_id', 'title': 'mysql.table.header.categoryId'} ) }}</th>
+            <th class="px-4 py-3 text-end text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('database.table.header.action') }}</th>
           </tr>
-          <tr>
+          <tr class="bg-gray-50/50">
             {% include 'example/mysql/_filtering.j2.html' %}
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-100">
+        <tbody class="divide-y divide-gray-100 bg-white">
           {% for book in books %}
-          <tr class="hover:bg-slate-50">
-            <td class="px-3 py-2 align-top"><input class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500" type="checkbox" name="selected_books" value="{{ book.id }}" /> <span class="ml-1 font-medium text-slate-800">{{ book.id }}</span></td>
-            <td class="px-3 py-2 text-slate-700">{{ book.title }}</td>
-            <td class="px-3 py-2 text-slate-600">{{ book.author }}</td>
-            <td class="px-3 py-2 text-slate-600">{{ book.published_date | dateFormat('dd/MM/y') }}</td>
-            <td class="px-3 py-2 text-slate-600"><em>{{ book.category_title }}</em></td>
-            <td class="px-3 py-2 text-end">
-              <div class="flex items-end justify-end gap-2">
+          <tr class="group transition-colors duration-150 hover:bg-blue-50">
+            <td class="px-4 py-3 align-top">
+              <div class="flex items-center gap-2">
+                <input class="h-4 w-4 rounded border-gray-300 text-blue-600 transition-all duration-200 focus:ring-4 focus:ring-blue-500/20" type="checkbox" name="selected_books" value="{{ book.id }}" />
+                <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">{{ book.id }}</span>
+              </div>
+            </td>
+            <td class="px-4 py-3 font-semibold text-gray-800">{{ book.title }}</td>
+            <td class="px-4 py-3 text-gray-700">{{ book.author }}</td>
+            <td class="px-4 py-3 text-gray-600">
+              <span class="inline-flex items-center gap-1">
+                <svg class="h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                {{ book.published_date | dateFormat('dd/MM/y') }}
+              </span>
+            </td>
+            <td class="px-4 py-3">
+              <span class="inline-flex items-center rounded-full bg-purple-100 px-2.5 py-0.5 text-xs font-medium text-purple-700">{{ book.category_title }}</span>
+            </td>
+            <td class="px-4 py-3 text-end">
+              <div class="flex items-center justify-end gap-2">
                 <a
                   data-href="{{ $l.updateUrlQuery( {'id':book.id|s, 'action': 'delete'|s}) }}"
                   data-message="{{ $t('mysql.message.deleteBook') ~ ' (' ~ book.title ~ ')' }}"
-                  class="wave cursor-pointer js-delete-links inline-flex h-7 w-7 items-center justify-center rounded-full border border-rose-200 text-[11px] text-rose-600 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                  class="wave cursor-pointer js-delete-links inline-flex h-8 w-8 items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-all duration-150 hover:bg-rose-50 hover:border-rose-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-rose-500/30"
                   title="{{ $t('mysql.button.delete') }}"
-                >🗑️</a>
+                >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                  </svg>
+                </a>
                 <a
                   href="{{ $l.updateUrlQuery( {'id':book.id|s, 'action': 'edit'|s}) }}"
-                  class="wave inline-flex h-7 w-7 items-center justify-center rounded-full border border-primary-200 text-[11px] text-primary-600 hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
+                  class="wave inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200 text-blue-600 transition-all duration-150 hover:bg-blue-50 hover:border-blue-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/30"
                   title="{{ $t('mysql.button.edit') }}"
-                >✏️</a>
+                >
+                  <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                  </svg>
+                </a>
               </div>
             </td>
           </tr>
           {% else %}
           <tr>
-            <td colspan="6" class="px-3 py-6 text-center text-slate-500">{{ $t('mysql.message.noRecords') }}</td>
+            <td colspan="6" class="px-4 py-12 text-center">
+              <div class="flex flex-col items-center gap-3">
+                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
+                  <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                  </svg>
+                </div>
+                <p class="text-sm font-medium text-gray-500">{{ $t('mysql.message.noRecords') }}</p>
+              </div>
+            </td>
           </tr>
           {% endfor %}
         </tbody>
-        <tfoot class="bg-slate-50">
+        <tfoot class="bg-gradient-to-r from-gray-50 to-white">
           {% include form_book.widget | unscape %}
         </tfoot>
       </table>
     </div>
-    <div class="border-t border-slate-200 bg-slate-50 p-4 text-sm">
+    <div class="border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white p-6">
       {% include 'example/mysql/_categories.j2.html' %}
     </div>
   </div>

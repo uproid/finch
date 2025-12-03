@@ -1654,7 +1654,7 @@ class Request {
     bool safe = true,
   }) {
     key = fixCookieName(key);
-    cookies.removeWhere((element) => element.name == key);
+    removeCookie(key);
     value = safe ? value.toSafe(FinchApp.config.cookiePassword) : value;
     var cookie = Cookie(key, value);
     cookie.maxAge = duration?.inSeconds;
@@ -1669,8 +1669,9 @@ class Request {
   ///
   /// [key] - The name of the cookie to be removed.
   void removeCookie(String key) {
-    addCookie(key, '', duration: Duration(days: -1, seconds: -1));
-    cookies.removeWhere((element) => element.name == key);
+    key = fixCookieName(key);
+    _rq.cookies.removeWhere((element) => element.name == key);
+    _rq.response.cookies.removeWhere((element) => element.name == key);
   }
 
   /// Constructs a full URL by combining a base URL with a subpath and optional query parameters.

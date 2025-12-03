@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Dart
+name: Dart-macos
 
 on:
   push:
@@ -15,7 +15,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       - uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
 
       - name: Run OSV-Scanner
         run: |
-          curl -sSfL https://github.com/google/osv-scanner/releases/download/v2.2.1/osv-scanner_linux_amd64 -o osv-scanner
+          curl -sSfL https://github.com/google/osv-scanner/releases/download/v2.2.1/osv-scanner_darwin_amd64 -o osv-scanner
           chmod +x osv-scanner
           ./osv-scanner --lockfile=pubspec.lock
 

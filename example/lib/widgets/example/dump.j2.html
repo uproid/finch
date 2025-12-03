@@ -1,14 +1,32 @@
 {% extends 'template/template.j2.html' %} {% block title %} {{
 $t('sidebar.info') }} {% endblock %} {% block content %}
-<div class="my-6">
-  <div class="mt-4 space-y-3">
-    {{ dump(variable) }}
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center gap-3">
+    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-lg">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+      </svg>
+    </div>
     <div>
-      <code class="text-sm text-slate-500">
-        {% raw  %}
-          {{ dump(variable) }}
-        {% endraw %}
-      </code>
+      <h1 class="text-2xl font-bold text-gray-800">{{ $t('Variable Dump') }}</h1>
+      <p class="text-sm text-gray-600">{{ $t('Debug variable output') }}</p>
+    </div>
+  </div>
+
+  <!-- Dump Output Card -->
+  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
+    <div class="space-y-4">
+      <div class="rounded-lg border border-purple-200 bg-gradient-to-r from-purple-50 to-purple-100/50 p-4">
+        {{ dump(variable) }}
+      </div>
+      <div class="rounded-lg border border-gray-300 bg-gray-50 p-4">
+        <code class="block text-sm font-mono text-purple-700">
+          {% raw  %}
+            {{ dump(variable) }}
+          {% endraw %}
+        </code>
+      </div>
     </div>
   </div>
 </div>

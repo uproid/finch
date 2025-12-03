@@ -1,10 +1,15 @@
+---
+doc_meta:
+    group: "Getting Started"
+    icon: "ph-bold ph-books"
+---
 # Finch Documentation
 
 Welcome to the Finch Documentation! This documentation will walk you through the steps to use Finch, a powerful web framework for Dart. Whether you're a seasoned developer or just starting, Finch offers a robust set of tools to simplify server-side web app development.
 
 ## Table of Contents
 
-1. [Finch Installation Guide](1.install_femch.md)
+1. [Finch Installation Guide](1.install_finch.md)
 2. [Finch CLI](2.finch_cli.md)
 3. [Finch Configuration Guide](3.configuration.md)
 4. [Finch Running Guide](4.run_app.md)

@@ -5,38 +5,56 @@
 {% endblock %}
 
 {% block content %}
-<div class="my-6">
-  <h3 class="text-xl font-semibold text-slate-800">{{ $t('webRouteExample.title') }}</h3>
-  <div class="my-3 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center gap-3">
+    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white shadow-lg">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+      </svg>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">{{ $t('webRouteExample.title') }}</h1>
+      <p class="text-sm text-gray-600">{{ $t('List of all registered application routes') }}</p>
+    </div>
+  </div>
+
+  <!-- Routes Table Card -->
+  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-slate-200">
-        <thead class="bg-slate-50">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gradient-to-r from-gray-50 to-white">
           <tr>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">#</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.path') }}</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.type') }}</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.permissions') }}</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.auth') }}</th>
-            <th class="px-4 py-2 text-left text-sm font-semibold text-slate-700">{{ $t('webRouteExample.controller') }}</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">#</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.path') }}</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.type') }}</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.permissions') }}</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.auth') }}</th>
+            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.controller') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-200">
+        <tbody class="divide-y divide-gray-100 bg-white">
           {% for route in routes %}
-          <tr class="odd:bg-white even:bg-slate-50">
-            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ loop.index }}</td>
-            <td class="px-4 py-2 align-top text-sm">
+          <tr class="group transition-colors duration-150 hover:bg-blue-50">
+            <td class="px-6 py-4 align-top text-sm font-semibold text-gray-600">{{ loop.index }}</td>
+            <td class="px-6 py-4 align-top text-sm">
               <div>
-                <a class="text-primary-700 hover:underline" href="{{ route.fullPath }}">
-                  [{{ route.method }}]
-                  {{ route.fullPath }}
+                <a class="inline-flex items-center gap-1.5 font-semibold text-blue-600 transition-colors duration-150 hover:text-blue-700 hover:underline" href="{{ route.fullPath }}">
+                  <span class="inline-flex items-center rounded-md bg-indigo-100 px-2 py-0.5 text-xs font-bold text-indigo-800">[{{ route.method }}]</span>
+                  <span>{{ route.fullPath }}</span>
+                  <svg class="h-3 w-3 opacity-0 transition-opacity duration-150 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                  </svg>
                 </a>
               </div>
-              <div class="text-xs text-slate-500">{{ route.key }}</div>
+              <div class="mt-1 text-xs font-mono text-gray-500">{{ route.key }}</div>
             </td>
-            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ route.type }}</td>
-            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ route.permissions }}</td>
-            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ route.hasAuth | string }}</td>
-            <td class="px-4 py-2 align-top text-sm text-slate-700">{{ route.controller }}{{ route.index }}</td>
+            <td class="px-6 py-4 align-top text-sm">
+              <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800">{{ route.type }}</span>
+            </td>
+            <td class="px-6 py-4 align-top text-sm text-gray-700">{{ route.permissions }}</td>
+            <td class="px-6 py-4 align-top text-sm text-gray-700">{{ route.hasAuth | string }}</td>
+            <td class="px-6 py-4 align-top text-sm font-mono text-gray-600">{{ route.controller }}{{ route.index }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -44,15 +62,19 @@
     </div>
   </div>
 
-  <div class="my-3 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-    <ul class="divide-y divide-slate-200">
-      <li class="px-4 py-3">
-        <div class="flex flex-col gap-1 md:flex-row md:items-center md:gap-3">
-          <b class="md:w-48">{{ $t('webRouteExample.router') }}</b>
-          <i class="text-primary-600">example/lib/route/web_route.dart</i>
-        </div>
-      </li>
-    </ul>
+  <!-- File References Card -->
+  <div class="rounded-xl border border-gray-200 bg-white shadow-lg">
+    <div class="flex items-center gap-4 px-6 py-4 transition-colors duration-150 hover:bg-blue-50">
+      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+        </svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold text-gray-700">{{ $t('webRouteExample.router') }}</p>
+        <code class="text-xs text-indigo-600 truncate block">example/lib/route/web_route.dart</code>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

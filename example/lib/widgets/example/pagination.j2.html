@@ -5,19 +5,32 @@
 {% endblock %}
 
 {% block content %}
-<div class="my-6 space-y-6">
-  <h3 class="text-xl font-semibold text-slate-800">{{ $t('sidebar.paginationExample') }}</h3>
-  <div class="overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-    <div class="p-5 space-y-5 text-sm">
-      <div>
+<div class="space-y-6">
+  <!-- Page Header -->
+  <div class="flex items-center gap-3">
+    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
+      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
+      </svg>
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-gray-800">{{ $t('sidebar.paginationExample') }}</h1>
+      <p class="text-sm text-gray-600">{{ $t('Pagination component examples') }}</p>
+    </div>
+  </div>
+
+  <!-- Pagination Examples Card -->
+  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
+    <div class="space-y-6">
+      <div class="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 p-4">
         {{ paginationA }}
       </div>
-      <div class="h-px bg-slate-200"></div>
-      <div>
+      <div class="h-px bg-gray-200"></div>
+      <div class="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 p-4">
         {{ paginationB }}
       </div>
-      <div class="h-px bg-slate-200"></div>
-      <div>
+      <div class="h-px bg-gray-200"></div>
+      <div class="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 p-4">
         {{ paginationC }}
       </div>
     </div>

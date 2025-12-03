@@ -40,6 +40,33 @@ void main() async {
             },
           ),
           FinchRoute(
+            path: 'language_cookie',
+            extraPath: [
+              'en/language_cookie',
+              'fr/language_cookie',
+              'de/language_cookie',
+              'es/language_cookie',
+              'it/language_cookie',
+              'pt/language_cookie',
+              'ru/language_cookie',
+              'zh/language_cookie',
+              'ja/language_cookie',
+              'ko/language_cookie',
+            ],
+            methods: Methods.ALL,
+            index: () async {
+              late String ln;
+              for (var i = 0; i < 10; i++) {
+                ln = rq.getLanguage();
+              }
+              return rq.renderDataParam(data: {
+                'cookies': rq.cookies,
+                'cookies_res': rq.response.cookies,
+                'language': ln,
+              });
+            },
+          ),
+          FinchRoute(
             path: '/advanced_form',
             methods: Methods.POST_ONLY,
             index: () async {
@@ -368,6 +395,40 @@ void main() async {
       reason: "Response success should be johndoe",
     );
     expect(req.statusCode, 200, reason: "Status code should be 200");
+  });
+
+  test("Test Cookies & Languages", () async {
+    /// The priority is URL and then Cookie
+    /// for each language in url, it should override the cookie value
+    var cookies = 'language=es;';
+
+    var headers = {
+      'Cookie': cookies,
+    };
+    var req = await http.post(
+      Uri.parse("http://localhost:${httpServer.port}/language_cookie"),
+      headers: headers,
+    );
+    var data = jsonDecode(req.body);
+    var resCookies = data['cookies'] as List;
+    var language = data['language'];
+
+    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(language, 'es', reason: "Language should be 'es'");
+    expect(resCookies.first.toString(), contains('language=es;'));
+
+    req = await http.post(
+      Uri.parse("http://localhost:${httpServer.port}/de/language_cookie"),
+      headers: headers,
+    );
+    Console.json(req.body);
+    data = jsonDecode(req.body);
+    resCookies = data['cookies'];
+    language = data['language'];
+
+    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(language, 'de', reason: "Language should be 'de'");
+    expect(resCookies.first.toString(), contains('language=de;'));
   });
 
   test("check URL", () async {
