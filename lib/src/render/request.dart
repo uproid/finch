@@ -1573,7 +1573,7 @@ class Request {
   /// Checks if the current endpoint starts with 'api/'.
   ///
   /// Returns a [bool] indicating whether the endpoint is an API endpoint.
-  bool get isApiEndpoint => endpoint.startsWith('api/');
+  bool get isApiEndpoint => endpoint.startsWith('api/') || endpoint == 'api';
 
   /// Retrieves a cookie value from the request.
   ///

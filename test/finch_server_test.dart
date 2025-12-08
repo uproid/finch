@@ -207,6 +207,16 @@ void main() async {
             },
           ),
           FinchRoute(
+            path: "api",
+            index: () {
+              return rq.renderView(
+                path: '',
+                data: {'is_api': rq.isApiEndpoint},
+                toData: rq.isApiEndpoint,
+              );
+            },
+          ),
+          FinchRoute(
             path: "api/post",
             methods: Methods.ONLY_POST,
             index: () {
@@ -270,6 +280,20 @@ void main() async {
         data['timestamp_start'].toString().toInt() > 0,
         true,
         reason: "timestamp should be > 0",
+      );
+      expect(req.statusCode, 200, reason: "Status code should be 200");
+    });
+
+    test('test api root path', () async {
+      var req = await http.get(
+        Uri.parse("http://localhost:${httpServer.port}/api"),
+      );
+      var data = jsonDecode(req.body);
+
+      expect(
+        data['is_api'],
+        true,
+        reason: "is_api should be true",
       );
       expect(req.statusCode, 200, reason: "Status code should be 200");
     });
