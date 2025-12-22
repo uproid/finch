@@ -1,6 +1,7 @@
 
 ## 1.0.4
 - Fixed [#22](https://github.com/uproid/finch/issues/22) fixed checking isApiEndpoint property in WebRequest class
+- Developed FinchApp.cleanRoutes() method to clear all registered routes [#15](https://github.com/uproid/finch/issues/15)
 
 ## 1.0.3
 - Improved runing app speed in production mode #18

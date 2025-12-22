@@ -83,6 +83,14 @@ class FinchApp {
   /// A list of functions that return a [Future] containing a list of [FinchRoute] based on the [Request].
   final List<Future<List<FinchRoute>> Function(Request rq)> _webRoutes = [];
 
+  /// Clears all registered routes from the server.
+  /// Returns the [FinchApp] instance to allow method chaining.
+  /// Note: This will remove all routes, so use with caution.
+  FinchApp cleanRoutes() {
+    _webRoutes.clear();
+    return this;
+  }
+
   List<CappController> commands = [];
 
   /// Creates an instance of [FinchApp] with the specified [FinchConfigs] and an optional [onRequest] function.
