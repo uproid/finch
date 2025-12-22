@@ -1,6 +1,7 @@
 
 ## 1.0.4
 - Fixed [#22](https://github.com/uproid/finch/issues/22) fixed checking isApiEndpoint property in WebRequest class
+- Disabled MongoDB by default in FinchConfig [#25](https://github.com/uproid/finch/issues/25)
 
 ## 1.0.3
 - Improved runing app speed in production mode #18
