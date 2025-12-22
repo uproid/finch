@@ -316,7 +316,7 @@ class FinchDBConfig {
     this.host = host ?? env['MONGO_CONNECTION'] ?? 'localhost';
     this.port = port ?? env['MONGO_PORT'] ?? '27017';
     this.dbName = env['MONGO_INITDB_DATABASE'] ?? 'database_name';
-    this.enable = enable ?? true;
+    this.enable = enable ?? false;
   }
 
   static const defaultLanguages = {
