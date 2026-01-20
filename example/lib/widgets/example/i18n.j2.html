@@ -27,7 +27,7 @@
         {% for key, language in languages %}
         <li>
           <a href="{{ $e.urlToLanguage(key) }}" class="wave flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-150 {{ 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md' if $e.ln == key else 'text-gray-700 hover:bg-blue-50' }}">
-            <b class="text-xl leading-none">{{ language.flag }}</b>
+            <img src="{{ language.flag }}" class="inline-flex w-6 items-center justify-center text-base"/>
             <span class="font-medium truncate">{{ language.name }}</span>
           </a>
         </li>
