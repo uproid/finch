@@ -1,3 +1,5 @@
+import 'package:example/widgets/jinja_dart.g.dart';
+
 import 'languages/languages.dart';
 import 'package:finch/model.dart';
 import '../core/local_events.dart';
@@ -15,6 +17,7 @@ import 'route/web_route.dart';
 import 'package:finch/finch_capp.dart';
 
 FinchConfigs configs = FinchConfigs(
+  jinjaMapTemplate: jinjaTemplates,
   widgetsPath: pathTo(env['WIDGETS_PATH'] ?? "./lib/widgets"),
   widgetsType: env['WIDGETS_TYPE'] ?? 'j2.html',
   languagePath: pathTo(env['LANGUAGE_PATH'] ?? "./lib/languages"),

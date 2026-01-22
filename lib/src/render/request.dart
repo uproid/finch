@@ -695,12 +695,22 @@ class Request {
     params.addAll(viewParams);
     Template template;
     if (isFile) {
-      template = env.getTemplate(File(
-        joinPaths([
-          FinchApp.config.widgetsPath,
-          "$path.${FinchApp.config.widgetsType}",
-        ]),
-      ).path);
+      if (FinchApp.config.jinjaMapTemplate == null) {
+        template = env.getTemplate(File(
+          joinPaths([
+            FinchApp.config.widgetsPath,
+            "$path.${FinchApp.config.widgetsType}",
+          ]),
+        ).path);
+      } else {
+        template = env.getTemplate(
+          pathNorm(
+            "$path.${FinchApp.config.widgetsType}",
+            normSlashs: true,
+            endWithSlash: false,
+          ),
+        );
+      }
     } else {
       template = env.fromString(path);
     }
@@ -817,7 +827,7 @@ class Request {
   }) {
     if (isClosed) return '';
 
-    if (isFile) {
+    if (isFile && FinchApp.config.jinjaMapTemplate == null) {
       File file = File(joinPaths([
         FinchApp.config.widgetsPath,
         "$path.${FinchApp.config.widgetsType}",
@@ -837,12 +847,22 @@ class Request {
     params.addAll(viewParams);
     Template template;
     if (isFile) {
-      template = env.getTemplate(File(
-        joinPaths([
-          FinchApp.config.widgetsPath,
-          "$path.${FinchApp.config.widgetsType}",
-        ]),
-      ).path);
+      if (FinchApp.config.jinjaMapTemplate == null) {
+        template = env.getTemplate(File(
+          joinPaths([
+            FinchApp.config.widgetsPath,
+            "$path.${FinchApp.config.widgetsType}",
+          ]),
+        ).path);
+      } else {
+        template = env.getTemplate(
+          pathNorm(
+            "$path.${FinchApp.config.widgetsType}",
+            normSlashs: true,
+            endWithSlash: false,
+          ),
+        );
+      }
     } else {
       template = env.fromString(path);
     }
@@ -854,7 +874,9 @@ class Request {
     return Environment(
         globals: getGlobalEvents(),
         autoReload: false,
-        loader: FileSystemLoader(paths: <String>[FinchApp.config.widgetsPath]),
+        loader: FinchApp.config.jinjaMapTemplate != null
+            ? MapLoader(FinchApp.config.jinjaMapTemplate!)
+            : FileSystemLoader(paths: <String>[FinchApp.config.widgetsPath]),
         leftStripBlocks: false,
         trimBlocks: false,
         blockStart: FinchApp.config.blockStart,

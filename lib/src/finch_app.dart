@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:capp/capp.dart';
+import 'package:finch/src/tools/convertor/jinja_to_dart.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:finch/src/db/mysql/mysql_migration.dart';
@@ -483,6 +484,30 @@ class FinchApp {
                 "Please run the migration commands",
                 CappColors.warning,
               );
+            },
+          ),
+          CappController(
+            'jinjadart',
+            options: [
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of templates',
+                value: config.widgetsPath,
+              ),
+              CappOption(
+                name: 'extension',
+                shortName: 'e',
+                description: 'File extension of templates',
+                value: config.widgetsType,
+              ),
+            ],
+            run: (c) async {
+              var res = await JinjaToDart(
+                c.getOption('path'),
+                fileExtention: c.getOption('extension'),
+              ).generate();
+              return CappConsole("Generated file at: $res");
             },
           ),
           CappController(
