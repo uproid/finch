@@ -864,6 +864,16 @@ class FinchApp {
               path: 'update_languages',
             );
           }),
+          'update_template': SocketEvent(onMessage: (socket, data) async {
+            var res = await JinjaToDart(
+              config.widgetsPath,
+              fileExtention: config.widgetsType,
+            ).generate();
+            await debugger?.sendToAll(
+              {'message': 'Template updated: $res'},
+              path: 'update_template',
+            );
+          }),
           'restart': SocketEvent(onMessage: (socket, data) async {
             await debugger?.sendToAll({}, path: 'restartStarted');
             await stop(force: true);

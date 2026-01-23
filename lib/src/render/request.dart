@@ -675,7 +675,7 @@ class Request {
       return renderDataParam(status: status, data: viewParams);
     }
 
-    if (isFile) {
+    if (isFile && FinchApp.config.jinjaMapTemplate == null) {
       File file = File(joinPaths([
         FinchApp.config.widgetsPath,
         "$path.${FinchApp.config.widgetsType}",

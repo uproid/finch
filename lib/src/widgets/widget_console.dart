@@ -1163,12 +1163,14 @@ class DebuggerStatusBar {
     
     // this.playBtn = this.createDropdownItem('AA', 'Continue');
     this.updateLangBtn = this.createDropdownItem('||', 'Update Languages');
+    this.updateTemplateBtn = this.createDropdownItem('><', 'Update Template');
     // this.stepBtn = this.createDropdownItem('DD', 'Step');
     // this.stopBtn = this.createDropdownItem('BB', 'Stop');
     this.restartBtn = this.createDropdownItem('CC', 'Restart');
     
     // controlSection.appendChild(this.playBtn);
     controlSection.appendChild(this.updateLangBtn);
+    controlSection.appendChild(this.updateTemplateBtn);
     // controlSection.appendChild(this.stepBtn);
     // controlSection.appendChild(this.stopBtn);
     controlSection.appendChild(this.restartBtn);
@@ -1275,6 +1277,10 @@ class DebuggerStatusBar {
       this.updateLang();
       this.closeDropdown();
     });
+    this.updateTemplateBtn.addEventListener('click', () => {
+      this.updateTemplate();
+      this.closeDropdown();
+    });
     // this.stepBtn.addEventListener('click', () => {
     //   this.step();
     //   this.closeDropdown();
@@ -1350,6 +1356,11 @@ class DebuggerStatusBar {
   updateLang() {
     window.socketDebugger.send(JSON.stringify({ path: 'update_languages' }));
     this.setActiveButton(this.updateLangBtn);
+  }
+  
+  updateTemplate() {
+    window.socketDebugger.send(JSON.stringify({ path: 'update_template' }));
+    this.setActiveButton(this.updateTemplateBtn);
   }
   
   step() {
@@ -1912,6 +1923,10 @@ var socketDebuggerEvents = {
 
     update_languages: function (data) {
         window.debugger.showNotification('Language updated', 'info');
+    },
+
+    update_template: function (data) {
+        window.debugger.showNotification(data.data.message, 'info');
     },
 
     get_routes: function (data) {

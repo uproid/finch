@@ -139,7 +139,7 @@ class FinchConfigs {
   late final String mailDefault;
   late final String mailHost;
   late final String widgetsType;
-  final Map<String, String>? jinjaMapTemplate;
+  Map<String, String>? jinjaMapTemplate;
   late final String blockStart;
   late final String blockEnd;
   late final String variableStart;
