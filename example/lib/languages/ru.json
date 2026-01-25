@@ -218,5 +218,20 @@
   "person.form.label.color": "Цвет",
   "person.form.tooltip.color": "Выберите ваш цвет",
   "person.form.button.submit": "Отправить",
-  "person.form.button.cancel": "Отмена"
+  "person.form.button.cancel": "Отмена",
+  "Login Form": "Форма входа",
+  "Enter your credentials to continue": "Введите свои учетные данные для продолжения",
+  "File References": "Ссылки на файлы",
+  "Related files for this form example": "Связанные файлы для этого примера формы",
+  "Books Management": "Управление книгами",
+  "MySQL database operations with advanced features": "Операции с базой данных MySQL с расширенными функциями",
+  "Category deleted successfully": "Категория успешно удалена",
+  "Book deleted successfully": "Книга успешно удалена",
+  "Category title is required": "Название категории обязательно",
+  "Category added successfully": "Категория успешно добавлена",
+  "Error adding category:": "Ошибка при добавлении категории:",
+  "Book saved successfully": "Книга успешно сохранена",
+  "Error saving book": "Ошибка при сохранении книги",
+  "Example SQLite": "Пример SQLite",
+  "Example SQLite Categories": "Пример категорий SQLite"
 }

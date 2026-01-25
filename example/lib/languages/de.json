@@ -218,5 +218,20 @@
   "person.form.label.color": "Farbe",
   "person.form.tooltip.color": "Wählen Sie Ihre Farbe",
   "person.form.button.submit": "Einreichen",
-  "person.form.button.cancel": "Abbrechen"
+  "person.form.button.cancel": "Abbrechen",
+  "Login Form": "Anmeldeformular",
+  "Enter your credentials to continue": "Geben Sie Ihre Anmeldeinformationen ein, um fortzufahren",
+  "File References": "Dateireferenzen",
+  "Related files for this form example": "Zugehörige Dateien für dieses Formularbeispiel",
+  "Books Management": "Buchverwaltung",
+  "MySQL database operations with advanced features": "MySQL-Datenbankoperationen mit erweiterten Funktionen",
+  "Category deleted successfully": "Kategorie erfolgreich gelöscht",
+  "Book deleted successfully": "Buch erfolgreich gelöscht",
+  "Category title is required": "Kategorietitel ist erforderlich",
+  "Category added successfully": "Kategorie erfolgreich hinzugefügt",
+  "Error adding category:": "Fehler beim Hinzufügen der Kategorie:",
+  "Book saved successfully": "Buch erfolgreich gespeichert",
+  "Error saving book": "Fehler beim Speichern des Buches",
+  "Example SQLite": "SQLite-Beispiel",
+  "Example SQLite Categories": "SQLite-Kategorienbeispiel"
 }

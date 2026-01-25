@@ -218,5 +218,20 @@
   "person.form.label.color": "Kleur",
   "person.form.tooltip.color": "Kies uw kleur",
   "person.form.button.submit": "Verzenden",
-  "person.form.button.cancel": "Annuleren"
+  "person.form.button.cancel": "Annuleren",
+  "Login Form": "Inlogformulier",
+  "Enter your credentials to continue": "Voer uw inloggegevens in om door te gaan",
+  "File References": "Bestandsreferenties",
+  "Related files for this form example": "Gerelateerde bestanden voor dit formuliervoorbeeld",
+  "Books Management": "Boekenbeheer",
+  "MySQL database operations with advanced features": "MySQL-databasebewerkingen met geavanceerde functies",
+  "Category deleted successfully": "Categorie succesvol verwijderd",
+  "Book deleted successfully": "Boek succesvol verwijderd",
+  "Category title is required": "Categorietitel is verplicht",
+  "Category added successfully": "Categorie succesvol toegevoegd",
+  "Error adding category:": "Fout bij toevoegen van categorie:",
+  "Book saved successfully": "Boek succesvol opgeslagen",
+  "Error saving book": "Fout bij opslaan van boek",
+  "Example SQLite": "SQLite voorbeeld",
+  "Example SQLite Categories": "SQLite categorieën voorbeeld"
 }

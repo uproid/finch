@@ -218,5 +218,20 @@
   "person.form.label.color": "Farve",
   "person.form.tooltip.color": "Vælg din farve",
   "person.form.button.submit": "Send",
-  "person.form.button.cancel": "Annuller"
+  "person.form.button.cancel": "Annuller",
+  "Login Form": "Loginformular",
+  "Enter your credentials to continue": "Indtast dine legitimationsoplysninger for at fortsætte",
+  "File References": "Filreferencer",
+  "Related files for this form example": "Relaterede filer til dette formulareksempel",
+  "Books Management": "Bogstyring",
+  "MySQL database operations with advanced features": "MySQL databaseoperationer med avancerede funktioner",
+  "Category deleted successfully": "Kategori slettet succesfuldt",
+  "Book deleted successfully": "Bog slettet succesfuldt",
+  "Category title is required": "Kategorititel er påkrævet",
+  "Category added successfully": "Kategori tilføjet succesfuldt",
+  "Error adding category:": "Fejl ved tilføjelse af kategori:",
+  "Book saved successfully": "Bog gemt succesfuldt",
+  "Error saving book": "Fejl ved gemning af bog",
+  "Example SQLite": "SQLite eksempel",
+  "Example SQLite Categories": "SQLite kategorier eksempel"
 }

@@ -149,7 +149,11 @@ class ProjectCommands {
     return CappConsole("", CappColors.off);
   }
 
-  Future<CappConsole> build(CappController controller) async {
+  Future<CappConsole> build(
+    CappController controller, {
+    bool copyLang = true,
+    bool copyWidgets = true,
+  }) async {
     if (controller.existsOption('h')) {
       var help = controller.manager.getHelp([controller]);
       return CappConsole(help, CappColors.none);
@@ -186,26 +190,31 @@ class ProjectCommands {
 
     Directory('$output/lib').createSync(recursive: true);
 
-    var langPath = controller.getOption('langPath', def: './lib/languages');
-    if (langPath.isNotEmpty && Directory(langPath).existsSync()) {
-      var langOutPutPath = joinPaths([output, 'lib/languages']);
-      Directory(langOutPutPath).createSync(recursive: true);
-      await CappConsole.progress(
-        "Copy Language files",
-        () => Directory(langPath).copyDirectory(Directory(langOutPutPath)),
-        type: CappProgressType.circle,
-      );
+    if (copyLang) {
+      var langPath = controller.getOption('langPath', def: './lib/languages');
+      if (langPath.isNotEmpty && Directory(langPath).existsSync()) {
+        var langOutPutPath = joinPaths([output, 'lib/languages']);
+        Directory(langOutPutPath).createSync(recursive: true);
+        await CappConsole.progress(
+          "Copy Language files",
+          () => Directory(langPath).copyDirectory(Directory(langOutPutPath)),
+          type: CappProgressType.circle,
+        );
+      }
     }
 
-    var widgetPath = controller.getOption('widgetPath', def: './lib/widgets');
-    if (widgetPath.isNotEmpty && Directory(widgetPath).existsSync()) {
-      var widgetOutPutPath = joinPaths([output, 'lib/widgets']);
-      Directory(widgetOutPutPath).createSync(recursive: true);
-      await CappConsole.progress(
-        "Copy widgets",
-        () => Directory(widgetPath).copyDirectory(Directory(widgetOutPutPath)),
-        type: CappProgressType.circle,
-      );
+    if (copyWidgets) {
+      var widgetPath = controller.getOption('widgetPath', def: './lib/widgets');
+      if (widgetPath.isNotEmpty && Directory(widgetPath).existsSync()) {
+        var widgetOutPutPath = joinPaths([output, 'lib/widgets']);
+        Directory(widgetOutPutPath).createSync(recursive: true);
+        await CappConsole.progress(
+          "Copy widgets",
+          () =>
+              Directory(widgetPath).copyDirectory(Directory(widgetOutPutPath)),
+          type: CappProgressType.circle,
+        );
+      }
     }
 
     var envPath = controller.getOption('envPath', def: './.env');

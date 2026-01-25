@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:capp/capp.dart';
+import 'package:finch/src/cli/commands/commands.dart';
 import 'package:finch/src/tools/convertor/jinja_to_dart.dart';
+import 'package:finch/src/tools/convertor/language_to_dart.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:finch/src/db/mysql/mysql_migration.dart';
@@ -487,7 +489,9 @@ class FinchApp {
             },
           ),
           CappController(
-            'jinjadart',
+            'build_widgets',
+            description:
+                'Generate widgets Dart file from templates (to dart map variable)',
             options: [
               CappOption(
                 name: 'path',
@@ -498,7 +502,8 @@ class FinchApp {
               CappOption(
                 name: 'extension',
                 shortName: 'e',
-                description: 'File extension of templates',
+                description:
+                    'File extension of templates default (*.${config.widgetsType})',
                 value: config.widgetsType,
               ),
             ],
@@ -508,6 +513,40 @@ class FinchApp {
                 fileExtention: c.getOption('extension'),
               ).generate();
               return CappConsole("Generated file at: $res");
+            },
+          ),
+          CappController(
+            'build',
+            description: 'Build Project',
+            options: [],
+            run: (c) async {
+              await ProjectCommands().build(
+                c,
+                copyLang: config.languageSource != LanguageSource.dart,
+                copyWidgets: config.jinjaMapTemplate == null,
+              );
+              return CappConsole("Build completed");
+            },
+          ),
+          CappController(
+            'build_language',
+            description:
+                'Generate language Dart file from language files (to dart map variable)',
+            options: [
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of templates',
+                value: config.languagePath,
+              ),
+            ],
+            run: (c) async {
+              var res = await LanguageToDart(
+                c.getOption('path'),
+              ).generate();
+              config.dartLanguages = res.map;
+              appLanguages = res.map;
+              return CappConsole("Generated file at: ${res.path}");
             },
           ),
           CappController(

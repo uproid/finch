@@ -218,5 +218,20 @@
   "person.form.label.color": "Barva",
   "person.form.tooltip.color": "Vyberte svou barvu",
   "person.form.button.submit": "Odeslat",
-  "person.form.button.cancel": "Zrušit"
+  "person.form.button.cancel": "Zrušit",
+  "Login Form": "Přihlašovací formulář",
+  "Enter your credentials to continue": "Zadejte své přihlašovací údaje pro pokračování",
+  "File References": "Reference souborů",
+  "Related files for this form example": "Související soubory pro tento příklad formuláře",
+  "Books Management": "Správa knih",
+  "MySQL database operations with advanced features": "Operace databáze MySQL s pokročilými funkcemi",
+  "Category deleted successfully": "Kategorie byla úspěšně smazána",
+  "Book deleted successfully": "Kniha byla úspěšně smazána",
+  "Category title is required": "Název kategorie je povinný",
+  "Category added successfully": "Kategorie byla úspěšně přidána",
+  "Error adding category:": "Chyba při přidávání kategorie:",
+  "Book saved successfully": "Kniha byla úspěšně uložena",
+  "Error saving book": "Chyba při ukládání knihy",
+  "Example SQLite": "Příklad SQLite",
+  "Example SQLite Categories": "Kategorie příkladu SQLite"
 }

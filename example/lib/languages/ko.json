@@ -218,5 +218,20 @@
   "person.form.label.color": "색상",
   "person.form.tooltip.color": "색상을 선택하세요",
   "person.form.button.submit": "제출",
-  "person.form.button.cancel": "취소"
+  "person.form.button.cancel": "취소",
+  "Login Form": "로그인 양식",
+  "Enter your credentials to continue": "계속하려면 자격 증명을 입력하세요",
+  "File References": "파일 참조",
+  "Related files for this form example": "이 양식 예제의 관련 파일",
+  "Books Management": "도서 관리",
+  "MySQL database operations with advanced features": "고급 기능을 갖춘 MySQL 데이터베이스 작업",
+  "Category deleted successfully": "카테고리가 성공적으로 삭제되었습니다",
+  "Book deleted successfully": "도서가 성공적으로 삭제되었습니다",
+  "Category title is required": "카테고리 제목은 필수입니다",
+  "Category added successfully": "카테고리가 성공적으로 추가되었습니다",
+  "Error adding category:": "카테고리 추가 오류:",
+  "Book saved successfully": "도서가 성공적으로 저장되었습니다",
+  "Error saving book": "도서 저장 오류",
+  "Example SQLite": "SQLite 예제",
+  "Example SQLite Categories": "SQLite 카테고리 예제"
 }

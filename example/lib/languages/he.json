@@ -218,5 +218,20 @@
   "person.form.label.color": "צבע",
   "person.form.tooltip.color": "בחר את הצבע שלך",
   "person.form.button.submit": "שלח",
-  "person.form.button.cancel": "בטל"
+  "person.form.button.cancel": "בטל",
+  "Login Form": "טופס התחברות",
+  "Enter your credentials to continue": "הזן את פרטי ההתחברות שלך כדי להמשיך",
+  "File References": "הפניות לקבצים",
+  "Related files for this form example": "קבצים קשורים לדוגמה זו של טופס",
+  "Books Management": "ניהול ספרים",
+  "MySQL database operations with advanced features": "פעולות מסד נתונים MySQL עם תכונות מתקדמות",
+  "Category deleted successfully": "הקטגוריה נמחקה בהצלחה",
+  "Book deleted successfully": "הספר נמחק בהצלחה",
+  "Category title is required": "שם הקטגוריה הוא חובה",
+  "Category added successfully": "הקטגוריה נוספה בהצלחה",
+  "Error adding category:": "שגיאה בהוספת קטגוריה:",
+  "Book saved successfully": "הספר נשמר בהצלחה",
+  "Error saving book": "שגיאה בשמירת הספר",
+  "Example SQLite": "דוגמה ל-SQLite",
+  "Example SQLite Categories": "דוגמה לקטגוריות SQLite"
 }

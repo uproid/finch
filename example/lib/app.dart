@@ -1,6 +1,5 @@
+import 'package:example/languages/language_dart.g.dart';
 import 'package:example/widgets/jinja_dart.g.dart';
-
-import 'languages/languages.dart';
 import 'package:finch/model.dart';
 import '../core/local_events.dart';
 import 'package:finch/finch_route.dart';
@@ -22,7 +21,7 @@ FinchConfigs configs = FinchConfigs(
   widgetsType: env['WIDGETS_TYPE'] ?? 'j2.html',
   languagePath: pathTo(env['LANGUAGE_PATH'] ?? "./lib/languages"),
   languageSource: LanguageSource.dart,
-  dartLanguages: languages,
+  dartLanguages: languageDart,
   publicDir: pathTo(env['PUBLIC_DIR'] ?? './public'),
   dbConfig: FinchDBConfig(
     enable: true, //env['ENABLE_DATABASE'] == 'true',
