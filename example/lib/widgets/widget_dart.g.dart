@@ -1,5 +1,5 @@
 var mapTemplates = {
-  r"example/person.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/person.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
   {{ $t('Example Free model DB') }}
 {% endblock %}
@@ -105,7 +105,7 @@ var mapTemplates = {
   </div>
 </div>
 {% endblock %}""",
-  r"example/i18n.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/i18n.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
     {{ $t('sidebar.languageExample') }}
 {% endblock %}
@@ -226,8 +226,7 @@ var mapTemplates = {
   </div>
 </div>
 {% endblock %}""",
-  r"example/forms/form_person.j2.html":
-      r"""<form method="POST" action="/example/person/{{ (data._id) if data._id else '' }}" class="space-y-6">
+	r"example/forms/form_person.j2.html": r"""<form method="POST" action="/example/person/{{ (data._id) if data._id else '' }}" class="space-y-6">
   <input type="hidden" name="action" value="{{ 'EDIT' if data._id else 'ADD' }}" />
   <input type="hidden" name="id" value="{{ data if data._id else '' }}" />
 
@@ -432,7 +431,7 @@ var mapTemplates = {
     {% endif %}
   </div>
 </form>""",
-  r"example/database.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/database.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
   {{ $t('sidebar.mongo') }}
 {% endblock %}
@@ -547,7 +546,7 @@ var mapTemplates = {
   </div>
 </div>
 {% endblock %}""",
-  r"example/socket.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/socket.j2.html": r"""{% extends 'template/template.j2.html' %}
 
 {% block title %}
     {{ $t('sidebar.socketExample') }}
@@ -613,8 +612,7 @@ var mapTemplates = {
 </div>
 {% endblock %}
 """,
-  r"example/dump.j2.html":
-      r"""{% extends 'template/template.j2.html' %} {% block title %} {{
+	r"example/dump.j2.html": r"""{% extends 'template/template.j2.html' %} {% block title %} {{
 $t('sidebar.info') }} {% endblock %} {% block content %}
 <div class="space-y-6">
   <!-- Page Header -->
@@ -648,7 +646,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
 </div>
 {% endblock %}
 """,
-  r"example/sqlite/_filtering.j2.html": r"""<form method="get" class="contents">
+	r"example/sqlite/_filtering.j2.html": r"""<form method="get" class="contents">
     <th class="p-1 align-top" style="max-width:80px;">
         <input
             class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_b.id/value') else '' }}"
@@ -712,8 +710,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
         />
     </th>
 </form>""",
-  r"example/sqlite/_form_edit.j2.html":
-      r"""<form method="post" action="{{ $e.uriString }}" class="contents">
+	r"example/sqlite/_form_edit.j2.html": r"""<form method="post" action="{{ $e.uriString }}" class="contents">
     <input type="hidden" name="action" value="{{ 'update' if(action == 'edit' ?? action == 'update') else 'add' }}" />
     <tr>
         <td colspan="7" class="p-2">
@@ -782,7 +779,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
         <td colspan="7" class="p-2 text-xs text-slate-600">{{ paging }}</td>
     </tr>
 </form>""",
-  r"example/sqlite/_categories.j2.html": r"""<div class="mt-8">
+	r"example/sqlite/_categories.j2.html": r"""<div class="mt-8">
   <h3 class="text-base font-semibold text-slate-800">{{ $t('Example SQLite Categories') }}</h3>
   <div class="mt-4 overflow-x-auto rounded-md border border-slate-200 bg-white shadow-sm">
     <table class="min-w-full text-sm text-slate-700">
@@ -848,8 +845,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
   </div>
 </div>
 """,
-  r"example/sqlite/overview.j2.html":
-      r"""{% extends 'template/template.j2.html' %}
+	r"example/sqlite/overview.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %} {{ $t('Example SQLite') }} {% endblock %}
 
 {% block content %}
@@ -965,7 +961,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
 </div>
 {% endblock %}
 """,
-  r"example/email.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/email.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
     {{ $t('sidebar.emailExample') }}
 {% endblock %}
@@ -1161,7 +1157,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
   </div>
 </div>
 {% endblock %}""",
-  r"example/form.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/form.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
     {{ $t('sidebar.formExample') }}
 {% endblock %}
@@ -1340,7 +1336,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
   </div>
 </div>
 {% endblock %}""",
-  r"example/route.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/route.j2.html": r"""{% extends 'template/template.j2.html' %}
 
 {% block title %}
     {{ $t('sidebar.routeExample') }}
@@ -1421,7 +1417,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
 </div>
 {% endblock %}
 """,
-  r"example/pagination.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/pagination.j2.html": r"""{% extends 'template/template.j2.html' %}
 
 {% block title %}
     {{ $t('sidebar.paginationExample') }}
@@ -1460,7 +1456,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
   </div>
 </div>
 {% endblock %}""",
-  r"example/mysql/_filtering.j2.html": r"""<form method="get" class="contents">
+	r"example/mysql/_filtering.j2.html": r"""<form method="get" class="contents">
     <th class="p-1 align-top" style="max-width:80px;">
         <input
             class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_b.id/value') else '' }}"
@@ -1524,8 +1520,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
         />
     </th>
 </form>""",
-  r"example/mysql/_form_edit.j2.html":
-      r"""<form method="post" action="{{ $e.uriString }}" class="contents">
+	r"example/mysql/_form_edit.j2.html": r"""<form method="post" action="{{ $e.uriString }}" class="contents">
     <input type="hidden" name="action" value="{{ 'update' if(action == 'edit' ?? action == 'update') else 'add' }}" />
     <tr>
         <td colspan="7" class="p-2">
@@ -1594,7 +1589,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
         <td colspan="7" class="p-2 text-xs text-slate-600">{{ paging }}</td>
     </tr>
 </form>""",
-  r"example/mysql/_categories.j2.html": r"""<div class="mt-8">
+	r"example/mysql/_categories.j2.html": r"""<div class="mt-8">
   <h3 class="text-base font-semibold text-slate-800">{{ $t('mysql.categories.title') }}</h3>
   <div class="mt-4 overflow-x-auto rounded-md border border-slate-200 bg-white shadow-sm">
     <table class="min-w-full text-sm text-slate-700">
@@ -1660,8 +1655,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
   </div>
 </div>
 """,
-  r"example/mysql/overview.j2.html":
-      r"""{% extends 'template/template.j2.html' %}
+	r"example/mysql/overview.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %} {{ $t('mysql.example.title') }} {% endblock %}
 
 {% block content %}
@@ -1829,7 +1823,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
 </div>
 {% endblock %}
 """,
-  r"example/cookie.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/cookie.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
     {{ $t('sidebar.cookieExample') }}
 {% endblock %}
@@ -1941,8 +1935,7 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
   </div>
 </div>
 {% endblock %}""",
-  r"example/info.j2.html":
-      r"""{% extends 'template/template.j2.html' %} {% block title %} {{
+	r"example/info.j2.html": r"""{% extends 'template/template.j2.html' %} {% block title %} {{
 $t('sidebar.info') }} 
 {% endblock %} 
 
@@ -1991,7 +1984,7 @@ $t('sidebar.info') }}
 </div>
 {% endblock %}
 """,
-  r"example/auth.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/auth.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
 {{ $t('sidebar.authExample') }}
 {% endblock %}
@@ -2092,8 +2085,7 @@ $t('sidebar.info') }}
 </div>
 {% endblock %}
 """,
-  r"template/ui/sorting.j2.html":
-      r"""{% set asc = ((data.order == 'asc') and (data.sort == sortby)) %}
+	r"template/ui/sorting.j2.html": r"""{% set asc = ((data.order == 'asc') and (data.sort == sortby)) %}
 <a
     href="{{ $l.updateUrlQuery( {'sort': sortby, 'order': 'desc' if asc else 'asc'}) }}"
     class="wave inline-flex items-center gap-1 font-medium rounded text-slate-600 hover:text-slate-900 focus:outline-none no-underline group"
@@ -2110,7 +2102,7 @@ $t('sidebar.info') }}
         <i class="fas fa-sort ml-1 text-slate-400 group-hover:text-slate-500"></i>
     {% endif %}
 </a>""",
-  r"template/sidebar.j2.html": r"""<!-- Sidebar -->
+	r"template/sidebar.j2.html": r"""<!-- Sidebar -->
 {% set dir = $t('dir') %}
 <aside id="sidebar" class="fixed inset-y-0 start-0 z-40 w-[280px] overflow-y-auto border-e border-gray-200 bg-white transform transition-transform duration-300 ease-in-out shadow-lg {{ 'translate-x-full lg:translate-x-0' if dir=='rtl' else '-translate-x-full lg:translate-x-0' }}" aria-hidden="true" data-state="closed" style="scrollbar-width: thin; scrollbar-color: rgba(59, 130, 246, 0.3) transparent;">
   <div class="h-full flex flex-col">
@@ -2439,8 +2431,7 @@ $t('sidebar.info') }}
   </div>
 </aside>
 """,
-  r"template/footer.j2.html":
-      r"""<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+	r"template/footer.j2.html": r"""<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
 <script
   src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
   integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
@@ -2455,7 +2446,7 @@ $t('sidebar.info') }}
 {{ assets.dataJs() }}
 {{ assets.js() }}
 """,
-  r"template/navbar.j2.html": r"""<nav
+	r"template/navbar.j2.html": r"""<nav
   id="navbar"
   class="fixed w-full top-0 z-50 border-b border-gray-200/80 bg-white/80 backdrop-blur-md shadow-sm transition-all duration-300"
 >
@@ -2591,14 +2582,14 @@ $t('sidebar.info') }}
   </div>
 </nav>
 """,
-  r"template/home.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"template/home.j2.html": r"""{% extends 'template/template.j2.html' %}
 
 {% block title %}
     {{ $t('sidebar.home') }}
 {% endblock %}
 
 {% block content %}
-<div class="space-y-8">  
+<div class="space-y-8">
   <!-- Hero Section -->
   <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 p-8 shadow-xl lg:p-12">
     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJWMzJoMnptMCAyaC0ydjJoMnptMi0yaDJ2Mmgtem0wLTJoMnYyaC0yem0tMi0yaC0ydjJoMnptMi0yaDJ2Mmgtenz0iLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>
@@ -2606,7 +2597,7 @@ $t('sidebar.info') }}
       <div dir="ltr" class="flex flex-col items-center justify-center gap-6 text-center lg:flex-row lg:text-left">
         <div class="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/20 shadow-lg backdrop-blur-sm ring-4 ring-white/30">
           <img
-            src="{{ $e.url('logo.svg') }}" 
+            src="{{ $e.url('logo.svg') }}"
             alt="{{ $t('logo.title') }}"
             class="h-full w-full object-contain drop-shadow-2xl"
           />
@@ -2762,7 +2753,7 @@ $t('sidebar.info') }}
 </div>
 {% endblock %}
 """,
-  r"template/template.j2.html": r"""<!DOCTYPE html>
+	r"template/template.j2.html": r"""<!DOCTYPE html>
 <html lang="{{ $e.ln }}" dir="{{ $t('dir') }}" class="h-full overflow-x-hidden">
 
 <head>
@@ -2893,8 +2884,7 @@ $t('sidebar.info') }}
 </body>
 
 </html>""",
-  r"template/paging.j2.html":
-      r"""<div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-xs md:text-sm">
+	r"template/paging.j2.html": r"""<div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-xs md:text-sm">
   <div class="hidden md:block text-gray-600 font-medium">
     {{ $t('pagination.showing') }}
     <span class="font-semibold text-gray-800">{{ (($v.page-1) * $v.pageSize)+1 if $v.total > 0 else 0 }}</span>

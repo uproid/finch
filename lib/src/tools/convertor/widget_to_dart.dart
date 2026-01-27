@@ -10,7 +10,7 @@ class WidgetToDart {
   Future<String> generate() async {
     var result = await _readPaths(path);
 
-    File file = File(joinPaths([path, 'template_dart.g.dart']));
+    File file = File(joinPaths([path, 'widget_dart.g.dart']));
     await file.writeAsString(
       "var mapTemplates = ${result.dart};",
       flush: true,
