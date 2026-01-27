@@ -31,7 +31,6 @@ class WidgetSwagger extends FinchStringWidget {
                       'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap'
                 }),
                 $Link(attrs: {'rel': 'stylesheet', 'href': cssUrl}),
-                $Style(children: [$Raw(_getMotherLayoutCSS())]),
               ]),
               $Body(children: [
                 $Main(attrs: {
@@ -54,29 +53,6 @@ class WidgetSwagger extends FinchStringWidget {
 
         return html;
       };
-
-  String _getMotherLayoutCSS() {
-    return '''
-    body {
-      font-family: 'Inter', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      transition: all 0.3s ease;
-    }
-    .swagger-ui .copy-to-clipboard {
-      background-color: #CCCCCC;
-    }
-    .swagger-main {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 2rem;
-      border-radius: 16px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-      min-height: 70vh;
-    }
-    ''';
-  }
 
   String _getSwaggerInitJS(String url) {
     return '''
