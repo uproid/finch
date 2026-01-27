@@ -24,12 +24,6 @@ class WidgetSwagger extends FinchStringWidget {
                   'name': 'viewport',
                   'content': 'width=device-width, initial-scale=1.0'
                 }),
-                // Google Fonts for modern look
-                $Link(attrs: {
-                  'rel': 'stylesheet',
-                  'href':
-                      'https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap'
-                }),
                 $Link(attrs: {'rel': 'stylesheet', 'href': cssUrl}),
               ]),
               $Body(children: [
