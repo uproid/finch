@@ -2125,6 +2125,7 @@ var languageDart = {
 		"logo": r"""Finch""",
 		"logo.title": r"""Finch""",
 		"pages.title": r"""Title""",
+		"email.title": r"""Email Example""",
 		"welcome.message": r"""Welcome to""",
 		"features.title": r"""Finch Features""",
 		"features.description": r"""Finch provides you with everything you need to build a powerful web application in the simplest way possible using the Dart language. This tool includes a set of features for creating a fast, lightweight, and robust web app. Here are some of the features it offers:""",
