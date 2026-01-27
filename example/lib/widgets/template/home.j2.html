@@ -3,17 +3,17 @@
 {% block title %}
     {{ $t('sidebar.home') }}
 {% endblock %}
-
+  
 {% block content %}
-<div class="space-y-8">
-  <!-- Hero Section -->
+<div class="space-y-8">  
+  <!-- Hero Section -->  
   <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 p-8 shadow-xl lg:p-12">
     <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJWMzJoMnptMCAyaC0ydjJoMnptMi0yaDJ2Mmgtem0wLTJoMnYyaC0yem0tMi0yaC0ydjJoMnptMi0yaDJ2Mmgtenz0iLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>
     <div class="relative">
       <div dir="ltr" class="flex flex-col items-center justify-center gap-6 text-center lg:flex-row lg:text-left">
         <div class="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/20 shadow-lg backdrop-blur-sm ring-4 ring-white/30">
           <img
-            src="{{ $e.url('logo.svg') }}"
+            src="{{ $e.url('logo.svg') }}" 
             alt="{{ $t('logo.title') }}"
             class="h-full w-full object-contain drop-shadow-2xl"
           />
@@ -23,8 +23,8 @@
           <p class="mt-2 text-sm font-medium tracking-wider text-blue-100">{{ $t('Version') }} {{ version }}</p>
         </div>
       </div>
-    </div>
-  </div>
+    </div>  
+  </div>  
 
   {% if loginResult != true %}
   <!-- Features Card -->

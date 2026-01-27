@@ -10,9 +10,9 @@ class JinjaToDart {
   Future<String> generate() async {
     var result = await _readPaths(path);
 
-    File file = File(joinPaths([path, 'jinja_dart.g.dart']));
+    File file = File(joinPaths([path, 'template_dart.g.dart']));
     await file.writeAsString(
-      "var jinjaTemplates = ${result.dart};",
+      "var mapTemplates = ${result.dart};",
       flush: true,
     );
     if (FinchApp.config.jinjaMapTemplate != null) {

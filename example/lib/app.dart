@@ -16,7 +16,7 @@ import 'route/web_route.dart';
 import 'package:finch/finch_capp.dart';
 
 FinchConfigs configs = FinchConfigs(
-  jinjaMapTemplate: jinjaTemplates,
+  jinjaMapTemplate: mapTemplates,
   widgetsPath: pathTo(env['WIDGETS_PATH'] ?? "./lib/widgets"),
   widgetsType: env['WIDGETS_TYPE'] ?? 'j2.html',
   languagePath: pathTo(env['LANGUAGE_PATH'] ?? "./lib/languages"),
