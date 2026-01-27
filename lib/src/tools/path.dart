@@ -12,7 +12,13 @@ import 'package:path/path.dart' as p;
 /// ```
 String pathTo(String path) {
   path = p.normalize(path);
-  path = p.prettyUri(path);
+
+  // If path is absolute and starts with appPath, make it relative
+  var normalizedAppPath = p.normalize(pathApp);
+  if (p.isAbsolute(path) && path.startsWith(normalizedAppPath)) {
+    path = path.substring(normalizedAppPath.length);
+  }
+
   path = pathNorm(path);
   return p.normalize(p.join(pathApp, path));
 }

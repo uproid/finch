@@ -10,7 +10,7 @@ class JinjaToDart {
   Future<String> generate() async {
     var result = await _readPaths(path);
 
-    File file = File(joinPaths([path, 'jinja_dart.g.dart']));
+    File file = File(joinPaths([path, 'widget_dart.g.dart']));
     await file.writeAsString(
       "var jinjaTemplates = ${result.dart};",
       flush: true,

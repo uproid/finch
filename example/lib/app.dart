@@ -1,5 +1,5 @@
 import 'package:example/languages/language_dart.g.dart';
-import 'package:example/widgets/jinja_dart.g.dart';
+import 'package:example/widgets/widget_dart.g.dart';
 import 'package:finch/model.dart';
 import '../core/local_events.dart';
 import 'package:finch/finch_route.dart';
