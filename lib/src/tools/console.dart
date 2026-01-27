@@ -149,3 +149,36 @@ class Console {
     return Platform.environment['FINCH_IS_TEST'] == 'true';
   }
 }
+
+class Print {
+  static final _logger = Logger(
+    level: Console.isTestRunning() ? Level.off : Level.debug,
+    printer: PrettyPrinter(
+      printEmojis: false,
+      noBoxingByDefault: false,
+      lineLength: 0,
+      stackTraceBeginIndex: 0,
+      methodCount: 0,
+      errorMethodCount: 0,
+    ),
+  );
+  static void error(String message) {
+    _logger.e(message);
+  }
+
+  static void info(String message) {
+    _logger.i(message);
+  }
+
+  static void debug(String message) {
+    _logger.d(message);
+  }
+
+  static void fatal(String message) {
+    _logger.f(message);
+  }
+
+  static void warning(String message) {
+    _logger.w(message);
+  }
+}

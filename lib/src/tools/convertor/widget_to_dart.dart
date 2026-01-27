@@ -2,17 +2,17 @@ import 'dart:io';
 import 'package:finch/finch_app.dart';
 import 'package:finch/finch_tools.dart';
 
-class JinjaToDart {
+class WidgetToDart {
   String path;
   String fileExtention;
-  JinjaToDart(this.path, {this.fileExtention = '.jinja'});
+  WidgetToDart(this.path, {this.fileExtention = '.jinja'});
 
   Future<String> generate() async {
     var result = await _readPaths(path);
 
-    File file = File(joinPaths([path, 'widget_dart.g.dart']));
+    File file = File(joinPaths([path, 'template_dart.g.dart']));
     await file.writeAsString(
-      "var jinjaTemplates = ${result.dart};",
+      "var mapTemplates = ${result.dart};",
       flush: true,
     );
     if (FinchApp.config.jinjaMapTemplate != null) {

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:capp/capp.dart';
 import 'package:finch/src/cli/commands/commands.dart';
-import 'package:finch/src/tools/convertor/jinja_to_dart.dart';
+import 'package:finch/src/tools/convertor/widget_to_dart.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -244,13 +244,23 @@ class FinchApp {
 
     server!.address;
 
-    Console.p({
-      'url': config.uri,
-      'path': pathApp,
-      'DB': {
-        'path db': config.dbPath,
-      }
-    });
+    CappConsole.writeTable(
+      [
+        ['', '@> Finch ${FinchApp.info.version}'],
+        ['Url', config.uri.toString()],
+        ['Path App', pathApp],
+        if (config.dbConfig.enable) ['MongoDB', 'Connected'],
+        if (mysqlDriver.connected()) ['MySQL', 'Connected'],
+        if (sqliteDriver.connected()) ['SQLite', 'Connected'],
+        if (hasSocket) ['WebSocket', 'Enabled'],
+        if (config.isLocalDebug) ['Debug Mode', 'Enabled'],
+        if (crons.isNotEmpty) ['Cron Jobs', crons.length.toString()],
+        if (commands.isNotEmpty) ['Has Commands', 'Yes'],
+        if (appLanguages.keys.length > 1)
+          ['Languages', appLanguages.keys.join(',')],
+      ],
+      color: CappColors.info,
+    );
 
     await handleRequests(server!);
     if (awaitCommands) {
@@ -508,7 +518,7 @@ class FinchApp {
               ),
             ],
             run: (c) async {
-              var res = await JinjaToDart(
+              var res = await WidgetToDart(
                 c.getOption('path'),
                 fileExtention: c.getOption('extension'),
               ).generate();
@@ -904,7 +914,7 @@ class FinchApp {
             );
           }),
           'update_template': SocketEvent(onMessage: (socket, data) async {
-            var res = await JinjaToDart(
+            var res = await WidgetToDart(
               config.widgetsPath,
               fileExtention: config.widgetsType,
             ).generate();
