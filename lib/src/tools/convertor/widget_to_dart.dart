@@ -28,7 +28,9 @@ class WidgetToDart {
     Map<String, String> map = {};
     var dir = Directory(path);
     await for (var entity in dir.list(recursive: true, followLinks: false)) {
-      if (entity is File && entity.path.endsWith(fileExtention)) {
+      if (entity is File &&
+          entity.path.endsWith(fileExtention) &&
+          entity.existsSync()) {
         var content = await entity.readAsString();
         var relatedPath = entity.path.substring(path.length + 1);
         relatedPath = pathNorm(
