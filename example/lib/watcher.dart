@@ -6,12 +6,11 @@ import 'package:vm_service/vm_service.dart';
 import 'package:vm_service/vm_service_io.dart';
 import 'package:watcher/watcher.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'app.dart' as app;
+import 'serv.dart' as servApp;
 
 void main([List<String>? args]) async {
   runZonedGuarded(() async {
-    app.main(args);
-
+    servApp.main(args);
     var observatoryUri = (await dev.Service.getInfo()).serverUri;
     if (observatoryUri != null) {
       var serviceClient = await vmServiceConnectUri(

@@ -1,18 +1,16 @@
 FROM dart:stable AS build
 WORKDIR /www/finch
 
-# Install system dependencies
 RUN apt-get update -y && apt-get install -y libsqlite3-dev
 
-# Copy only pubspec files first for better Docker layer caching
 COPY pubspec.yaml ./
+COPY lib/ ./lib/
 COPY example/pubspec.yaml ./example/
 
-# Get dependencies
-RUN dart pub get --no-offline
 RUN dart pub get --directory=./example --no-offline
 
 EXPOSE 8085 8181
+
 
 # Create startup script that ensures dependencies are installed from volume
 RUN echo '#!/bin/bash\n\

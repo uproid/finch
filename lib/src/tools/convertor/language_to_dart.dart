@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:finch/finch_tools.dart';
+import 'package:finch/model_less.dart';
 
 class LanguageToDart {
   String path;
@@ -38,13 +40,11 @@ class LanguageToDart {
         if (langMap != null) {
           var languageName = entity.fileName;
           map[languageName] = {};
-          result += '\t"$languageName": {\n';
-          for (var key in langMap.keys) {
-            var value = langMap[key];
-            result += '\t\t"$key": r"""$value""",\n';
-            map[languageName]![key] = value.toString();
-          }
-          result += '\t},\n';
+          result += '\t"$languageName": ';
+          result += jsonEncode(langMap);
+          map[languageName] = Map<String, String>.from(langMap
+              .map((key, value) => MapEntry(key.toString(), value.toString())));
+          result += ',\n';
         }
       }
     }
