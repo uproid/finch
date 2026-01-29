@@ -12,8 +12,8 @@ void main(List<String>? args) {
   _modifyWidgets();
   Print.info('✅  Initial widget files converted.');
 
-  ServManager([
-    ServPath(
+  ServeManager([
+    ServePath(
       path: a.configs.languagePath,
       extensions: ['json'],
       recursive: false,
@@ -25,7 +25,7 @@ void main(List<String>? args) {
         );
       },
     ),
-    ServPath(
+    ServePath(
       path: a.configs.widgetsPath,
       extensions: [a.configs.widgetsType],
       recursive: true,
@@ -60,34 +60,33 @@ Future<({Map<String, Map<String, String>> map, String path})>
   return res;
 }
 
-class ServManager {
-  final List<ServPath> servs;
+class ServeManager {
+  final List<ServePath> serves;
   final List<String> _watchedPaths = [];
 
-  ServManager(this.servs);
+  ServeManager(this.serves);
 
   void watching() {
-    for (var i = 0; i < servs.length; i++) {
-      var serv = servs[i];
-      if (_watchedPaths.contains(serv.path)) {
+    for (var i = 0; i < serves.length; i++) {
+      var serve = serves[i];
+      if (_watchedPaths.contains(serve.path)) {
         continue;
       }
-      print(serv.path);
-      _watchedPaths.add(serv.path);
-      var directory = Directory(serv.path);
+      _watchedPaths.add(serve.path);
+      var directory = Directory(serve.path);
       directory
           .watch(events: FileSystemEvent.all, recursive: true)
           .listen((event) {
-        serv.run(event.path);
+        serve.run(event.path);
       });
 
-      if (serv.recursive) {
+      if (serve.recursive) {
         directory.listSync().whereType<Directory>().forEach((subDir) {
-          servs.add(ServPath(
+          serves.add(ServePath(
             path: subDir.path,
-            extensions: serv.extensions,
-            recursive: serv.recursive,
-            onChange: serv.onChange,
+            extensions: serve.extensions,
+            recursive: serve.recursive,
+            onChange: serve.onChange,
           ));
         });
         watching();
@@ -96,14 +95,14 @@ class ServManager {
   }
 }
 
-class ServPath {
+class ServePath {
   String path;
   List<String> extensions;
   bool recursive;
   Future<void> Function(String path) onChange;
   var doing = false;
 
-  ServPath({
+  ServePath({
     required this.path,
     required this.extensions,
     required this.onChange,

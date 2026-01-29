@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:capp/capp.dart';
+import 'package:finch/finch_console.dart';
 import 'package:finch/src/tools/extensions/directory.dart';
 import 'package:finch/src/tools/path.dart';
 import 'package:finch/finch_app.dart';
 import 'package:archive/archive_io.dart';
+import 'package:yaml/yaml.dart';
 
 class ProjectCommands {
   Future<CappConsole> get(CappController controller) async {
@@ -25,8 +27,12 @@ class ProjectCommands {
     return CappConsole('dart run build_runner build', CappColors.none);
   }
 
-  Future<CappConsole> run(CappController controller) async {
+  Future<CappConsole> run(
+    CappController controller, {
+    bool serve = false,
+  }) async {
     var path = controller.getOption('path');
+    Console.e(path);
     var defaultPath = [
       './bin',
       './lib',
@@ -34,6 +40,7 @@ class ProjectCommands {
     ];
 
     var defaultApp = [
+      if (serve) 'serve.dart',
       'app.dart',
       'server.dart',
       'dart.dart',
@@ -41,6 +48,23 @@ class ProjectCommands {
       'run.dart',
       'watcher.dart',
     ];
+
+    if (path.isEmpty) {
+      var pubspecPath = _findPubspecPath(Directory.current.path);
+      var pubspec = _loadPubspec(pubspecPath);
+      if (pubspec.containsKey('finch')) {
+        var finchConfig = pubspec['finch'];
+        var appPathKey = serve ? 'serve' : 'run';
+        if (finchConfig[appPathKey] != null) {
+          var appPath = finchConfig[appPathKey];
+          if (appPath is String && appPath.isNotEmpty) {
+            path = appPath;
+          }
+        }
+      }
+    }
+
+    print(path);
 
     if (path.isEmpty) {
       for (var p in defaultPath) {
@@ -71,10 +95,19 @@ class ProjectCommands {
         'run',
         "--enable-asserts",
         path,
+        '-v',
       ],
-      mode: ProcessStartMode.inheritStdio,
+      mode: ProcessStartMode.normal,
       workingDirectory: File(path).parent.parent.path,
     );
+
+    // Forward stdout and stderr to console
+    proccess.stdout.listen((data) {
+      stdout.add(data);
+    });
+    proccess.stderr.listen((data) {
+      stderr.add(data);
+    });
 
     var help = "Project is running (${proccess.pid})...\n\n"
         "┌┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬───────────┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┬┐\n"
@@ -103,9 +136,18 @@ class ProjectCommands {
             'run',
             "--enable-asserts",
             path,
+            '-v',
           ],
-          mode: ProcessStartMode.inheritStdio,
+          mode: ProcessStartMode.normal,
         );
+
+        // Forward stdout and stderr to console
+        proccess.stdout.listen((data) {
+          stdout.add(data);
+        });
+        proccess.stderr.listen((data) {
+          stderr.add(data);
+        });
       } else if (['q', 'qy', 'qq'].contains(userInput.toLowerCase())) {
         var res = true;
         if (userInput.toLowerCase() == 'q') {
@@ -121,11 +163,12 @@ class ProjectCommands {
         CappConsole.write("Finch version: v${FinchApp.info.version}");
         CappConsole.write("Dart version: v${Platform.version}");
       } else {
-        CappConsole.write(
-          "Unknown input: ${userInput.toLowerCase()}",
-          CappColors.error,
-        );
-        CappConsole.write(help, CappColors.success);
+        try {
+          proccess.stdin.add(input);
+        } catch (e) {
+          CappConsole.write(
+              "Error sending input to process: $e", CappColors.error);
+        }
       }
     });
 
@@ -274,5 +317,20 @@ class ProjectCommands {
 
     return CappConsole(
         'Finish build ${result == 0 ? 'OK!' : ''}', CappColors.none);
+  }
+
+  String _findPubspecPath(String startPath) {
+    var pubspecFile = File(joinPaths([startPath, 'pubspec.yaml']));
+    if (pubspecFile.existsSync()) {
+      return pubspecFile.path;
+    }
+    throw Exception('pubspec.yaml not found');
+  }
+
+  YamlMap _loadPubspec(String path) {
+    var pubspecFile = File(path);
+    var content = pubspecFile.readAsStringSync();
+    var pubspec = loadYaml(content);
+    return pubspec;
   }
 }

@@ -4,6 +4,7 @@ import 'package:capp/capp.dart';
 import 'package:finch/src/cli/commands/commands.dart';
 import 'package:finch/src/tools/convertor/widget_to_dart.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
+import 'package:finch/src/tools/extensions/capp.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:finch/src/db/mysql/mysql_migration.dart';
@@ -379,10 +380,7 @@ class FinchApp {
               ),
             ],
             run: (c) async {
-              return CappConsole(
-                c.manager.getHelp(c.manager.controllers),
-                CappColors.warning,
-              );
+              return c.manager.writeHelpModern(c.manager.controllers);
             },
           ),
           CappController(

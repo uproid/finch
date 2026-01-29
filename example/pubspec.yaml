@@ -18,3 +18,13 @@ dependencies:
   finch: #^1.0.3 
     path: ../
   watcher:
+
+finch:
+  run: ./lib/app.dart
+  serve: ./lib/serve.dart
+  languages_path: ./lib/languages
+  widgets_path: ./lib/widgets
+  mysql_migrate:
+    path: ./lib/mysql/migrations
+  sqlite_migrate:
+    path: ./lib/sqlite/migrations

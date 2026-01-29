@@ -76,6 +76,18 @@ void main(List<String> args) async {
         ],
       ),
       CappController(
+        'serve',
+        description: 'Serve project with file watcher',
+        run: (controller) => ProjectCommands().run(controller, serve: true),
+        options: [
+          CappOption(
+            name: 'path',
+            shortName: 'p',
+            description: 'Path of app file',
+          ),
+        ],
+      ),
+      CappController(
         'build',
         description: 'Build Project (dart compile exe)',
         run: (controller) => ProjectCommands().build(controller),
