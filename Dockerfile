@@ -17,7 +17,7 @@ RUN echo '#!/bin/bash\n\
 cd /www/finch\n\
 dart pub get --no-offline\n\
 dart pub get --directory=./example --no-offline\n\
-exec dart run --enable-asserts --observe=8181 --enable-vm-service --disable-service-auth-codes /www/finch/example/lib/watcher.dart migrate --init --sqlite\n\
+exec dart run --enable-asserts --disable-service-auth-codes /www/finch/example/lib/serve.dart --no-debug migrate --init --sqlite\n\
 ' > /startup.sh && chmod +x /startup.sh
 
 CMD ["/startup.sh"]

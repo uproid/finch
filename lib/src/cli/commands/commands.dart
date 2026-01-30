@@ -64,8 +64,6 @@ class ProjectCommands {
       }
     }
 
-    print(path);
-
     if (path.isEmpty) {
       for (var p in defaultPath) {
         for (var a in defaultApp) {
