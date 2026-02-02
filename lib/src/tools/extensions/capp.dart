@@ -5,7 +5,7 @@ extension CManager on CappManager {
     var selectedControllers = myControllers ?? [...controllers, main];
     for (var controller in selectedControllers) {
       if (controller.name.isNotEmpty) {
-        CappConsole.write("√ ${controller.name}", CappColors.success);
+        CappConsole.write("✓ ${controller.name}", CappColors.success);
         if (controller.description.isNotEmpty) {
           CappConsole.write(
             "   \t${controller.description}",
