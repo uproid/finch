@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:capp/capp.dart';
 import 'package:finch/finch_console.dart';
+import 'package:finch/src/tools/convertor/language_to_dart.dart';
+import 'package:finch/src/tools/convertor/widget_to_dart.dart';
 import 'package:finch/src/tools/extensions/directory.dart';
 import 'package:finch/src/tools/path.dart';
 import 'package:finch/finch_app.dart';
@@ -9,6 +11,16 @@ import 'package:archive/archive_io.dart';
 import 'package:yaml/yaml.dart';
 
 class ProjectCommands {
+  Map finchConfigs = {};
+  ProjectCommands() {
+    var pubspecPath = _findPubspecPath(Directory.current.path);
+    var pubspec = _loadPubspec(pubspecPath);
+    var finchYaml = pubspec['finch'] as YamlMap?;
+    for (var key in finchYaml?.keys ?? []) {
+      finchConfigs[key] = finchYaml?[key];
+    }
+  }
+
   Future<CappConsole> get(CappController controller) async {
     await Process.start(
       'dart',
@@ -54,7 +66,7 @@ class ProjectCommands {
       var pubspec = _loadPubspec(pubspecPath);
       if (pubspec.containsKey('finch')) {
         var finchConfig = pubspec['finch'];
-        var appPathKey = serve ? 'serve' : 'run';
+        var appPathKey = serve ? 'serve' : 'app';
         if (finchConfig[appPathKey] != null) {
           var appPath = finchConfig[appPathKey];
           if (appPath is String && appPath.isNotEmpty) {
@@ -200,15 +212,22 @@ class ProjectCommands {
       return CappConsole(help, CappColors.none);
     }
 
-    var path = controller.getOption('appPath', def: './lib/app.dart');
+    var path = controller.getOption(
+      'appPath',
+      def: finchConfigs['path'] ?? './lib/app.dart',
+    );
     if (path.isEmpty || !File(path).existsSync()) {
       return CappConsole(
           "The path of main file dart is requirment. for example '--path ./bin/app.dart'",
           CappColors.error);
     }
 
-    var output = controller.getOption('output', def: './finch_build');
-    if (output == './finch_build' && Directory(output).existsSync()) {
+    var defaultOutputPath = finchConfigs['build_output'] ?? './finch_build';
+    var output = controller.getOption(
+      'output',
+      def: defaultOutputPath,
+    );
+    if (output == defaultOutputPath && Directory(output).existsSync()) {
       Directory(output).deleteSync(recursive: true);
     } else if (Directory(output).existsSync()) {
       return CappConsole(
@@ -218,7 +237,11 @@ class ProjectCommands {
     }
     Directory(output).createSync(recursive: true);
 
-    var publicPath = controller.getOption('publicPath', def: './public');
+    var publicPath = controller.getOption(
+      'publicPath',
+      def: finchConfigs['public_path'] ?? './public',
+    );
+
     if (publicPath.isNotEmpty && Directory(publicPath).existsSync()) {
       var publicOutPutPath = joinPaths([output, 'public']);
       Directory(publicOutPutPath).createSync(recursive: true);
@@ -230,9 +253,12 @@ class ProjectCommands {
     }
 
     Directory('$output/lib').createSync(recursive: true);
+    var langPath = controller.getOption(
+      'langPath',
+      def: finchConfigs['languages_path'] ?? './lib/languages',
+    );
 
     if (copyLang) {
-      var langPath = controller.getOption('langPath', def: './lib/languages');
       if (langPath.isNotEmpty && Directory(langPath).existsSync()) {
         var langOutPutPath = joinPaths([output, 'lib/languages']);
         Directory(langOutPutPath).createSync(recursive: true);
@@ -242,10 +268,21 @@ class ProjectCommands {
           type: CappProgressType.circle,
         );
       }
+    } else {
+      await LanguageToDart(
+        langPath,
+        fileExtention: controller.getOption(
+          'languages_type',
+          def: '.${finchConfigs['languages_type'] ?? 'json'}',
+        ),
+      ).generate();
     }
 
+    var widgetPath = controller.getOption(
+      'widgetPath',
+      def: finchConfigs['widgets_path'] ?? './lib/widgets',
+    );
     if (copyWidgets) {
-      var widgetPath = controller.getOption('widgetPath', def: './lib/widgets');
       if (widgetPath.isNotEmpty && Directory(widgetPath).existsSync()) {
         var widgetOutPutPath = joinPaths([output, 'lib/widgets']);
         Directory(widgetOutPutPath).createSync(recursive: true);
@@ -256,6 +293,11 @@ class ProjectCommands {
           type: CappProgressType.circle,
         );
       }
+    } else {
+      await WidgetToDart(
+        widgetPath,
+        fileExtention: '.${finchConfigs['widgets_type'] ?? 'html'}',
+      ).generate();
     }
 
     var envPath = controller.getOption('envPath', def: './.env');
