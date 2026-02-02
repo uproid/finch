@@ -1,13 +1,11 @@
+import 'package:example/route/web_route.dart';
 import 'package:finch/finch_route.dart';
 import 'package:finch/finch_tools.dart';
 import 'package:finch/finch_ui.dart';
-
 import '../models/mock_user_model.dart';
-import 'home_controller.dart';
 
 class AppAuthController extends AuthController<MockUserModel> {
-  HomeController homeController;
-  AppAuthController(this.homeController);
+  AppAuthController();
   MockUserModel? userLogined;
 
   @override

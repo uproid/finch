@@ -1,3 +1,5 @@
+import 'package:example/middleware/test_middleware.dart';
+
 import '../controllers/auth_controller.dart';
 import '../controllers/htmler_controller.dart';
 import '../configs/setting.dart';
@@ -6,28 +8,14 @@ import '../controllers/api_document.dart';
 import 'package:finch/finch_route.dart';
 import '../controllers/home_controller.dart';
 
-class TestMiddleware extends Middleware {
-  AppAuthController auth;
-  TestMiddleware(this.auth);
-
-  @override
-  Future<String?> handle() async {
-    rq.addParam('middleware', DateTime.now().microsecondsSinceEpoch);
-    return null;
-  }
-}
+final homeController = HomeController();
+final htmlerController = HtmlerController();
+final authController = AppAuthController();
+final includeController = IncludeJsController();
+final apiController = ApiController(title: "API Documentation", app: app);
+final testMiddleware = TestMiddleware();
 
 Future<List<FinchRoute>> getWebRoute(Request rq) async {
-  final homeController = HomeController();
-  final htmlerController = HtmlerController();
-  final authController = AppAuthController(homeController);
-  final includeController = IncludeJsController();
-  final apiController = ApiController(
-    title: "API Documentation",
-    app: app,
-  );
-  final Middleware testMiddleware = TestMiddleware(authController);
-
   var paths = [
     FinchRoute(
       key: 'root.sse',

@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:example/route/web_route.dart';
+
 import '../db/sqlite/sqlite_books.dart';
 import '../db/sqlite/sqlite_categories.dart';
 import 'package:finch/finch_sqlite.dart';
@@ -18,7 +20,6 @@ import 'package:finch/finch_app.dart';
 import 'package:finch/finch_tools.dart';
 import 'package:finch/finch_ui.dart';
 import '../app.dart';
-import '../models/mock_user_model.dart';
 
 class HomeController extends Controller {
   HomeController();
@@ -352,17 +353,12 @@ class HomeController extends Controller {
   }
 
   Future<String> renderTemplate(String widget, {bool toData = false}) async {
-    MockUserModel? user;
-    if (rq.session.containsKey('user')) {
-      user = MockUserModel();
-    }
-
     rq.addParam('languages', Setting.languages);
 
     rq.addParams({
       'title': 'logo.title',
       'year': DateTime.now().year,
-      'user': await user?.toParams(),
+      'user': await authController.userLogined?.toParams(),
       'mongoActive': app.mongoDb.isConnected,
       'mysqlActive': app.mysqlDb.connected,
       'version': 'v${FinchApp.info.version}',

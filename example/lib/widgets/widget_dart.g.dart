@@ -1392,7 +1392,12 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
             </td>
             <td class="px-6 py-4 align-top text-sm text-gray-700">{{ route.permissions }}</td>
             <td class="px-6 py-4 align-top text-sm text-gray-700">{{ route.hasAuth | string }}</td>
-            <td class="px-6 py-4 align-top text-sm font-mono text-gray-600">{{ route.controller }}{{ route.index }}</td>
+            <td class="px-6 py-4 align-top text-sm font-mono text-gray-600 text-center">
+              {% if route.middlewares %}
+              <span class="bg-gray-200 rounded m-1 px-2 py-0.5">{{ route.middlewares | join(', ') }}</span>
+              {% endif %}
+              <div>{{ route.controller }}{{ route.index }}</div>
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -2486,6 +2491,9 @@ $t('sidebar.info') }}
           <div class="hidden items-baseline gap-2 sm:flex">
             <span class="text-lg font-bold text-gray-800 transition-colors duration-200 group-hover:text-blue-600">{{ $t('logo.title') }}</span>
             <span class="text-xs font-medium text-gray-400">{{ version }}</span>
+            {% if middleware %}
+              <span class="text-xs bg-blue-100 text-blue-600 rounded-lg px-1">{{ middleware }}</span>
+            {% endif %}
           </div>
         </a>
       </div>
