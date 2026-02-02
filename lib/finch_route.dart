@@ -10,6 +10,7 @@ export 'src/router/route.dart';
 export 'src/router/finch_route.dart';
 export 'src/services/finch_service.dart';
 export 'src/router/controller.dart';
+export 'src/router/middleware.dart';
 export 'src/controllers/auth_controller.dart';
 export 'src/controllers/api_controller.dart';
 export 'src/controllers/swagger_controller.dart';

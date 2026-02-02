@@ -6,6 +6,17 @@ import '../controllers/api_document.dart';
 import 'package:finch/finch_route.dart';
 import '../controllers/home_controller.dart';
 
+class TestMiddleware extends Middleware {
+  AppAuthController auth;
+  TestMiddleware(this.auth);
+
+  @override
+  Future<String?> handle() async {
+    rq.addParam('middleware', DateTime.now().microsecondsSinceEpoch);
+    return null;
+  }
+}
+
 Future<List<FinchRoute>> getWebRoute(Request rq) async {
   final homeController = HomeController();
   final htmlerController = HtmlerController();
@@ -15,6 +26,7 @@ Future<List<FinchRoute>> getWebRoute(Request rq) async {
     title: "API Documentation",
     app: app,
   );
+  final Middleware testMiddleware = TestMiddleware(authController);
 
   var paths = [
     FinchRoute(
@@ -191,6 +203,7 @@ Future<List<FinchRoute>> getWebRoute(Request rq) async {
       extraPath: ['api/info'],
       index: homeController.info,
       apiDoc: ApiDocuments.info,
+      middlewares: [testMiddleware],
     ),
     FinchRoute(
       key: 'root.person.post',

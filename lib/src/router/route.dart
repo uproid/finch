@@ -191,6 +191,12 @@ class Route {
         if (res == false) return (found: false, urlParams: urlParams);
       }
 
+      // Handle middleware before executing controller or index
+      var middlewareResult = await route.handleMiddlewares();
+      if (!middlewareResult) {
+        return (found: false, urlParams: urlParams);
+      }
+
       if (route.index == null) {
         if (route.controller != null) {
           if (!await checkPermission(seenAuth)) {
@@ -217,6 +223,13 @@ class Route {
         var res = await route.auth!.auth();
         if (res == false) return (found: false, urlParams: urlParams);
       }
+
+      // Handle middleware before processing children routes
+      var middlewareResult = await route.handleMiddlewares();
+      if (!middlewareResult) {
+        return (found: false, urlParams: urlParams);
+      }
+
       if (await checkAll(route.children, parentPath: key)) {
         return (found: true, urlParams: urlParams);
       }
