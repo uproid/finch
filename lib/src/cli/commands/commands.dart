@@ -9,6 +9,7 @@ import 'package:finch/src/tools/path.dart';
 import 'package:finch/finch_app.dart';
 import 'package:archive/archive_io.dart';
 import 'package:yaml/yaml.dart';
+import 'package:path/path.dart' as p;
 
 class ProjectCommands {
   Map finchConfigs = {};
@@ -44,11 +45,14 @@ class ProjectCommands {
     bool serve = false,
   }) async {
     var path = controller.getOption('path');
-    Console.e(path);
+
     var defaultPath = [
       './bin',
       './lib',
       './src',
+      './example/bin',
+      './example/lib',
+      './example/src',
     ];
 
     var defaultApp = [
@@ -99,6 +103,7 @@ class ProjectCommands {
       print("Running project from: $path");
     }
 
+    path = p.absolute(path);
     var proccess = await Process.start(
       'dart',
       [

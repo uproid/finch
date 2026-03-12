@@ -63,3 +63,6 @@ dependencies:
 executables:
   finch: finch
 
+finch:
+  serve: ./example/lib/serve.dart
+
