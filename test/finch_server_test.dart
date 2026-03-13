@@ -14,7 +14,7 @@ import 'package:html/parser.dart';
 void main() async {
   FinchApp server = FinchApp(
     configs: FinchConfigs(
-      port: 8089,
+      port: 0,
       publicDir: 'public',
       languagePath: joinPaths([pathApp, '../example/lib/languages']),
       widgetsPath: '../example/lib/widgets',
@@ -234,7 +234,9 @@ void main() async {
             methods: Methods.ALL,
             auth: AppAuthController(true),
             index: () {
-              return rq.renderData(data: {'user': "TEST"});
+              return rq.renderData(data: {
+                'user': "TEST",
+              });
             },
           ),
           FinchRoute(
@@ -242,7 +244,9 @@ void main() async {
             methods: Methods.ALL,
             auth: AppAuthController(false),
             index: () {
-              return rq.renderData(data: {'user': "TEST"});
+              return rq.renderData(data: {
+                'user': "TEST",
+              });
             },
           ),
         ],
@@ -254,6 +258,10 @@ void main() async {
   var httpServer = await server.start([], false).then((value) {
     Console.p("Example app started: http://localhost:${value.port}");
     return value;
+  });
+
+  tearDownAll(() async {
+    await httpServer.close(force: true);
   });
 
   group("Finch Server Test", () {
