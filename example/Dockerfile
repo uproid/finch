@@ -31,4 +31,4 @@ RUN dart pub cache repair
 
 EXPOSE 8085 8181
 
-CMD [ "dart","run","--enable-asserts", "--observe=8181", "--enable-vm-service", "--disable-service-auth-codes","/www/lib/watcher.dart", "migrate", "--init", "--sqlite" ]
+CMD [ "dart","run","--enable-asserts", "--disable-service-auth-codes","/www/lib/serve.dart", "migrate", "--init", "--sqlite" ]

@@ -218,5 +218,20 @@
   "person.form.label.color": "Färg",
   "person.form.tooltip.color": "Välj din färg",
   "person.form.button.submit": "Skicka",
-  "person.form.button.cancel": "Avbryt"
+  "person.form.button.cancel": "Avbryt",
+  "Login Form": "Inloggningsformulär",
+  "Enter your credentials to continue": "Ange dina inloggningsuppgifter för att fortsätta",
+  "File References": "Filreferenser",
+  "Related files for this form example": "Relaterade filer för detta formulärexempel",
+  "Books Management": "Bokhantering",
+  "MySQL database operations with advanced features": "MySQL databasoperationer med avancerade funktioner",
+  "Category deleted successfully": "Kategori raderad framgångsrikt",
+  "Book deleted successfully": "Bok raderad framgångsrikt",
+  "Category title is required": "Kategorititel krävs",
+  "Category added successfully": "Kategori tillagd framgångsrikt",
+  "Error adding category:": "Fel vid tillägg av kategori:",
+  "Book saved successfully": "Bok sparad framgångsrikt",
+  "Error saving book": "Fel vid sparande av bok",
+  "Example SQLite": "SQLite-exempel",
+  "Example SQLite Categories": "SQLite-kategorier exempel"
 }

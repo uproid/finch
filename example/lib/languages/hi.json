@@ -218,5 +218,20 @@
   "person.form.label.color": "रंग",
   "person.form.tooltip.color": "अपना रंग चुनें",
   "person.form.button.submit": "सबमिट करें",
-  "person.form.button.cancel": "रद्द करें"
+  "person.form.button.cancel": "रद्द करें",
+  "Login Form": "लॉगिन फॉर्म",
+  "Enter your credentials to continue": "जारी रखने के लिए अपने क्रेडेंशियल दर्ज करें",
+  "File References": "फ़ाइल संदर्भ",
+  "Related files for this form example": "इस फॉर्म उदाहरण के लिए संबंधित फाइलें",
+  "Books Management": "पुस्तक प्रबंधन",
+  "MySQL database operations with advanced features": "उन्नत सुविधाओं के साथ MySQL डेटाबेस संचालन",
+  "Category deleted successfully": "श्रेणी सफलतापूर्वक हटा दी गई",
+  "Book deleted successfully": "पुस्तक सफलतापूर्वक हटा दी गई",
+  "Category title is required": "श्रेणी शीर्षक आवश्यक है",
+  "Category added successfully": "श्रेणी सफलतापूर्वक जोड़ी गई",
+  "Error adding category:": "श्रेणी जोड़ने में त्रुटि:",
+  "Book saved successfully": "पुस्तक सफलतापूर्वक सहेजी गई",
+  "Error saving book": "पुस्तक सहेजने में त्रुटि",
+  "Example SQLite": "SQLite उदाहरण",
+  "Example SQLite Categories": "SQLite श्रेणियाँ उदाहरण"
 }

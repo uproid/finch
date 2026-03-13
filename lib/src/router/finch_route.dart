@@ -123,6 +123,13 @@ class FinchRoute {
 
   FinchRoute? parent;
 
+  List<Middleware> middlewares = [];
+
+  FinchRoute middleware(Middleware middleware) {
+    middlewares.add(middleware);
+    return this;
+  }
+
   /// Creates a [FinchRoute] instance with the specified parameters.
   ///
   /// [path] and [rq] are required parameters. All other parameters have default values.
@@ -143,6 +150,7 @@ class FinchRoute {
     this.permissions = const [],
     this.hosts = const ['*'],
     this.ports = const [],
+    this.middlewares = const [],
   }) {
     if (key != null && key!.isNotEmpty) {
       _keyedRoutes[key!] = this;
@@ -151,6 +159,8 @@ class FinchRoute {
     for (var child in children) {
       child.parent = this;
     }
+
+    middlewares = List.from(middlewares);
   }
 
   static FinchRoute? getByKey(String key) {
@@ -207,6 +217,7 @@ class FinchRoute {
       'hosts': hosts,
       'ports': ports,
       'key': key,
+      'middlewares': middlewares.map((m) => m.runtimeType.toString()).toList(),
     };
   }
 
@@ -257,6 +268,7 @@ class FinchRoute {
       'hosts': hosts,
       'ports': ports,
       'key': key,
+      'middlewares': middlewares.map((m) => m.runtimeType.toString()).toList(),
     });
 
     for (var epath in extraPath) {
@@ -275,6 +287,8 @@ class FinchRoute {
         'hosts': hosts,
         'ports': ports,
         'key': key,
+        'middlewares':
+            middlewares.map((m) => m.runtimeType.toString()).toList(),
       });
     }
 
@@ -337,6 +351,7 @@ class FinchRoute {
     List<String> hosts = const ['*'],
     List<int> ports = const [],
     String? key,
+    List<Middleware> middlewares = const [],
   }) {
     var res = <FinchRoute>[];
 
@@ -360,10 +375,21 @@ class FinchRoute {
         hosts: hosts,
         ports: ports,
         key: key != null ? '$key.$i' : null,
+        middlewares: middlewares,
       );
       res.add(route);
     }
 
     return res;
+  }
+
+  Future<bool> handleMiddlewares() async {
+    for (var middleware in middlewares) {
+      final result = await middleware.handle();
+      if (result?.isNotEmpty ?? false) {
+        return false;
+      }
+    }
+    return true;
   }
 }

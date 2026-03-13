@@ -234,9 +234,7 @@ void main() async {
             methods: Methods.ALL,
             auth: AppAuthController(true),
             index: () {
-              return rq.renderData(data: {
-                'user': "TEST",
-              });
+              return rq.renderData(data: {'user': "TEST"});
             },
           ),
           FinchRoute(
@@ -244,9 +242,7 @@ void main() async {
             methods: Methods.ALL,
             auth: AppAuthController(false),
             index: () {
-              return rq.renderData(data: {
-                'user': "TEST",
-              });
+              return rq.renderData(data: {'user': "TEST"});
             },
           ),
         ],

@@ -13,6 +13,7 @@ jobs:
 
       - name: Push example to second repo
         run: |
+          set -e
           git config --global user.name "uproid"
           git config --global user.email "info@uproid.com"
 

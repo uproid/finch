@@ -38,6 +38,9 @@
           <div class="hidden items-baseline gap-2 sm:flex">
             <span class="text-lg font-bold text-gray-800 transition-colors duration-200 group-hover:text-blue-600">{{ $t('logo.title') }}</span>
             <span class="text-xs font-medium text-gray-400">{{ version }}</span>
+            {% if middleware %}
+              <span class="text-xs bg-blue-100 text-blue-600 rounded-lg px-1">{{ middleware }}</span>
+            {% endif %}
           </div>
         </a>
       </div>
