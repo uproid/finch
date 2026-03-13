@@ -143,11 +143,11 @@ class DebuggerStatusBar {
         z-index: 10000;
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
         transition: transform 0.3s ease;
-        background: #1e1e1e;
-        border-top: 1px solid #333333;
-        box-shadow: 0 -1px 3px rgba(0,0,0,0.12), 0 -1px 2px rgba(0,0,0,0.24);
+        background: linear-gradient(180deg, #12141a 0%, #0d0f14 100%);
+        border-top: 1px solid rgba(99, 102, 241, 0.25);
+        box-shadow: 0 -2px 12px rgba(0,0,0,0.4), 0 -1px 0 rgba(99, 102, 241, 0.1);
         height: 40px;
-        backdrop-filter: blur(8px);
+        backdrop-filter: blur(12px);
       }
       
       .wa-console #debugger-container.collapsed {
@@ -155,12 +155,12 @@ class DebuggerStatusBar {
       }
       
       .wa-console #debugger-container.disconnected {
-        background: #2d1b1e !important;
-        border-top: 1px solid #d32f2f !important;
+        background: linear-gradient(180deg, #1a1015 0%, #140d10 100%) !important;
+        border-top: 1px solid rgba(239, 68, 68, 0.4) !important;
       }
       
       .wa-console #debugger-container.disconnected #debugger-bar {
-        border-top: 1px solid #d32f2f;
+        border-top: 1px solid rgba(239, 68, 68, 0.4);
       }
       
       .wa-console #debugger-toggle {
@@ -173,8 +173,8 @@ class DebuggerStatusBar {
         z-index: 10001;
         height: 35px;
         width: 35px;
-        background: rgba(255,255,255,0.8);
-        border: 1px solid #696cff;
+        background: rgba(15, 17, 23, 0.95);
+        border: 1px solid rgba(99, 102, 241, 0.4);
         border-radius: 8px;
         color: white;
         cursor: pointer;
@@ -191,9 +191,9 @@ class DebuggerStatusBar {
       }
       
       .wa-console #debugger-toggle:hover {
-        background: #FFFFFF;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-        border: 2px solid #696cff;
+        background: rgba(99, 102, 241, 0.15);
+        box-shadow: 0 0 16px rgba(99, 102, 241, 0.25);
+        border: 2px solid rgba(99, 102, 241, 0.6);
       }
       
       .wa-console #debugger-bar {
@@ -201,7 +201,7 @@ class DebuggerStatusBar {
         height: 32px;
         display: flex;
         align-items: center;
-        background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
+        background: linear-gradient(90deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
       }
       
       .wa-console .debugger-content {
@@ -224,7 +224,7 @@ class DebuggerStatusBar {
         background: transparent;
         padding: 2px 8px;
         border-radius: 3px;
-        color: #cccccc;
+        color: #a1a1aa;
         font-size: 11px;
         font-weight: 500;
         display: flex;
@@ -236,28 +236,28 @@ class DebuggerStatusBar {
       }
       
       .wa-console .status-running {
-        color: #4CAF50 !important;
-        border: 1px solid rgba(76, 175, 80, 0.3) !important;
-        background: rgba(76, 175, 80, 0.08) !important;
+        color: #34d399 !important;
+        border: 1px solid rgba(52, 211, 153, 0.3) !important;
+        background: rgba(52, 211, 153, 0.1) !important;
       }
       
       .wa-console .status-paused {
-        color: #FFC107 !important;
-        border: 1px solid rgba(255, 193, 7, 0.3) !important;
-        background: rgba(255, 193, 7, 0.08) !important;
+        color: #fbbf24 !important;
+        border: 1px solid rgba(251, 191, 36, 0.3) !important;
+        background: rgba(251, 191, 36, 0.1) !important;
       }
       
       .wa-console .status-stopped {
-        color: #F44336 !important;
-        border: 1px solid rgba(244, 67, 54, 0.3) !important;
-        background: rgba(244, 67, 54, 0.08) !important;
+        color: #f87171 !important;
+        border: 1px solid rgba(248, 113, 113, 0.3) !important;
+        background: rgba(248, 113, 113, 0.1) !important;
       }
       
       .wa-console .debugger-btn {
-        background: rgba(255,255,255,0.1);
-        border: 1px solid rgba(255,255,255,0.2);
+        background: rgba(99, 102, 241, 0.1);
+        border: 1px solid rgba(99, 102, 241, 0.25);
         border-radius: 8px;
-        color: white;
+        color: #e2e8f0;
         padding: 8px 14px;
         cursor: pointer;
         font-size: 11px;
@@ -269,9 +269,9 @@ class DebuggerStatusBar {
       }
       
       .wa-console .debugger-btn:hover {
-        background: rgba(255,255,255,0.2);
+        background: rgba(99, 102, 241, 0.2);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
       }
       
       .wa-console .debugger-btn:active {
@@ -279,13 +279,13 @@ class DebuggerStatusBar {
       }
       
       .wa-console .debugger-btn.active {
-        background: rgba(102, 126, 234, 0.5);
-        border-color: #667eea;
-        box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        background: rgba(99, 102, 241, 0.35);
+        border-color: #6366f1;
+        box-shadow: 0 0 10px rgba(99, 102, 241, 0.3);
       }
       
       .wa-console .debugger-info {
-        color: #cccccc;
+        color: #a1a1aa;
         font-size: 10px;
         display: flex;
         align-items: center;
@@ -302,14 +302,14 @@ class DebuggerStatusBar {
         align-items: center;
         gap: 4px;
         white-space: nowrap;
-        color: #969696;
+        color: #71717a;
       }
       
       .wa-console .debugger-info span:before {
         content: '';
         width: 1px;
         height: 12px;
-        background: #404040;
+        background: #27272a;
         margin-right: 8px;
       }
       
@@ -323,23 +323,23 @@ class DebuggerStatusBar {
         border-radius: 50%;
         display: inline-block;
         box-shadow: none;
-        border: 1px solid rgba(255,255,255,0.2);
+        border: 1px solid rgba(255,255,255,0.1);
       }
       
       .wa-console .indicator-green { 
-        background: #4CAF50; 
-        border-color: #4CAF50;
-        box-shadow: 0 0 4px rgba(76, 175, 80, 0.4);
+        background: #34d399; 
+        border-color: #34d399;
+        box-shadow: 0 0 6px rgba(52, 211, 153, 0.5);
       }
       .wa-console .indicator-yellow { 
-        background: #FFC107; 
-        border-color: #FFC107;
-        box-shadow: 0 0 4px rgba(255, 193, 7, 0.4);
+        background: #fbbf24; 
+        border-color: #fbbf24;
+        box-shadow: 0 0 6px rgba(251, 191, 36, 0.5);
       }
       .wa-console .indicator-red { 
-        background: #F44336; 
-        border-color: #F44336;
-        box-shadow: 0 0 4px rgba(244, 67, 54, 0.4);
+        background: #f87171; 
+        border-color: #f87171;
+        box-shadow: 0 0 6px rgba(248, 113, 113, 0.5);
       }
       
       .wa-console .debugger-notification {
@@ -355,21 +355,26 @@ class DebuggerStatusBar {
         font-weight: 500;
         transform: translateX(100%);
         transition: transform 0.3s ease;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.08);
       }
       
       .wa-console .notification-success { 
-        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+        border-color: rgba(52, 211, 153, 0.3);
       }
       .wa-console .notification-warning { 
-        background: linear-gradient(135deg, #FF9800 0%, #f57c00 100%);
+        background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+        border-color: rgba(251, 191, 36, 0.3);
       }
       .wa-console .notification-error { 
-        background: linear-gradient(135deg, #F44336 0%, #d32f2f 100%);
+        background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+        border-color: rgba(248, 113, 113, 0.3);
       }
       .wa-console .notification-info { 
-        background: linear-gradient(135deg, #2196F3 0%, #1976d2 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+        border-color: rgba(99, 102, 241, 0.3);
       }
       
       /* Console Modal Styles */
@@ -380,7 +385,7 @@ class DebuggerStatusBar {
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.7);
+        background: rgba(0, 0, 0, 0.75);
         z-index: 10003;
         display: flex;
         justify-content: center;
@@ -388,7 +393,7 @@ class DebuggerStatusBar {
         opacity: 0;
         visibility: hidden;
         transition: all 0.2s ease;
-        backdrop-filter: blur(4px);
+        backdrop-filter: blur(6px);
       }
       
       .wa-console .console-modal.active {
@@ -397,14 +402,14 @@ class DebuggerStatusBar {
       }
 
       .wa-console .console-modal-content {
-        background: #1e1e1e;
-        border: 1px solid #333333;
+        background: #0f1117;
+        border: 1px solid rgba(99, 102, 241, 0.2);
         border-radius: 6px;
         width: 90%;
         max-width: 1000px;
         max-height: 85%;
         overflow: hidden;
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(99, 102, 241, 0.1);
         transform: scale(0.95);
         transition: transform 0.2s ease;
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
@@ -415,10 +420,10 @@ class DebuggerStatusBar {
       }
 
       .wa-console .console-modal-header {
-        background: #2d2d2d;
-        border-bottom: 1px solid #404040;
+        background: linear-gradient(180deg, #1a1c25 0%, #14161e 100%);
+        border-bottom: 1px solid rgba(99, 102, 241, 0.15);
         padding: 12px 16px;
-        color: #cccccc;
+        color: #e2e8f0;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -428,14 +433,14 @@ class DebuggerStatusBar {
         font-size: 13px;
         font-weight: 500;
         margin: 0;
-        color: #cccccc;
+        color: #e2e8f0;
         letter-spacing: 0.3px;
       }
       
       .wa-console .console-modal-close {
         background: none;
         border: none;
-        color: #969696;
+        color: #71717a;
         font-size: 16px;
         cursor: pointer;
         padding: 0;
@@ -449,8 +454,8 @@ class DebuggerStatusBar {
       }
       
       .wa-console .console-modal-close:hover {
-        background: rgba(255, 255, 255, 0.1);
-        color: #cccccc;
+        background: rgba(248, 113, 113, 0.15);
+        color: #f87171;
       }
       
       .wa-console .console-button-container {
@@ -461,9 +466,9 @@ class DebuggerStatusBar {
       }
       
       .wa-console .console-clear-btn {
-        background: #d32f2f;
-        border: 1px solid #f44336;
-        color: white;
+        background: rgba(220, 38, 38, 0.15);
+        border: 1px solid rgba(248, 113, 113, 0.3);
+        color: #f87171;
         font-size: 10px;
         font-weight: 500;
         cursor: pointer;
@@ -477,8 +482,8 @@ class DebuggerStatusBar {
       }
       
       .wa-console .console-clear-btn:hover {
-        background: #b71c1c;
-        border-color: #d32f2f;
+        background: rgba(220, 38, 38, 0.25);
+        border-color: rgba(248, 113, 113, 0.5);
         transform: translateY(-1px);
       }
       
@@ -494,13 +499,13 @@ class DebuggerStatusBar {
         padding: 16px;
         max-height: 600px;
         overflow-y: auto;
-        color: #cccccc;
-        background: #1e1e1e;
+        color: #e2e8f0;
+        background: #0f1117;
       }
       
       .wa-console .error-summary {
-        background: rgba(244, 67, 54, 0.08);
-        border-left: 3px solid #f44336;
+        background: rgba(248, 113, 113, 0.06);
+        border-left: 3px solid #f87171;
         padding: 12px 16px;
         margin-bottom: 16px;
         border-radius: 3px;
@@ -509,13 +514,13 @@ class DebuggerStatusBar {
       .wa-console .error-title {
         font-size: 14px;
         font-weight: 500;
-        color: #ff6b6b;
+        color: #fca5a5;
         margin-bottom: 6px;
       }
       
       .wa-console .error-message {
         font-size: 12px;
-        color: #cccccc;
+        color: #a1a1aa;
         line-height: 1.4;
       }
       
@@ -530,20 +535,20 @@ class DebuggerStatusBar {
       .wa-console .error-section-title {
         font-size: 11px;
         font-weight: 500;
-        color: #569cd6;
+        color: #818cf8;
         margin-bottom: 8px;
         text-transform: uppercase;
         letter-spacing: 0.8px;
       }
 
       .wa-console .error-json {
-        background: #0f0f0f;
-        border: 1px solid #333;
+        background: #080a0f;
+        border: 1px solid #1e2030;
         border-radius: 3px;
         padding: 12px;
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
         font-size: 11px;
-        color: #d4d4d4;
+        color: #c4b5fd;
         overflow-x: auto;
         white-space: pre-wrap;
         word-wrap: break-word;
@@ -551,13 +556,13 @@ class DebuggerStatusBar {
       }
 
       .wa-console .stack-trace {
-        background: #0f0f0f;
-        border: 1px solid #333;
+        background: #080a0f;
+        border: 1px solid #1e2030;
         border-radius: 3px;
         padding: 12px;
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
         font-size: 10px;
-        color: #ff8a80;
+        color: #fca5a5;
         max-height: 200px;
         overflow-y: auto;
         line-height: 1.3;
@@ -565,9 +570,9 @@ class DebuggerStatusBar {
 
       .wa-console .error-tabs {
         display: flex;
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid #1e2030;
         margin-bottom: 12px;
-        background: #252526;
+        background: #14161e;
         border-radius: 3px 3px 0 0;
       }
 
@@ -575,7 +580,7 @@ class DebuggerStatusBar {
         padding: 8px 12px;
         background: none;
         border: none;
-        color: #969696;
+        color: #71717a;
         cursor: pointer;
         font-size: 11px;
         font-weight: 400;
@@ -585,14 +590,14 @@ class DebuggerStatusBar {
       }
 
       .wa-console .error-tab.active {
-        color: #cccccc;
-        background: #1e1e1e;
-        border-bottom: 2px solid #569cd6;
+        color: #e2e8f0;
+        background: #0f1117;
+        border-bottom: 2px solid #6366f1;
       }
       
       .wa-console .error-tab:hover {
-        color: #cccccc;
-        background: rgba(255, 255, 255, 0.05);
+        color: #a1a1aa;
+        background: rgba(99, 102, 241, 0.05);
       }
       
       .wa-console .tab-content {
@@ -608,24 +613,24 @@ class DebuggerStatusBar {
         width: 100%;
         border-collapse: collapse;
         margin-top: 12px;
-        background: #1e1e1e;
-        border: 1px solid #333;
+        background: #0f1117;
+        border: 1px solid #1e2030;
         border-radius: 3px;
         overflow: hidden;
         font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
       }
       
       .wa-console .routes-table th {
-        background: #2d2d2d;
-        color: #cccccc;
+        background: #14161e;
+        color: #a1a1aa;
         padding: 8px 6px;
         text-align: left;
         font-size: 10px;
         font-weight: 500;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        border-bottom: 1px solid #404040;
-        border-right: 1px solid #333;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.15);
+        border-right: 1px solid #1e2030;
       }
       
       .wa-console .routes-table th:last-child {
@@ -634,10 +639,10 @@ class DebuggerStatusBar {
       
       .wa-console .routes-table td {
         padding: 6px 6px;
-        border-bottom: 1px solid #2a2a2a;
-        border-right: 1px solid #2a2a2a;
+        border-bottom: 1px solid #1a1c25;
+        border-right: 1px solid #1a1c25;
         font-size: 10px;
-        color: #cccccc;
+        color: #e2e8f0;
         vertical-align: top;
       }
       
@@ -646,11 +651,11 @@ class DebuggerStatusBar {
       }
       
       .wa-console .routes-table tr:nth-child(even) {
-        background: rgba(255,255,255,0.02);
+        background: rgba(99, 102, 241, 0.02);
       }
       
       .wa-console .routes-table tr:hover {
-        background: rgba(255, 255, 255, 0.05);
+        background: rgba(99, 102, 241, 0.06);
       }
       
       .wa-console .method-badge {
@@ -663,16 +668,16 @@ class DebuggerStatusBar {
         letter-spacing: 0.5px;
       }
       
-      .wa-console .method-get { background: #4CAF50; color: white; }
-      .wa-console .method-post { background: #2196F3; color: white; }
-      .wa-console .method-put { background: #FF9800; color: white; }
-      .wa-console .method-delete { background: #f44336; color: white; }
-      .wa-console .method-patch { background: #9C27B0; color: white; }
-      .wa-console .method-error { background: #f44336; color: white; }
-      .wa-console .method-warning { background: #FF9800; color: white; }
-      .wa-console .method-info { background: #2196F3; color: white; }
-      .wa-console .method-debug { background: #4CAF50; color: white; }
-      .wa-console .method-fatal { background: #9C27B0; color: white; }
+      .wa-console .method-get { background: #059669; color: white; }
+      .wa-console .method-post { background: #4f46e5; color: white; }
+      .wa-console .method-put { background: #d97706; color: white; }
+      .wa-console .method-delete { background: #dc2626; color: white; }
+      .wa-console .method-patch { background: #7c3aed; color: white; }
+      .wa-console .method-error { background: #dc2626; color: white; }
+      .wa-console .method-warning { background: #d97706; color: white; }
+      .wa-console .method-info { background: #4f46e5; color: white; }
+      .wa-console .method-debug { background: #059669; color: white; }
+      .wa-console .method-fatal { background: #7c3aed; color: white; }
 
       .wa-console .type-badge {
         display: inline-block;
@@ -680,9 +685,9 @@ class DebuggerStatusBar {
         border-radius: 4px;
         font-size: 9px;
         font-weight: 500;
-        background: rgba(52, 152, 219, 0.2);
-        color: #3498db;
-        border: 1px solid #3498db;
+        background: rgba(99, 102, 241, 0.15);
+        color: #818cf8;
+        border: 1px solid rgba(99, 102, 241, 0.3);
       }
       
       .wa-console .auth-indicator {
@@ -693,8 +698,8 @@ class DebuggerStatusBar {
         margin-right: 6px;
       }
       
-      .wa-console .auth-true { background: #4CAF50; }
-      .wa-console .auth-false { background: #f44336; }
+      .wa-console .auth-true { background: #34d399; }
+      .wa-console .auth-false { background: #f87171; }
       
       .wa-console .routes-summary {
         background: rgba(86, 156, 214, 0.08);
@@ -1163,12 +1168,14 @@ class DebuggerStatusBar {
     
     // this.playBtn = this.createDropdownItem('AA', 'Continue');
     this.updateLangBtn = this.createDropdownItem('||', 'Update Languages');
+    this.updateTemplateBtn = this.createDropdownItem('><', 'Update Template');
     // this.stepBtn = this.createDropdownItem('DD', 'Step');
     // this.stopBtn = this.createDropdownItem('BB', 'Stop');
     this.restartBtn = this.createDropdownItem('CC', 'Restart');
     
     // controlSection.appendChild(this.playBtn);
     controlSection.appendChild(this.updateLangBtn);
+    controlSection.appendChild(this.updateTemplateBtn);
     // controlSection.appendChild(this.stepBtn);
     // controlSection.appendChild(this.stopBtn);
     controlSection.appendChild(this.restartBtn);
@@ -1275,6 +1282,10 @@ class DebuggerStatusBar {
       this.updateLang();
       this.closeDropdown();
     });
+    this.updateTemplateBtn.addEventListener('click', () => {
+      this.updateTemplate();
+      this.closeDropdown();
+    });
     // this.stepBtn.addEventListener('click', () => {
     //   this.step();
     //   this.closeDropdown();
@@ -1352,6 +1363,11 @@ class DebuggerStatusBar {
     this.setActiveButton(this.updateLangBtn);
   }
   
+  updateTemplate() {
+    window.socketDebugger.send(JSON.stringify({ path: 'update_template' }));
+    this.setActiveButton(this.updateTemplateBtn);
+  }
+  
   step() {
     this.simulateBreakpoint();
   }
@@ -1416,24 +1432,37 @@ class DebuggerStatusBar {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = 'debugger-notification notification-' + type;
-    notification.textContent = message;
+    
+    const msgSpan = document.createElement('span');
+    msgSpan.textContent = message;
+    notification.appendChild(msgSpan);
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'cursor:pointer;margin-left:12px;font-size:14px;opacity:0.7;';
+    closeBtn.addEventListener('mouseenter', () => { closeBtn.style.opacity = '1'; });
+    closeBtn.addEventListener('mouseleave', () => { closeBtn.style.opacity = '0.7'; });
+    closeBtn.addEventListener('click', () => removeNotification());
+    notification.appendChild(closeBtn);
     
     this.mainContainer.appendChild(notification);
     
-    // Animate in
-    setTimeout(() => {
-      notification.style.transform = 'translateX(0)';
-    }, 10);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
+    const removeNotification = () => {
       notification.style.transform = 'translateX(100%)';
       setTimeout(() => {
         if (notification.parentNode) {
           this.mainContainer.removeChild(notification);
         }
       }, 300);
-    }, time);
+    };
+    
+    // Animate in
+    setTimeout(() => {
+      notification.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Auto remove after timeout
+    setTimeout(() => removeNotification(), time);
   }
   
   openConsole(errorData) {
@@ -1901,6 +1930,14 @@ var socketDebuggerEvents = {
         }, 11000);
     },
 
+    alertMessage: function (data) {
+        alert(data.data.message);
+    },
+
+    reloadBrowser: function (data) {
+      window.location.reload();
+    },
+
     updateMemory: function (data) {
         window.debugger.memoryElement.textContent = `\${data.data.memory}  |  MAX: \${data.data.max_memory}`;
         window.debugger.setTimer(data.timestamp);
@@ -1911,7 +1948,15 @@ var socketDebuggerEvents = {
     },
 
     update_languages: function (data) {
-        window.debugger.showNotification('Language updated', 'info');
+        window.debugger.showNotification(data.data.message ?? 'Language updated', 'info');
+    },
+
+    note: function (data) {
+        window.debugger.showNotification(data.data.message ?? 'No Message...', data.data.type ?? 'success', 8000);
+    },
+
+    update_template: function (data) {
+        window.debugger.showNotification(data.data.message, 'info');
     },
 
     get_routes: function (data) {

@@ -31,6 +31,7 @@ jobs:
 
       - name: Check example structure
         run: |
+          set -e
           forbidden_text="package:example"
           if grep -r "$forbidden_text" example/lib/; then
               echo "Error: Forbidden text found in Dart files";
@@ -41,6 +42,7 @@ jobs:
 
       - name: Run OSV-Scanner
         run: |
+          set -e
           curl -sSfL https://github.com/google/osv-scanner/releases/download/v2.2.1/osv-scanner_linux_amd64 -o osv-scanner
           chmod +x osv-scanner
           ./osv-scanner --lockfile=pubspec.lock

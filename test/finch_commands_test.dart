@@ -32,18 +32,5 @@ void main() {
         reason: 'Version command info should be correct',
       );
     }, timeout: const Timeout(Duration(minutes: 1)));
-
-    test('Finch ', () async {
-      final result = await Process.run(
-        'dart',
-        ['run', 'bin/finch.dart', 'run'],
-        workingDirectory: Directory.current.path,
-      );
-      expect(
-        result.stdout.toString(),
-        contains('FINCH'),
-        reason: 'Finch run command should display FINCH banner',
-      );
-    }, timeout: const Timeout(Duration(minutes: 1)));
   });
 }

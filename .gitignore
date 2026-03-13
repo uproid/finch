@@ -16,3 +16,4 @@ pubspec.lock
 **/node_modules/
 example/sqlite/
 example/example_database.sqlite
+example_database.sqlite

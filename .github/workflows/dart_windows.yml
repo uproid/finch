@@ -31,6 +31,7 @@ jobs:
 
       - name: Check example structure
         run: |
+          $ErrorActionPreference = 'Stop'
           $forbidden_text = "package:example"
           $found = Get-ChildItem -Path "example/lib" -Filter "*.dart" -Recurse | Select-String -Pattern $forbidden_text
           if ($found) {
@@ -43,6 +44,7 @@ jobs:
 
       - name: Run OSV-Scanner
         run: |
+          $ErrorActionPreference = 'Stop'
           Invoke-WebRequest -Uri "https://github.com/google/osv-scanner/releases/download/v2.2.1/osv-scanner_windows_amd64.exe" -OutFile "osv-scanner.exe"
           .\osv-scanner.exe --lockfile=pubspec.lock
         shell: pwsh

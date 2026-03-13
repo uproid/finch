@@ -1,3 +1,17 @@
+## 1.1.0
+- Added Finch serve CLI command to serve to run watch mode for development
+    ```bash
+    finch serve
+    ```
+- Improved the example section
+- Fixed Finch CLI
+- [#29](https://github.com/uproid/finch/issues/29) New ability to serve all languages json files to one dart file
+- [#29](https://github.com/uproid/finch/issues/29) New ability to serve all widget files to one dart file
+- Fixed asset managers for duplicated assets
+- Developed Middleware [#30](https://github.com/uproid/finch/issues/30) classes for routes to have more control on routes
+- Fixed Console debugger in frontend
+- Fixed swagger UI
+- Updated dependencies
 
 ## 1.0.4
 - Fixed [#22](https://github.com/uproid/finch/issues/22) fixed checking isApiEndpoint property in WebRequest class

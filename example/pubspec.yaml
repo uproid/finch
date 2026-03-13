@@ -15,6 +15,35 @@ dev_dependencies:
   json_serializable:
 
 dependencies:
-  finch: ^1.0.3 
-    # path: ../
+  finch: #^1.0.3 
+    path: ../
   watcher:
+
+
+# Finch configuration
+# See https://pub.dev/packages/finch for more details
+# Here you can customize paths and settings for your Finch application
+# They will be used by Finch CLI commands to run, build, serve, migrate, etc.
+# Adjust these settings as needed for your project structure
+finch:
+  # Main path of the application
+  app: ./lib/app.dart
+  # Path of serve file while developing
+  serve: ./lib/serve.dart
+  # Path of languages files
+  languages_path: ./lib/languages
+  # Type of languages files
+  languages_type: json
+  # Path of templates (widgets) files
+  widgets_path: ./lib/widgets
+  # Type of templates (widgets) files
+  widgets_type: j2.html
+  # Path of migrations files for different databases
+  mysql_migrate:
+    path: ./lib/mysql/migrations
+  # Path of migrations files for different databases
+  sqlite_migrate:
+    path: ./lib/sqlite/
+  build_output: ./finch_build
+  public_path: ./public
+  

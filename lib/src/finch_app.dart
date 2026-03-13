@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:capp/capp.dart';
+import 'package:finch/src/cli/commands/commands.dart';
+import 'package:finch/src/tools/convertor/widget_to_dart.dart';
+import 'package:finch/src/tools/convertor/language_to_dart.dart';
+import 'package:finch/src/tools/extensions/capp.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:finch/src/db/mysql/mysql_migration.dart';
@@ -168,7 +172,7 @@ class FinchApp {
 
     await mongoDb.close();
     await mysqlDb.close();
-    sqliteDb.dispose();
+    sqliteDb.close();
 
     _mongoDb = null;
     _mysqlDb = null;
@@ -241,13 +245,27 @@ class FinchApp {
 
     server!.address;
 
-    Console.p({
-      'url': config.uri,
-      'path': pathApp,
-      'DB': {
-        'path db': config.dbPath,
-      }
-    });
+    CappConsole.writeTable(
+      [
+        ['', '@> Finch ${FinchApp.info.version}'],
+        ['Url', config.uri.toString()],
+        ['Path App', pathApp],
+        if (config.dbConfig.enable && _mongoDb != null && _mongoDb!.isConnected)
+          ['MongoDB', 'Connected'],
+        if (_mysqlDb != null && mysqlDriver.connected()) ['MySQL', 'Connected'],
+        if (config.sqliteConfig.enable &&
+            _sqliteDb != null &&
+            sqliteDriver.connected())
+          ['SQLite', 'Connected'],
+        if (hasSocket) ['WebSocket', 'Enabled'],
+        if (config.isLocalDebug) ['Debug Mode', 'Enabled'],
+        if (crons.isNotEmpty) ['Cron Jobs', crons.length.toString()],
+        if (commands.isNotEmpty) ['Has Commands', 'Yes'],
+        if (appLanguages.keys.length > 1)
+          ['Languages', appLanguages.keys.join(',')],
+      ],
+      color: CappColors.info,
+    );
 
     await handleRequests(server!);
     if (awaitCommands) {
@@ -366,10 +384,7 @@ class FinchApp {
               ),
             ],
             run: (c) async {
-              return CappConsole(
-                c.manager.getHelp(c.manager.controllers),
-                CappColors.warning,
-              );
+              return c.manager.writeHelpModern(c.manager.controllers);
             },
           ),
           CappController(
@@ -483,6 +498,67 @@ class FinchApp {
                 "Please run the migration commands",
                 CappColors.warning,
               );
+            },
+          ),
+          CappController(
+            'build_widgets',
+            description:
+                'Generate widgets Dart file from templates (to dart map variable)',
+            options: [
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of templates',
+                value: config.widgetsPath,
+              ),
+              CappOption(
+                name: 'extension',
+                shortName: 'e',
+                description:
+                    'File extension of templates default (*.${config.widgetsType})',
+                value: config.widgetsType,
+              ),
+            ],
+            run: (c) async {
+              var res = await WidgetToDart(
+                c.getOption('path'),
+                fileExtention: c.getOption('extension'),
+              ).generate();
+              return CappConsole("Generated file at: $res");
+            },
+          ),
+          CappController(
+            'build',
+            description: 'Build Project',
+            options: [],
+            run: (c) async {
+              await ProjectCommands().build(
+                c,
+                copyLang: config.languageSource != LanguageSource.dart,
+                copyWidgets: config.jinjaMapTemplate == null,
+              );
+              return CappConsole("Build completed");
+            },
+          ),
+          CappController(
+            'build_language',
+            description:
+                'Generate language Dart file from language files (to dart map variable)',
+            options: [
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of templates',
+                value: config.languagePath,
+              ),
+            ],
+            run: (c) async {
+              var res = await LanguageToDart(
+                c.getOption('path'),
+              ).generate();
+              config.dartLanguages = res.map;
+              appLanguages = res.map;
+              return CappConsole("Generated file at: ${res.path}");
             },
           ),
           CappController(
@@ -839,6 +915,16 @@ class FinchApp {
               path: 'update_languages',
             );
           }),
+          'update_template': SocketEvent(onMessage: (socket, data) async {
+            var res = await WidgetToDart(
+              config.widgetsPath,
+              fileExtention: config.widgetsType,
+            ).generate();
+            await debugger?.sendToAll(
+              {'message': 'Template updated: $res'},
+              path: 'update_template',
+            );
+          }),
           'restart': SocketEvent(onMessage: (socket, data) async {
             await debugger?.sendToAll({}, path: 'restartStarted');
             await stop(force: true);
@@ -1073,5 +1159,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.0.4';
+  final String version = '1.1.0';
 }

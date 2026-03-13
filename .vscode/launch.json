@@ -5,7 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Dart: Run Example",
+            "name": "Serv",
+            "type": "dart",
+            "request": "launch",
+            "program": "./example/lib/serv.dart",
+            "args": [
+                // "migration",
+                // "--init",
+                "--enable-asserts",
+                "--watch",
+            ],
+            "console": "terminal"
+        },
+        {
+            "name": "Dev",
             "type": "dart",
             "request": "launch",
             "program": "./example/lib/watcher.dart",
@@ -16,7 +29,7 @@
             "console": "debugConsole"
         },
         {
-            "name": "Dart: Run on Terminal",
+            "name": "Dev on Terminal",
             "type": "dart",
             "request": "launch",
             "program": "./example/lib/watcher.dart",
