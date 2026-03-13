@@ -250,9 +250,12 @@ class FinchApp {
         ['', '@> Finch ${FinchApp.info.version}'],
         ['Url', config.uri.toString()],
         ['Path App', pathApp],
-        if (config.dbConfig.enable) ['MongoDB', 'Connected'],
-        if (mysqlDriver.connected()) ['MySQL', 'Connected'],
-        if (config.sqliteConfig.enable && sqliteDriver.connected())
+        if (config.dbConfig.enable && _mongoDb != null && _mongoDb!.isConnected)
+          ['MongoDB', 'Connected'],
+        if (_mysqlDb != null && mysqlDriver.connected()) ['MySQL', 'Connected'],
+        if (config.sqliteConfig.enable &&
+            _sqliteDb != null &&
+            sqliteDriver.connected())
           ['SQLite', 'Connected'],
         if (hasSocket) ['WebSocket', 'Enabled'],
         if (config.isLocalDebug) ['Debug Mode', 'Enabled'],

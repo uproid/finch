@@ -9,6 +9,7 @@ void main() async {
   FinchApp server = FinchApp(
     configs: FinchConfigs(
       port: 0,
+      noStop: false,
       publicDir: 'public',
       languagePath: joinPaths([pathApp, '../example/lib/languages']),
       widgetsPath: '../example/lib/widgets',
