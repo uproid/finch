@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:example/route/web_route.dart';
+import '../route/web_route.dart';
 
 import '../db/sqlite/sqlite_books.dart';
 import '../db/sqlite/sqlite_categories.dart';

@@ -1,5 +1,4 @@
-import 'package:example/middleware/test_middleware.dart';
-
+import '../middleware/test_middleware.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/htmler_controller.dart';
 import '../configs/setting.dart';

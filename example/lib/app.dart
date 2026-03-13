@@ -1,7 +1,7 @@
-import 'package:example/languages/language_dart.g.dart';
-import 'package:example/widgets/widget_dart.g.dart';
+import 'languages/language_dart.g.dart';
+import 'widgets/widget_dart.g.dart';
 import 'package:finch/model.dart';
-import '../core/local_events.dart';
+import 'core/local_events.dart';
 import 'package:finch/finch_route.dart';
 import 'db/job_collection_free.dart';
 import 'db/person_collection_free.dart';

@@ -1,4 +1,4 @@
-import 'package:example/route/web_route.dart';
+import '../route/web_route.dart';
 import 'package:finch/finch_route.dart';
 import 'package:finch/finch_tools.dart';
 import 'package:finch/finch_ui.dart';
