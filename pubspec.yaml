@@ -65,4 +65,5 @@ executables:
 
 finch:
   serve: ./example/lib/serve.dart
+  app: ./example/lib/serve.dart
 

@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:capp/capp.dart';
-import 'package:finch/finch_console.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
 import 'package:finch/src/tools/convertor/widget_to_dart.dart';
 import 'package:finch/src/tools/extensions/directory.dart';

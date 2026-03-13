@@ -1427,24 +1427,37 @@ class DebuggerStatusBar {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = 'debugger-notification notification-' + type;
-    notification.textContent = message;
+    
+    const msgSpan = document.createElement('span');
+    msgSpan.textContent = message;
+    notification.appendChild(msgSpan);
+    
+    const closeBtn = document.createElement('span');
+    closeBtn.textContent = '✕';
+    closeBtn.style.cssText = 'cursor:pointer;margin-left:12px;font-size:14px;opacity:0.7;';
+    closeBtn.addEventListener('mouseenter', () => { closeBtn.style.opacity = '1'; });
+    closeBtn.addEventListener('mouseleave', () => { closeBtn.style.opacity = '0.7'; });
+    closeBtn.addEventListener('click', () => removeNotification());
+    notification.appendChild(closeBtn);
     
     this.mainContainer.appendChild(notification);
     
-    // Animate in
-    setTimeout(() => {
-      notification.style.transform = 'translateX(0)';
-    }, 10);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
+    const removeNotification = () => {
       notification.style.transform = 'translateX(100%)';
       setTimeout(() => {
         if (notification.parentNode) {
           this.mainContainer.removeChild(notification);
         }
       }, 300);
-    }, time);
+    };
+    
+    // Animate in
+    setTimeout(() => {
+      notification.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Auto remove after timeout
+    setTimeout(() => removeNotification(), time);
   }
   
   openConsole(errorData) {
@@ -1912,6 +1925,14 @@ var socketDebuggerEvents = {
         }, 11000);
     },
 
+    alertMessage: function (data) {
+        alert(data.data.message);
+    },
+
+    reloadBrowser: function (data) {
+      window.location.reload();
+    },
+
     updateMemory: function (data) {
         window.debugger.memoryElement.textContent = `\${data.data.memory}  |  MAX: \${data.data.max_memory}`;
         window.debugger.setTimer(data.timestamp);
@@ -1922,7 +1943,11 @@ var socketDebuggerEvents = {
     },
 
     update_languages: function (data) {
-        window.debugger.showNotification('Language updated', 'info');
+        window.debugger.showNotification(data.data.message ?? 'Language updated', 'info');
+    },
+
+    note: function (data) {
+        window.debugger.showNotification(data.data.message ?? 'No Message...', data.data.type ?? 'success', 8000);
     },
 
     update_template: function (data) {
