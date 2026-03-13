@@ -5,10 +5,10 @@
     ```
 - Improved the example section
 - Fixed Finch CLI
-- New ability to serve all languages json files to one dart file
-- New abiliry to serve all widget files to one dart file
+- [#29](https://github.com/uproid/finch/issues/29) New ability to serve all languages json files to one dart file
+- [#29](https://github.com/uproid/finch/issues/29) New ability to serve all widget files to one dart file
 - Fixed asset managers for duplicated assets
-- Developed Middleware classes for routes to have more control on routes
+- Developed Middleware [#30](https://github.com/uproid/finch/issues/30) classes for routes to have more control on routes
 - Fixed Console debugger in frontend
 - Fixed swagger UI
 - Updated dependencies
