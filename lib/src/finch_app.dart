@@ -172,7 +172,7 @@ class FinchApp {
 
     await mongoDb.close();
     await mysqlDb.close();
-    sqliteDb.dispose();
+    sqliteDb.close();
 
     _mongoDb = null;
     _mysqlDb = null;
