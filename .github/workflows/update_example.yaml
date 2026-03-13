@@ -16,10 +16,13 @@ jobs:
           set -e
           git config --global user.name "uproid"
           git config --global user.email "info@uproid.com"
-
+          #### STEP 1: Init
           cd example
           git init
           git remote add origin https://x-access-token:${{ secrets.USEKEY }}@github.com/uproid/example-finch-docker.git
+          #### STEP 2: convert path: ../ to # path: ../
+          sed -i "s/path: ../# path: ../" ./pubspec.yaml
+          ### STEP 3: commit and push
           git add .
           git commit -m "Update from main repo"
           git push --force origin master
