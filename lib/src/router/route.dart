@@ -112,7 +112,8 @@ class Route {
   /// try to use nginx in production for better performance
   /// and security
   bool _readFromPublic() {
-    var publicFile = getFileFromPublic(rq.uri.path);
+    var path = Uri.decodeFull(rq.uri.path);
+    var publicFile = getFileFromPublic(path);
     try {
       if (publicFile.existsSync()) {
         renderFile(publicFile);
@@ -194,6 +195,7 @@ class Route {
       // Handle middleware before executing controller or index
       var middlewareResult = await route.handleMiddlewares();
       if (!middlewareResult) {
+        rq.addParams(urlParams);
         return (found: false, urlParams: urlParams);
       }
 
@@ -227,6 +229,7 @@ class Route {
       // Handle middleware before processing children routes
       var middlewareResult = await route.handleMiddlewares();
       if (!middlewareResult) {
+        rq.addParams(urlParams);
         return (found: false, urlParams: urlParams);
       }
 

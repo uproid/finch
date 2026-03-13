@@ -252,7 +252,8 @@ class FinchApp {
         ['Path App', pathApp],
         if (config.dbConfig.enable) ['MongoDB', 'Connected'],
         if (mysqlDriver.connected()) ['MySQL', 'Connected'],
-        if (sqliteDriver.connected()) ['SQLite', 'Connected'],
+        if (config.sqliteConfig.enable && sqliteDriver.connected())
+          ['SQLite', 'Connected'],
         if (hasSocket) ['WebSocket', 'Enabled'],
         if (config.isLocalDebug) ['Debug Mode', 'Enabled'],
         if (crons.isNotEmpty) ['Cron Jobs', crons.length.toString()],
@@ -1155,5 +1156,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.0.4';
+  final String version = '1.1.0';
 }
