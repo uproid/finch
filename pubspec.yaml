@@ -54,7 +54,7 @@ dependencies:
   base32: ^2.2.0
   archive: ^4.0.9
   http: ^1.6.0
-  capp: ^1.1.2
+  capp: ^1.1.4
   mysql_client: ^0.0.27
   sqlite3: ^3.2.0
   sqler: ^1.2.0

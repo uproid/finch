@@ -73,6 +73,11 @@ void main(List<String> args) async {
             shortName: 'p',
             description: 'Path of app file',
           ),
+          CappOption(
+            name: 'args',
+            shortName: 'a',
+            description: 'Arguments for app file',
+          ),
         ],
       ),
       CappController(
@@ -84,6 +89,11 @@ void main(List<String> args) async {
             name: 'path',
             shortName: 'p',
             description: 'Path of app file',
+          ),
+          CappOption(
+            name: 'args',
+            shortName: 'a',
+            description: 'Arguments for app file',
           ),
         ],
       ),

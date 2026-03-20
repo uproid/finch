@@ -2,7 +2,7 @@ services:
   finch:
     hostname: finch
     container_name: finch
-    image: dart:stable
+    image: uproid/finch:latest
     restart: always
     ports:
       - "8085:8085"
@@ -21,7 +21,7 @@ services:
       WIDGETS_TYPE: j2.html
       LANGUAGE_PATH: ./lib/languages
       PUBLIC_DIR: ./public
-      SQLITE_PATH: ./example/sqlite/example_database.sqlite
+      SQLITE_PATH: /www/finch/example/sqlite/example_database.sqlite
       ENABLE_DATABASE: true
     volumes:
       - ${PWD-.}/lib:/www/finch/lib

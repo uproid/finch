@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:capp/capp.dart';
 import 'package:finch/src/finch_app.dart';
-import 'package:finch/src/tools/extensions/capp.dart';
 
 class Main {
   Future<CappConsole> main(CappController controller) async {
