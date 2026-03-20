@@ -2,7 +2,7 @@ services:
   finch:
     hostname: finch
     container_name: finch
-    image: dart:stable
+    image: uproid/finch:latest
     restart: always
     ports:
       - "8085:8085"

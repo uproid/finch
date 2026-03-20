@@ -4,6 +4,10 @@ WORKDIR /www/finch
 COPY pubspec.yaml ./
 RUN dart pub get --no-offline
 COPY example/pubspec.yaml ./example/
+
+# Change finch path to local package in example/pubspec.yaml
+RUN sed -i 's/finch: ^/finch: #^/' ./example/pubspec.yaml
+RUN sed -i 's/# path: ..\//path: ..\//' ./example/pubspec.yaml
 RUN dart pub get --directory=./example --no-offline
 
 COPY lib/ ./lib/
