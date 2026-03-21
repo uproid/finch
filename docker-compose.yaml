@@ -44,6 +44,18 @@ services:
       - ${PWD-.}/example/public/:/var/www/html/public
       - ${PWD-.}/example/docker/nginx.conf:/etc/nginx/conf.d/default.conf
 
+  nodejs:
+    image: node:20-alpine
+    container_name: nodejs
+    hostname: nodejs
+    working_dir: /app
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./example:/app
+    command: sh -c "npm install && npm run tailwind:watch"
+    restart: always
+
   mongodb:
     image: mongo:latest
     container_name: mongodb
