@@ -1,5 +1,5 @@
 FROM uproid/finch:latest AS build
-WORKDIR /www/example
+WORKDIR /www
 
 ENV WIDGETS_PATH=./lib/widgets
 ENV WIDGETS_TYPE=j2.html
@@ -19,4 +19,4 @@ RUN echo "MYSQL_HOST=mysql" > .env && \
 
 EXPOSE 8085 8181
 
-CMD ["finch", "serve", "-p", "/www/example/lib/serve.dart", "--args=\"migrate --init --sqlite\""]
+CMD ["finch", "serve", "-p", "/www/lib/serve.dart", "--args=\"migrate --init --sqlite\""]
