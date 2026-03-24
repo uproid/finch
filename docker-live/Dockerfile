@@ -20,13 +20,13 @@ RUN dart build cli -t ./example/lib/app.dart -o cli
 # USE NGINX
 FROM nginx:latest
 WORKDIR /var/www/html
-ENV DOMAIN_PORT=8085
+
 COPY docker-live/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /www/finch/cli/bundle/ /www/app
 COPY example/public ./public
 COPY example/migrations/ /www/app/migrations/
 COPY example/migrations_sqlite/ /www/app/migrations_sqlite/
-COPY .env ./var/app/.env
+COPY .env .
 
 # Create .env file
 # ENV MONGODB_NAME=
@@ -40,5 +40,5 @@ COPY .env ./var/app/.env
 # START SCRIPT
 RUN echo '#!/bin/sh\n/www/app/bin/app migrate --init --sqlite &\nnginx -g "daemon off;"\n' > /start.sh && chmod +x /start.sh
 
-EXPOSE 8080 8181
+EXPOSE 8086
 CMD ["/start.sh"]

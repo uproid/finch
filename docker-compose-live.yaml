@@ -5,9 +5,7 @@ services:
     image: dart:stable
     restart: always
     ports:
-      - "8085:8085"
-      - "8181:8181"
-      - "8080:8080"
+      - "8086:8086"
     build:
       context: .
       dockerfile: docker-live/Dockerfile
