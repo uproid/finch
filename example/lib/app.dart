@@ -25,12 +25,12 @@ FinchConfigs configs = FinchConfigs(
   publicDir: pathTo(env['PUBLIC_DIR'] ?? './public'),
   dbConfig: FinchDBConfig(
     enable: true, //env['ENABLE_DATABASE'] == 'true',
-    dbName: 'example',
-    auth: 'admin',
-    pass: 'PasswordMongoDB',
-    host: env['MONGO_CONNECTION'] ?? 'localhost',
-    port: env['MONGO_PORT'] ?? '27018',
-    user: 'root',
+    dbName: env['MONGODB_NAME'] ?? 'example',
+    auth: env['MONGODB_AUTH'] ?? 'admin',
+    pass: env['MONGODB_PASSWORD'] ?? 'PasswordMongoDB',
+    host: env['MONGODB_CONNECTION'] ?? 'localhost',
+    port: env['MONGODB_PORT'] ?? '27018',
+    user: env['MONGODB_USER'] ?? 'root',
   ),
   port: (env['DOMAIN_PORT'] ?? '8085').toInt(def: 8085),
   mysqlConfig: FinchMysqlConfig(

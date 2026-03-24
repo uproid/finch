@@ -17,3 +17,4 @@ pubspec.lock
 example/sqlite/
 example/example_database.sqlite
 example_database.sqlite
+.env
