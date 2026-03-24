@@ -26,6 +26,7 @@ COPY --from=build /www/finch/cli/bundle/ /www/app
 COPY example/public ./public
 COPY example/migrations/ /www/app/migrations/
 COPY example/migrations_sqlite/ /www/app/migrations_sqlite/
+COPY .env ./var/app/.env
 
 # Create .env file
 # ENV MONGODB_NAME=
@@ -35,7 +36,6 @@ COPY example/migrations_sqlite/ /www/app/migrations_sqlite/
 # ENV MONGODB_PORT=
 # ENV MONGODB_USER=
 # ENV MONGO_INITDB_DATABASE=
-RUN echo "MYSQL_HOST=mysql" > ./var/app/.env
 
 # START SCRIPT
 RUN echo '#!/bin/sh\n/www/app/bin/app migrate --init --sqlite &\nnginx -g "daemon off;"\n' > /start.sh && chmod +x /start.sh
