@@ -31,7 +31,7 @@ Future<List<FinchRoute>> getWebRoute(Request rq) async {
       key: 'root.swagger',
       path: 'swagger',
       index: () => apiController.swagger(
-        rq.url('api/docs'),
+        '/api/docs',
         // For safty, set showPublic to false
         showPublic: true,
       ),
