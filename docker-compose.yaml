@@ -11,8 +11,6 @@ services:
       context: .
     environment:
       # DATABASE Configuration
-      MONGO_CONNECTION: mongodb
-      MONGO_PORT: 27017
       NODE_ENV: development
       LOCAL_DEBUG: true
       DOMAIN_PORT: 8085
@@ -22,7 +20,15 @@ services:
       LANGUAGE_PATH: ./lib/languages
       PUBLIC_DIR: ./public
       SQLITE_PATH: /www/finch/example/sqlite/example_database.sqlite
+      # MongoDB Configuration
       ENABLE_DATABASE: true
+      MONGODB_CONNECTION: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_NAME: database_name
+      MONGODB_AUTH: admin
+      MONGODB_PASSWORD: PasswordMongoDB
+      MONGODB_USER: root
+
     volumes:
       - ${PWD-.}/lib:/www/finch/lib
       - ${PWD-.}/bin:/www/finch/bin

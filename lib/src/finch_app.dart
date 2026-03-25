@@ -297,6 +297,7 @@ class FinchApp {
                 });
               } else if (!_mongoDb!.isConnected) {
                 await _mongoDb!.open().onError((error, stackTrace) async {
+                  Console.e("Error connect to DB: ${config.dbConfig.link}");
                   throw ("Error connect to DB");
                 });
               }
