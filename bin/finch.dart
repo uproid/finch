@@ -73,6 +73,11 @@ void main(List<String> args) async {
             shortName: 'p',
             description: 'Path of app file',
           ),
+          CappOption(
+            name: 'args',
+            shortName: 'a',
+            description: 'Arguments for app file',
+          ),
         ],
       ),
       CappController(
@@ -85,6 +90,11 @@ void main(List<String> args) async {
             shortName: 'p',
             description: 'Path of app file',
           ),
+          CappOption(
+            name: 'args',
+            shortName: 'a',
+            description: 'Arguments for app file',
+          ),
         ],
       ),
       CappController(
@@ -92,6 +102,11 @@ void main(List<String> args) async {
         description: 'Build Project (dart compile exe)',
         run: (controller) => ProjectCommands().build(controller),
         options: [
+          CappOption(
+            name: 'cli',
+            shortName: 'c',
+            description: 'Build for cli',
+          ),
           CappOption(
             name: 'appPath',
             shortName: 'a',
@@ -121,7 +136,6 @@ void main(List<String> args) async {
             name: 'output',
             shortName: 'o',
             description: 'Output path',
-            value: './finch_build',
           ),
           CappOption(
             name: 'type',

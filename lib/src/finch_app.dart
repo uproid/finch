@@ -4,7 +4,6 @@ import 'package:capp/capp.dart';
 import 'package:finch/src/cli/commands/commands.dart';
 import 'package:finch/src/tools/convertor/widget_to_dart.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
-import 'package:finch/src/tools/extensions/capp.dart';
 import 'package:mysql_client/mysql_client.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:finch/src/db/mysql/mysql_migration.dart';
@@ -298,6 +297,7 @@ class FinchApp {
                 });
               } else if (!_mongoDb!.isConnected) {
                 await _mongoDb!.open().onError((error, stackTrace) async {
+                  Console.e("Error connect to DB: ${config.dbConfig.link}");
                   throw ("Error connect to DB");
                 });
               }
@@ -1159,5 +1159,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.1.0';
+  final String version = '1.1.1';
 }

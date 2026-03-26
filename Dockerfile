@@ -1,23 +1,20 @@
-FROM dart:stable AS build
+FROM uproid/finch:latest AS build
 WORKDIR /www/finch
 
-RUN apt-get update -y && apt-get install -y libsqlite3-dev
-
 COPY pubspec.yaml ./
-COPY lib/ ./lib/
+RUN dart pub get --no-offline
 COPY example/pubspec.yaml ./example/
 
+# Change finch path to local package in example/pubspec.yaml
+RUN sed -i 's/finch: ^/finch: #^/' ./example/pubspec.yaml
+RUN sed -i 's/# path: ..\//path: ..\//' ./example/pubspec.yaml
 RUN dart pub get --directory=./example --no-offline
+
+COPY lib/ ./lib/
+COPY bin/ ./bin/
+
+RUN dart pub global activate --source path . --overwrite
 
 EXPOSE 8085 8181
 
-
-# Create startup script that ensures dependencies are installed from volume
-RUN echo '#!/bin/bash\n\
-cd /www/finch\n\
-dart pub get --no-offline\n\
-dart pub get --directory=./example --no-offline\n\
-exec dart run --enable-asserts --disable-service-auth-codes /www/finch/example/lib/serve.dart --no-debug migrate --init --sqlite\n\
-' > /startup.sh && chmod +x /startup.sh
-
-CMD ["/startup.sh"]
+CMD ["finch", "serve", "-p", "/www/finch/example/lib/serve.dart", "--args=\"migrate --init --sqlite\""]

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:capp/capp.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
 import 'package:finch/src/tools/convertor/widget_to_dart.dart';
@@ -23,19 +22,24 @@ class ProjectCommands {
 
   Future<CappConsole> get(CappController controller) async {
     await Process.start(
-      'dart',
-      ['pub', 'get'],
-      mode: ProcessStartMode.inheritStdio,
-    );
+        'dart',
+        [
+          'pub',
+          'get',
+        ],
+        mode: ProcessStartMode.inheritStdio);
     return CappConsole("dart pub get", CappColors.info);
   }
 
   Future<CappConsole> runner(CappController controller) async {
     await Process.start(
-      'dart',
-      ['run', 'build_runner', 'build'],
-      mode: ProcessStartMode.inheritStdio,
-    );
+        'dart',
+        [
+          'run',
+          'build_runner',
+          'build',
+        ],
+        mode: ProcessStartMode.inheritStdio);
     return CappConsole('dart run build_runner build', CappColors.none);
   }
 
@@ -91,10 +95,7 @@ class ProjectCommands {
       }
     }
     if (path.isEmpty) {
-      path = CappConsole.read(
-        "Enter path of app file:",
-        isRequired: true,
-      );
+      path = CappConsole.read("Enter path of app file:", isRequired: true);
       if (!File(path).existsSync()) {
         return run(controller);
       }
@@ -103,14 +104,22 @@ class ProjectCommands {
     }
 
     path = p.absolute(path);
+    List<String> args = controller
+        .getOption('args', def: '-v')
+        .replaceAll(
+          '"',
+          '',
+        )
+        .split(' ')
+        .where((element) => element.trim().isNotEmpty)
+        .toList();
+    List runCommand = ['dart', 'run', "--enable-asserts", path];
+    runCommand.addAll(args);
+
+    CappConsole.write(runCommand.last);
     var proccess = await Process.start(
       'dart',
-      [
-        'run',
-        "--enable-asserts",
-        path,
-        '-v',
-      ],
+      ['run', "--enable-asserts", path, ...args],
       mode: ProcessStartMode.normal,
       workingDirectory: File(path).parent.parent.path,
     );
@@ -145,16 +154,14 @@ class ProjectCommands {
         CappConsole.write("Restart project...", CappColors.warning);
         proccess.kill();
         proccess = await Process.start(
-          'dart',
-          [
-            'run',
-            "--enable-asserts",
-            path,
-            '-v',
-          ],
-          mode: ProcessStartMode.normal,
-        );
-
+            'dart',
+            [
+              'run',
+              "--enable-asserts",
+              path,
+              ...args,
+            ],
+            mode: ProcessStartMode.normal);
         // Forward stdout and stderr to console
         proccess.stdout.listen((data) {
           stdout.add(data);
@@ -181,7 +188,9 @@ class ProjectCommands {
           proccess.stdin.add(input);
         } catch (e) {
           CappConsole.write(
-              "Error sending input to process: $e", CappColors.error);
+            "Error sending input to process: $e",
+            CappColors.error,
+          );
         }
       }
     });
@@ -198,9 +207,7 @@ class ProjectCommands {
         'test',
         if (report.isNotEmpty) ...['--reporter', report],
       ],
-      environment: {
-        'FINCH_IS_TEST': 'true',
-      },
+      environment: {'FINCH_IS_TEST': 'true'},
       mode: ProcessStartMode.inheritStdio,
     );
     return CappConsole("", CappColors.off);
@@ -211,9 +218,10 @@ class ProjectCommands {
     bool copyLang = true,
     bool copyWidgets = true,
   }) async {
+    bool isCli = controller.existsOption('cli');
+
     if (controller.existsOption('h')) {
-      var help = controller.manager.getHelp([controller]);
-      return CappConsole(help, CappColors.none);
+      return controller.manager.writeHelpModern([controller]);
     }
 
     var path = controller.getOption(
@@ -222,15 +230,14 @@ class ProjectCommands {
     );
     if (path.isEmpty || !File(path).existsSync()) {
       return CappConsole(
-          "The path of main file dart is requirment. for example '--path ./bin/app.dart'",
-          CappColors.error);
+        "The path of main file dart is requirment."
+        " for example '--path ./bin/app.dart'",
+        CappColors.error,
+      );
     }
 
     var defaultOutputPath = finchConfigs['build_output'] ?? './finch_build';
-    var output = controller.getOption(
-      'output',
-      def: defaultOutputPath,
-    );
+    var output = controller.getOption('output', def: defaultOutputPath);
     if (output == defaultOutputPath && Directory(output).existsSync()) {
       Directory(output).deleteSync(recursive: true);
     } else if (Directory(output).existsSync()) {
@@ -310,57 +317,68 @@ class ProjectCommands {
     } else {
       var envFile = File(joinPaths([output, 'lib', '.env']));
       envFile.createSync(recursive: true);
-      envFile.writeAsStringSync([
-        "FINCH_VERSION='${FinchApp.info.version}'",
-        "FINCH_BUILD_DATE='${DateTime.now().toUtc()}'",
-      ].join('\n'));
+      envFile.writeAsStringSync(
+        [
+          "FINCH_VERSION='${FinchApp.info.version}'",
+          "FINCH_BUILD_DATE='${DateTime.now().toUtc()}'",
+        ].join('\n'),
+      );
     }
 
     var appPath = joinPaths([output, 'lib', 'app.exe']);
-    var procces = await Process.start(
-      'dart',
-      ['compile', 'exe', path, '--output', appPath],
-      mode: ProcessStartMode.inheritStdio,
+    var commands = <String>[];
+    if (isCli) {
+      commands = ['build', 'cli', '-t', path, '-o', "$defaultOutputPath/cli"];
+    } else {
+      commands = ['compile', 'exe', path, '--output', appPath];
+    }
+
+    CappConsole.write(
+      "> dart ${commands.join(' ')}",
+      CappColors.info,
     );
+    var procces = await Process.start('dart', commands,
+        mode: ProcessStartMode.inheritStdio);
 
     var result = await CappConsole.progress<int>(
       "Build project",
-      () async {
-        return await procces.exitCode;
-      },
+      () async => await procces.exitCode,
       type: CappProgressType.circle,
     );
 
     if (result == 0) {
+      if (isCli) {
+        await Directory('$defaultOutputPath/cli/bundle/bin')
+            .copyDirectory(Directory('$defaultOutputPath/lib'));
+        await Directory('$defaultOutputPath/cli/bundle/lib')
+            .copyDirectory(Directory('$defaultOutputPath/lib/lib'));
+        Directory('$defaultOutputPath/cli/').deleteSync(recursive: true);
+        File('$defaultOutputPath/lib/app')
+            .renameSync('$defaultOutputPath/lib/app.exe');
+      }
+
       var type = controller.getOption('type', def: 'exe');
       if (type == 'zip') {
-        await CappConsole.progress(
-          "Compress output",
-          () async {
-            var encoder = ZipFileEncoder();
-            String savePath = joinPaths(
-              [
-                Directory.systemTemp.path,
-                'build_${DateTime.now().millisecondsSinceEpoch}.zip',
-              ],
-            );
+        await CappConsole.progress("Compress output", () async {
+          var encoder = ZipFileEncoder();
+          String savePath = joinPaths([
+            Directory.systemTemp.path,
+            'build_${DateTime.now().millisecondsSinceEpoch}.zip',
+          ]);
 
-            encoder.create(savePath);
-            await encoder.addDirectory(Directory(output));
-            encoder.closeSync();
-            await Directory(output).cleanDirectory();
-            File(savePath).renameSync(joinPaths([
-              output,
-              'finch_build.zip',
-            ]));
-          },
-          type: CappProgressType.circle,
-        );
+          encoder.create(savePath);
+          await encoder.addDirectory(Directory(output));
+          encoder.closeSync();
+          await Directory(output).cleanDirectory();
+          File(savePath).renameSync(joinPaths([output, 'finch_build.zip']));
+        }, type: CappProgressType.circle);
       }
     }
 
     return CappConsole(
-        'Finish build ${result == 0 ? 'OK!' : ''}', CappColors.none);
+      'Finish build ${result == 0 ? 'OK!' : ''}',
+      CappColors.none,
+    );
   }
 
   String _findPubspecPath(String startPath) {
