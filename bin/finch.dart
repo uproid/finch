@@ -103,6 +103,11 @@ void main(List<String> args) async {
         run: (controller) => ProjectCommands().build(controller),
         options: [
           CappOption(
+            name: 'cli',
+            shortName: 'c',
+            description: 'Build for cli',
+          ),
+          CappOption(
             name: 'appPath',
             shortName: 'a',
             description: 'Path of app file',
@@ -131,7 +136,6 @@ void main(List<String> args) async {
             name: 'output',
             shortName: 'o',
             description: 'Output path',
-            value: './finch_build',
           ),
           CappOption(
             name: 'type',

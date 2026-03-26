@@ -7,11 +7,22 @@ services:
     ports:
       - "8085:8085"
       - "8181:8181"
+    environment:
+      SQLITE_PATH: /www/sqlite/example_database.sqlite
+      # MongoDB Configuration
+      ENABLE_DATABASE: true
+      MONGODB_CONNECTION: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_NAME: database_name
+      MONGODB_AUTH: admin
+      MONGODB_PASSWORD: PasswordMongoDB
+      MONGODB_USER: root
     build:
       context: .
     volumes:
       - ./lib/:/www/lib/
       - ./public/:/www/public/
+      - ./sqlite/:/www/sqlite/
 
   nodejs:
     image: node:20-alpine

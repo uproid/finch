@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:capp/capp.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
 import 'package:finch/src/tools/convertor/widget_to_dart.dart';
@@ -219,6 +218,8 @@ class ProjectCommands {
     bool copyLang = true,
     bool copyWidgets = true,
   }) async {
+    bool isCli = controller.existsOption('cli');
+
     if (controller.existsOption('h')) {
       return controller.manager.writeHelpModern([controller]);
     }
@@ -229,7 +230,8 @@ class ProjectCommands {
     );
     if (path.isEmpty || !File(path).existsSync()) {
       return CappConsole(
-        "The path of main file dart is requirment. for example '--path ./bin/app.dart'",
+        "The path of main file dart is requirment."
+        " for example '--path ./bin/app.dart'",
         CappColors.error,
       );
     }
@@ -324,22 +326,37 @@ class ProjectCommands {
     }
 
     var appPath = joinPaths([output, 'lib', 'app.exe']);
-    var procces = await Process.start(
-        'dart',
-        [
-          'compile',
-          'exe',
-          path,
-          '--output',
-          appPath,
-        ],
+    var commands = <String>[];
+    if (isCli) {
+      commands = ['build', 'cli', '-t', path, '-o', "$defaultOutputPath/cli"];
+    } else {
+      commands = ['compile', 'exe', path, '--output', appPath];
+    }
+
+    CappConsole.write(
+      "> dart ${commands.join(' ')}",
+      CappColors.info,
+    );
+    var procces = await Process.start('dart', commands,
         mode: ProcessStartMode.inheritStdio);
 
-    var result = await CappConsole.progress<int>("Build project", () async {
-      return await procces.exitCode;
-    }, type: CappProgressType.circle);
+    var result = await CappConsole.progress<int>(
+      "Build project",
+      () async => await procces.exitCode,
+      type: CappProgressType.circle,
+    );
 
     if (result == 0) {
+      if (isCli) {
+        await Directory('$defaultOutputPath/cli/bundle/bin')
+            .copyDirectory(Directory('$defaultOutputPath/lib'));
+        await Directory('$defaultOutputPath/cli/bundle/lib')
+            .copyDirectory(Directory('$defaultOutputPath/lib/lib'));
+        Directory('$defaultOutputPath/cli/').deleteSync(recursive: true);
+        File('$defaultOutputPath/lib/app')
+            .renameSync('$defaultOutputPath/lib/app.exe');
+      }
+
       var type = controller.getOption('type', def: 'exe');
       if (type == 'zip') {
         await CappConsole.progress("Compress output", () async {
