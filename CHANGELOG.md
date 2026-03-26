@@ -1,3 +1,13 @@
+
+## 1.1.1
+- Updated the Finch CLI to create new projects in new paths
+- Fixed the example
+- Added new extension for CappManager to write help in a modern way
+- Added new command for build cli in Finch CLI
+    ```bash
+    finch build --cli --path ./lib/app.dart
+    ```
+    
 ## 1.1.0
 - Added Finch serve CLI command to serve to run watch mode for development
     ```bash
