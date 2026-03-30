@@ -6,7 +6,7 @@ import 'package:archive/archive_io.dart';
 
 class CreateProject {
   String projectUrl =
-      'https://github.com/uproid/example-finch-docker/archive/refs/heads/master.zip';
+      'https://github.com/uproid/{template}-finch-{docker}/archive/refs/heads/master.zip';
   String savePath =
       '${Directory.systemTemp.path}/template_${DateTime.timestamp().microsecondsSinceEpoch}.zip';
 
@@ -42,11 +42,15 @@ class CreateProject {
     if (!Directory(path).existsSync()) {
       return CappConsole("Error creating this path: $path", CappColors.error);
     }
+    var template = controller.getOption('template', def: 'helloworld');
+    var repoUrl = projectUrl
+        .replaceAll('{template}', template)
+        .replaceAll('{docker}', useDocker ? 'docker' : '');
 
     String pathZip = await CappConsole.progress<String>(
       "Waitng...",
       () async {
-        return downloadFile(projectUrl, savePath);
+        return downloadFile(repoUrl, savePath);
       },
       type: CappProgressType.circle,
     );

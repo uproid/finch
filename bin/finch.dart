@@ -47,6 +47,12 @@ void main(List<String> args) async {
             shortName: 'd',
             description: 'Use docker',
           ),
+          CappOption(
+            name: 'template',
+            shortName: 't',
+            description: 'Project template (default: helloworld)',
+            value: 'helloworld',
+          ),
         ],
         run: (controller) => CreateProject().create(controller),
       ),
