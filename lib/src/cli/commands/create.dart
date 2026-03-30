@@ -6,7 +6,7 @@ import 'package:archive/archive_io.dart';
 
 class CreateProject {
   String projectUrl =
-      'https://github.com/uproid/{template}-finch-{docker}/archive/refs/heads/master.zip';
+      'https://github.com/uproid/{template}-finch{docker}/archive/refs/heads/master.zip';
   String savePath =
       '${Directory.systemTemp.path}/template_${DateTime.timestamp().microsecondsSinceEpoch}.zip';
 
@@ -43,10 +43,13 @@ class CreateProject {
       return CappConsole("Error creating this path: $path", CappColors.error);
     }
     var template = controller.getOption('template', def: 'helloworld');
+
     var repoUrl = projectUrl
         .replaceAll('{template}', template)
-        .replaceAll('{docker}', useDocker ? 'docker' : '');
-
+        .replaceAll('{docker}', useDocker ? '-docker' : '');
+    var dirName = '{template}-finch{docker}-master'
+        .replaceAll('{template}', template)
+        .replaceAll('{docker}', useDocker ? '-docker' : '');
     String pathZip = await CappConsole.progress<String>(
       "Waitng...",
       () async {
@@ -56,7 +59,7 @@ class CreateProject {
     );
 
     if (pathZip.isNotEmpty) {
-      var dirPrject = await extract(path);
+      var dirPrject = await extract(path, dirName);
       if (dirPrject.isNotEmpty) {
         await updatePacakge(
           dirPrject,
@@ -93,7 +96,7 @@ class CreateProject {
     }
   }
 
-  Future<String> extract(String dir) async {
+  Future<String> extract(String dir, String dirName) async {
     try {
       final bytes = File(savePath).readAsBytesSync();
       final archive = ZipDecoder().decodeBytes(bytes);
@@ -101,8 +104,7 @@ class CreateProject {
         final filename = file.name;
         if (file.isFile) {
           final data = file.content as List<int>;
-          var newPath =
-              filename.replaceFirst('example-finch-docker-master', '');
+          var newPath = filename.replaceFirst(dirName, '');
           File(joinPaths([dir, newPath]))
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);
@@ -111,7 +113,7 @@ class CreateProject {
         }
       }
 
-      Directory(joinPaths([dir, 'example-finch-docker-master'])).deleteSync(
+      Directory(joinPaths([dir, dirName])).deleteSync(
         recursive: true,
       );
       return dir;
