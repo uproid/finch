@@ -1,4 +1,11 @@
 
+## 1.1.2
+- Adding -template option to Finch CLI to create new projects with different templates
+    ```bash
+    finch create --template helloworld
+    finch create -t helloworld
+    ```
+
 ## 1.1.1
 - Updated the Finch CLI to create new projects in new paths
 - Fixed the example
