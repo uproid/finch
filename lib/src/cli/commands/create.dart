@@ -89,9 +89,19 @@ class CreateProject {
 
         return savePath;
       } else {
+        CappConsole.write(
+          "Error downloading template: ${response.statusCode}",
+          CappColors.error,
+          true,
+        );
         return "";
       }
     } catch (e) {
+      CappConsole.write(
+        "Error downloading template: ${e.toString()}",
+        CappColors.error,
+        true,
+      );
       return "";
     }
   }
