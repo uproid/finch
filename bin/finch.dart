@@ -50,7 +50,7 @@ void main(List<String> args) async {
           CappOption(
             name: 'template',
             shortName: 't',
-            description: 'Project template (default: simple)',
+            description: 'Project template [simple, example,...]',
             value: 'simple',
           ),
         ],
@@ -58,7 +58,7 @@ void main(List<String> args) async {
       ),
       CappController(
         'get',
-        description: 'Get pacakges of project, (dart pub get)',
+        description: 'Get packages of project, (dart pub get)',
         run: (controller) => ProjectCommands().get(controller),
         options: [],
       ),
