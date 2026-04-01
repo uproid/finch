@@ -50,8 +50,8 @@ void main(List<String> args) async {
           CappOption(
             name: 'template',
             shortName: 't',
-            description: 'Project template (default: helloworld)',
-            value: 'helloworld',
+            description: 'Project template (default: simple)',
+            value: 'simple',
           ),
         ],
         run: (controller) => CreateProject().create(controller),
