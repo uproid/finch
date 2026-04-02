@@ -348,6 +348,16 @@ class FinchApp {
     await _runCommands(_args);
   }
 
+  final _helpOption = CappOption(
+    name: 'help',
+    shortName: 'h',
+    hideInHelp: true,
+    onSelect: (CappController controller) {
+      controller.writeHelp();
+      return false;
+    },
+  );
+
   /// Creates and configures the command manager for interactive CLI operations.
   /// Sets up a [CappManager] with all available server commands including:
   /// - `help` - Shows help information for all available commands
@@ -370,10 +380,15 @@ class FinchApp {
         ),
         args: args,
         controllers: [
-          CappController('clear', options: [], run: (c) async {
-            CappConsole.clear();
-            return CappConsole.empty;
-          }),
+          CappController(
+            'clear',
+            options: [_helpOption],
+            description: 'Clear console',
+            run: (c) async {
+              CappConsole.clear();
+              return CappConsole.empty;
+            },
+          ),
           CappController(
             'help',
             options: [
@@ -390,6 +405,7 @@ class FinchApp {
           CappController(
             'migrate',
             options: [
+              _helpOption,
               CappOption(
                 name: 'init',
                 shortName: 'i',
@@ -422,7 +438,7 @@ class FinchApp {
                 description: 'List migration',
               ),
             ],
-            description: 'Migration commands',
+            description: 'Mysql/Sqlite Migration commands',
             run: (c) async {
               if (c.existsOption('init')) {
                 var res = await CappConsole.progress<List<String>>(
@@ -505,6 +521,7 @@ class FinchApp {
             description:
                 'Generate widgets Dart file from templates (to dart map variable)',
             options: [
+              _helpOption,
               CappOption(
                 name: 'path',
                 shortName: 'p',
@@ -530,7 +547,7 @@ class FinchApp {
           CappController(
             'build',
             description: 'Build Project',
-            options: [],
+            options: [_helpOption],
             run: (c) async {
               await ProjectCommands().build(
                 c,
@@ -545,6 +562,7 @@ class FinchApp {
             description:
                 'Generate language Dart file from language files (to dart map variable)',
             options: [
+              _helpOption,
               CappOption(
                 name: 'path',
                 shortName: 'p',
@@ -563,7 +581,9 @@ class FinchApp {
           ),
           CappController(
             'migrate_sqlite',
+            description: 'Sqlite Migration commands',
             options: [
+              _helpOption,
               CappOption(
                 name: 'init',
                 shortName: 'i',
@@ -591,7 +611,6 @@ class FinchApp {
                 description: 'List migration',
               ),
             ],
-            description: 'Migration commands',
             run: (c) async {
               if (c.existsOption('init')) {
                 var res = await CappConsole.progress<List<String>>(
@@ -655,7 +674,9 @@ class FinchApp {
           ),
           CappController(
             'language',
+            description: 'Language management commands',
             options: [
+              _helpOption,
               CappOption(
                 name: 'list',
                 shortName: 'l',
@@ -706,42 +727,52 @@ class FinchApp {
               return CappConsole("Language commands");
             },
           ),
-          CappController('info', options: [], run: (c) async {
-            CappConsole.writeTable(
-              [
-                ['Info', 'Details'],
-                ['Finch version', info.version],
-                ['Dart Versions', Platform.version],
+          CappController(
+            'info',
+            description: 'Display server information',
+            options: [_helpOption],
+            run: (c) async {
+              CappConsole.writeTable(
                 [
-                  'Memory Usage',
-                  ConvertSize.toLogicSizeString(ProcessInfo.currentRss)
+                  ['Info', 'Details'],
+                  ['Finch version', info.version],
+                  ['Dart Versions', Platform.version],
+                  [
+                    'Memory Usage',
+                    ConvertSize.toLogicSizeString(ProcessInfo.currentRss)
+                  ],
+                  [
+                    'Max Memory Usage',
+                    ConvertSize.toLogicSizeString(ProcessInfo.maxRss)
+                  ],
+                  [
+                    'Socket Connections',
+                    (socketManager?.countClients ?? 0).toString(),
+                  ],
+                  ['Socket Users', (socketManager?.countUsers ?? 0).toString()],
                 ],
-                [
-                  'Max Memory Usage',
-                  ConvertSize.toLogicSizeString(ProcessInfo.maxRss)
-                ],
-                [
-                  'Socket Connections',
-                  (socketManager?.countClients ?? 0).toString(),
-                ],
-                ['Socket Users', (socketManager?.countUsers ?? 0).toString()],
-              ],
-              color: CappColors.info,
-            );
-            return CappConsole('\n');
-          }),
-          CappController('exit', options: [], run: (c) async {
-            await CappConsole.progress(
-              "Bye bye!",
-              () async {
-                await stop(force: true);
-                await Future.delayed(Duration(seconds: 1), () {
-                  exit(0);
-                });
-              },
-              type: CappProgressType.circle,
-            );
-          }),
+                color: CappColors.info,
+              );
+              return CappConsole('\n');
+            },
+          ),
+          CappController(
+            'exit',
+            description: 'Exit and stop the application',
+            options: [_helpOption],
+            run: (c) async {
+              await CappConsole.progress(
+                "Bye bye!",
+                () async {
+                  await stop(force: true);
+                  await Future.delayed(Duration(seconds: 1), () {
+                    exit(0);
+                  });
+                },
+                type: CappProgressType.circle,
+              );
+            },
+          ),
           ...commands,
         ],
       );
@@ -1159,5 +1190,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.1.1';
+  final String version = '1.1.2';
 }

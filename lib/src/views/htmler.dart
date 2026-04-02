@@ -326,7 +326,6 @@ class $JinjaComment extends JinjaTag {
 }
 
 class $CustomTag extends Tag {
-  @override
   $CustomTag(
     String tag, {
     super.attrs,
@@ -368,7 +367,6 @@ class $Html extends Tag {
 
 class $Doctype extends SingleTag {
   List<String> params = <String>[];
-  @override
   $Doctype([this.params = const ['html']]);
 
   @override

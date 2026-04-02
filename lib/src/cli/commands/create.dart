@@ -6,7 +6,7 @@ import 'package:archive/archive_io.dart';
 
 class CreateProject {
   String projectUrl =
-      'https://github.com/uproid/example-finch-docker/archive/refs/heads/master.zip';
+      'https://github.com/uproid/{template}-finch-docker/archive/refs/heads/master.zip';
   String savePath =
       '${Directory.systemTemp.path}/template_${DateTime.timestamp().microsecondsSinceEpoch}.zip';
 
@@ -42,17 +42,21 @@ class CreateProject {
     if (!Directory(path).existsSync()) {
       return CappConsole("Error creating this path: $path", CappColors.error);
     }
+    var template = controller.getOption('template', def: 'simple');
 
+    var repoUrl = projectUrl.replaceAll('{template}', template);
+    var dirName =
+        '{template}-finch-docker-master'.replaceAll('{template}', template);
     String pathZip = await CappConsole.progress<String>(
       "Waitng...",
       () async {
-        return downloadFile(projectUrl, savePath);
+        return downloadFile(repoUrl, savePath);
       },
       type: CappProgressType.circle,
     );
 
     if (pathZip.isNotEmpty) {
-      var dirPrject = await extract(path);
+      var dirPrject = await extract(path, dirName);
       if (dirPrject.isNotEmpty) {
         await updatePacakge(
           dirPrject,
@@ -82,14 +86,24 @@ class CreateProject {
 
         return savePath;
       } else {
+        CappConsole.write(
+          "Error downloading template: ${response.statusCode}",
+          CappColors.error,
+          true,
+        );
         return "";
       }
     } catch (e) {
+      CappConsole.write(
+        "Error downloading template: ${e.toString()}",
+        CappColors.error,
+        true,
+      );
       return "";
     }
   }
 
-  Future<String> extract(String dir) async {
+  Future<String> extract(String dir, String dirName) async {
     try {
       final bytes = File(savePath).readAsBytesSync();
       final archive = ZipDecoder().decodeBytes(bytes);
@@ -97,8 +111,7 @@ class CreateProject {
         final filename = file.name;
         if (file.isFile) {
           final data = file.content as List<int>;
-          var newPath =
-              filename.replaceFirst('example-finch-docker-master', '');
+          var newPath = filename.replaceFirst(dirName, '');
           File(joinPaths([dir, newPath]))
             ..createSync(recursive: true)
             ..writeAsBytesSync(data);
@@ -107,7 +120,7 @@ class CreateProject {
         }
       }
 
-      Directory(joinPaths([dir, 'example-finch-docker-master'])).deleteSync(
+      Directory(joinPaths([dir, dirName])).deleteSync(
         recursive: true,
       );
       return dir;
@@ -128,13 +141,13 @@ class CreateProject {
 
     if (!useDocker) {
       final dockerFile = File(joinPaths([filePath, 'Dockerfile']));
-      dockerFile.deleteSync();
+      if (dockerFile.existsSync()) dockerFile.deleteSync();
 
       final dockerIgnore = File(joinPaths([filePath, '.dockerignore']));
-      dockerIgnore.deleteSync();
+      if (dockerIgnore.existsSync()) dockerIgnore.deleteSync();
 
       final dockerCompose = File(joinPaths([filePath, 'docker-compose.yaml']));
-      dockerCompose.deleteSync();
+      if (dockerCompose.existsSync()) dockerCompose.deleteSync();
     }
   }
 }
