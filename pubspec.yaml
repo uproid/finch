@@ -7,7 +7,6 @@ repository: https://github.com/uproid/finch.git
 issue_tracker: https://github.com/uproid/finch/issues
 
 platforms:
-  web:
   linux:
   windows:
   macos:
