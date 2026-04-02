@@ -4,6 +4,16 @@ import 'package:finch/src/cli/commands/create.dart';
 import 'package:finch/src/cli/commands/main.dart';
 
 void main(List<String> args) async {
+  final helpOption = CappOption(
+    name: 'help',
+    shortName: 'h',
+    hideInHelp: true,
+    onSelect: (CappController controller) {
+      controller.writeHelp();
+      return false;
+    },
+  );
+
   final cmdManager = CappManager(
     args: args,
     main: CappController(
@@ -32,6 +42,7 @@ void main(List<String> args) async {
         'create',
         description: 'Make new project',
         options: [
+          helpOption,
           CappOption(
             name: 'path',
             shortName: 'p',
@@ -60,20 +71,21 @@ void main(List<String> args) async {
         'get',
         description: 'Get packages of project, (dart pub get)',
         run: (controller) => ProjectCommands().get(controller),
-        options: [],
+        options: [helpOption],
       ),
       CappController(
         'runner',
         description:
             'Build runner of project, (dart pub run build_runner build)',
         run: (controller) => ProjectCommands().runner(controller),
-        options: [],
+        options: [helpOption],
       ),
       CappController(
         'run',
         description: 'Run project, (dart run)',
         run: (controller) => ProjectCommands().run(controller),
         options: [
+          helpOption,
           CappOption(
             name: 'path',
             shortName: 'p',
@@ -91,6 +103,7 @@ void main(List<String> args) async {
         description: 'Serve project with file watcher',
         run: (controller) => ProjectCommands().run(controller, serve: true),
         options: [
+          helpOption,
           CappOption(
             name: 'path',
             shortName: 'p',
@@ -108,6 +121,7 @@ void main(List<String> args) async {
         description: 'Build Project (dart compile exe)',
         run: (controller) => ProjectCommands().build(controller),
         options: [
+          helpOption,
           CappOption(
             name: 'cli',
             shortName: 'c',
@@ -148,11 +162,6 @@ void main(List<String> args) async {
             shortName: 't',
             description: 'Type of build (zip, exe)',
           ),
-          CappOption(
-            name: 'help',
-            shortName: 'h',
-            description: 'Show the help',
-          ),
         ],
       ),
       CappController(
@@ -160,6 +169,7 @@ void main(List<String> args) async {
         description: 'Unit test of project, (dart test)',
         run: (controller) => ProjectCommands().test(controller),
         options: [
+          helpOption,
           CappOption(
             name: 'reporter',
             shortName: 'r',
