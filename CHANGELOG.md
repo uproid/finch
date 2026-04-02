@@ -5,6 +5,8 @@
     finch create --template simple
     finch create -t simple
     ```
+- Fixing commands help in Finch CLI
+
 
 ## 1.1.1
 - Updated the Finch CLI to create new projects in new paths
