@@ -40,7 +40,7 @@ finch:
   widgets_type: j2.html
   # Path of migrations files for different databases
   mysql_migrate:
-    path: ./lib/mysql/migrations
+    path: ./migrations
   # Path of migrations files for different databases
   sqlite_migrate:
     path: ./lib/sqlite/

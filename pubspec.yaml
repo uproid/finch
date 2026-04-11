@@ -1,7 +1,7 @@
 name: finch
 description: A fast, lightweight Dart web framework for building scalable server-side apps and APIs with MongoDB, MySQL, SQLite, WebSockets,...
 
-version: 1.1.2
+version: 1.1.3
 homepage: https://finchdart.com/
 repository: https://github.com/uproid/finch.git
 issue_tracker: https://github.com/uproid/finch/issues
@@ -51,9 +51,9 @@ dependencies:
   base32: ^2.2.0
   archive: ^4.0.9
   http: ^1.6.0
-  capp: ^1.1.6
+  capp: ^1.1.7
   mysql_client: ^0.0.27
-  sqlite3: ^3.2.0
+  sqlite3: ^3.3.0
   sqler: ^1.2.0
   html_unescape: ^2.0.0
   yaml: ^3.1.3
@@ -63,4 +63,6 @@ executables:
 finch:
   serve: ./example/lib/serve.dart
   app: ./example/lib/serve.dart
+  mysql_migrate:
+    path: ./example/migrations
 

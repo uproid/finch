@@ -4,6 +4,8 @@ services:
     container_name: finch
     image: uproid/finch:latest
     restart: always
+    stdin_open: true
+    tty: true
     ports:
       - "8085:8085"
       - "8181:8181"

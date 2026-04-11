@@ -165,6 +165,29 @@ void main(List<String> args) async {
         ],
       ),
       CappController(
+        'migrate',
+        description: 'Migrate project to new version of Finch',
+        options: [
+          helpOption,
+          CappOption(
+            name: 'create',
+            shortName: 'c',
+            description: 'Create new project and move files',
+          ),
+          CappOption(
+            name: 'name',
+            shortName: 'n',
+            description: 'Name of migration file (only for create option)',
+          ),
+        ],
+        run: (c) async {
+          if (c.existsOption('create')) {
+            return await ProjectCommands().createMigrateFile(c);
+          }
+          return CappConsole.empty;
+        },
+      ),
+      CappController(
         'test',
         description: 'Unit test of project, (dart test)',
         run: (controller) => ProjectCommands().test(controller),
