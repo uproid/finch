@@ -382,11 +382,18 @@ class ProjectCommands {
   }
 
   Future<CappConsole> createMigrateFile(CappController c) async {
-    var defaultMigratePath = _pubspec('mysql_migrate/path');
+    var isSqlite = c.existsOption('sqlite');
+
+    var defaultMigratePath = _pubspec(
+      isSqlite ? 'sqlite_migrate/path' : 'mysql_migrate/path',
+    );
     var path = c.getOption('path', def: defaultMigratePath);
+
     if (path.isEmpty) {
       return CappConsole(
-        "The path of migration directory is not found. please set it in pubspec.yaml \n\nfinch:\n\tmysql_migrate:\n\t\tpath: ./migrate\n",
+        "The path of migration directory is not found."
+        " please set it in pubspec.yaml"
+        " \n\nfinch:\n\tmysql_migrate:\n\t\tpath: ./migrate\n",
         CappColors.error,
       );
     }

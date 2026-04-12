@@ -33,6 +33,29 @@ void main() async {
         index: () => rq.renderString(text: "TEST"),
         children: [
           FinchRoute(
+            path: '/test_cookies/list',
+            index: () {
+              rq.addCookie('SYSTEM_TEST', 'TEST_VALUE_2', safe: false);
+              return rq.renderDataParam(data: {
+                'cookies': rq.cookies,
+                'cookies_res': rq.response.cookies,
+              });
+            },
+          ),
+          FinchRoute(
+            path: '/test_cookies/delete_cookies',
+            index: () {
+              var key = rq.get<String>('key');
+              Console.i("Deleting cookie with key: $key");
+              rq.removeCookie(key);
+              return rq.renderDataParam(data: {
+                'cookies': rq.cookies,
+                'cookies_res': rq.response.cookies,
+                'key_to_delete': key,
+              });
+            },
+          ),
+          FinchRoute(
             path: '/advanced_form',
             methods: Methods.GET_ONLY,
             index: () async {
@@ -266,6 +289,47 @@ void main() async {
   });
 
   group("Finch Server Test", () {
+    test("Test List Cookies", () async {
+      var req = await http.get(
+        Uri.parse("http://localhost:${httpServer.port}/test_cookies/list"),
+        headers: {
+          'Cookie': 'test_cookie=TEST_VALUE;',
+        },
+      );
+
+      expect(
+        req.body,
+        contains('test_cookie=TEST_VALUE;'),
+        reason: "Request cookies should contain 'test_cookie=TEST_VALUE;'",
+      );
+      expect(
+        req.body,
+        contains('SYSTEM_TEST=TEST_VALUE_2;'),
+        reason: "Request cookies should contain 'SYSTEM_TEST=TEST_VALUE_2;'",
+      );
+    });
+
+    test("Test Delete Cookie by Backend", () async {
+      var req = await http.get(
+        Uri.parse(
+          "http://localhost:${httpServer.port}/test_cookies/delete_cookies?key=test_cookie",
+        ),
+        headers: {
+          'Cookie': 'test_cookie=TEST_VALUE;TEST_COOKIE_2=TEST_VALUE_2;',
+        },
+      );
+      expect(
+        false,
+        req.body.contains('test_cookie=TEST_VALUE;'),
+        reason: "Request cookies should not contain 'test_cookie=TEST_VALUE;'",
+      );
+      expect(
+        req.body,
+        contains('TEST_COOKIE_2=TEST_VALUE_2;'),
+        reason: "Request cookies should contain 'TEST_COOKIE_2=TEST_VALUE_2;'",
+      );
+    });
+
     test("Test 200", () async {
       var req = await http.get(
         Uri.parse("http://localhost:${httpServer.port}"),

@@ -43,7 +43,7 @@ finch:
     path: ./migrations
   # Path of migrations files for different databases
   sqlite_migrate:
-    path: ./lib/sqlite/
+    path: ./migrations_sqlite
   build_output: ./build_example
   public_path: ./public
   

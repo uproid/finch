@@ -179,6 +179,11 @@ void main(List<String> args) async {
             shortName: 'n',
             description: 'Name of migration file (only for create option)',
           ),
+          CappOption(
+            name: 'sqlite',
+            shortName: 's',
+            description: 'Migrate SQLite files',
+          ),
         ],
         run: (c) async {
           if (c.existsOption('create')) {

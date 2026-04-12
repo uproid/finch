@@ -65,4 +65,6 @@ finch:
   app: ./example/lib/serve.dart
   mysql_migrate:
     path: ./example/migrations
+  sqlite_migrate:
+    path: ./example/migrations_sqlite
 
