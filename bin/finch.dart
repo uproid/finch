@@ -39,6 +39,12 @@ void main(List<String> args) async {
     ),
     controllers: [
       CappController(
+        'templates',
+        options: [helpOption],
+        description: 'Show the list of available templates',
+        run: (c) => ProjectCommands().getTemplateList(c),
+      ),
+      CappController(
         'create',
         description: 'Make new project',
         options: [

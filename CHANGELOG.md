@@ -13,6 +13,7 @@
 - Fixed bug of cookies
 - Improved the cookie options
 - Updated dependencies
+- Added `finch templates` command to show the list of available templates in GitHub #40
 
 ## 1.1.2
 - Adding -template option to Finch CLI to create new projects with different templates

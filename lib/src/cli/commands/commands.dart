@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:capp/capp.dart';
 import 'package:finch/model_less.dart';
@@ -10,6 +11,7 @@ import 'package:finch/finch_app.dart';
 import 'package:archive/archive_io.dart';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as p;
+import 'package:http/http.dart' as http;
 
 class ProjectCommands {
   Map<String, dynamic> finchConfigs = {};
@@ -442,5 +444,49 @@ class ProjectCommands {
       }
     });
     return res;
+  }
+
+  Future<CappConsole> getTemplateList(CappController c) async {
+    var res = [
+      ['#', 'Key', 'Github', 'Description'],
+    ];
+    var githubUrl = 'https://api.github.com/users/uproid/repos';
+    var request = await CappConsole.progress(
+      "Fetching templates from GitHub",
+      () async => http.get(Uri.parse(githubUrl)),
+      type: CappProgressType.timer,
+    );
+
+    if (request.statusCode == 200) {
+      var repos = jsonDecode(request.body) as List<dynamic>;
+      int index = 0;
+      for (var repo in repos) {
+        var name = repo['name'] as String;
+        if (name.contains('-finch-docker')) {
+          var description = repo['description'] as String? ?? '';
+          var htmlUrl = repo['html_url'] as String;
+          res.add([
+            (++index).toString(),
+            name.replaceAll('-finch-docker', ''),
+            htmlUrl,
+            '${description.substring(
+              0,
+              description.length > 20 ? 20 : description.length,
+            )}...',
+          ]);
+        }
+      }
+    } else {
+      return CappConsole(
+        "Failed to fetch templates from GitHub. Status code: ${request.statusCode}",
+        CappColors.error,
+      );
+    }
+    CappConsole.writeTable(res, color: CappColors.info);
+    CappConsole.write(
+      "* Use 'finch create --template <key>' to create project with template",
+      CappColors.success,
+    );
+    return CappConsole.empty;
   }
 }
