@@ -486,8 +486,7 @@ class FinchApp {
 
                 var res = await CappConsole.progress<String>(
                   "Creating migration...",
-                  () async =>
-                      MysqlMigration(mysqlDriver).migrateCreate(name: name),
+                  () async => MysqlMigration.migrateCreate(name: name),
                 );
                 return CappConsole(res);
               }
@@ -796,7 +795,7 @@ class FinchApp {
 
     return _getCommandManager(args).processWhile(
       initArgs: args,
-      promptLabel: 'Finch> ',
+      appLabel: () => 'Finch> ',
     );
   }
 
@@ -1190,5 +1189,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.1.2';
+  final String version = '1.1.3';
 }

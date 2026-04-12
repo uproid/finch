@@ -5,10 +5,10 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Serv",
+            "name": "Serve",
             "type": "dart",
             "request": "launch",
-            "program": "./example/lib/serv.dart",
+            "program": "./example/lib/serve.dart",
             "args": [
                 // "migration",
                 // "--init",

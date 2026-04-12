@@ -1,4 +1,20 @@
 
+## 1.1.3
+- Added new command to create migration files for mysql and sqlite databases in Finch CLI
+    ```bash
+    finch migrate --create --mysql --name create_users_table
+    finch migrate --create --sqlite --name create_users_table
+    ```
+- Fixs bugs in migration roll back command and added deep option to specify how many migrations should be rolled back in command line
+    ```bash
+    finch migrate --rollback=2    # rolls back the last 2 migrations
+    finch migrate --rollback      # rolls back the last migration
+    ```
+- Fixed bug of cookies
+- Improved the cookie options
+- Updated dependencies
+- Added `finch templates` command to show the list of available templates in GitHub #40
+
 ## 1.1.2
 - Adding -template option to Finch CLI to create new projects with different templates
     ```bash

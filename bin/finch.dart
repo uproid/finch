@@ -39,6 +39,12 @@ void main(List<String> args) async {
     ),
     controllers: [
       CappController(
+        'templates',
+        options: [helpOption],
+        description: 'Show the list of available templates',
+        run: (c) => ProjectCommands().getTemplateList(c),
+      ),
+      CappController(
         'create',
         description: 'Make new project',
         options: [
@@ -163,6 +169,34 @@ void main(List<String> args) async {
             description: 'Type of build (zip, exe)',
           ),
         ],
+      ),
+      CappController(
+        'migrate',
+        description: 'Migrate project to new version of Finch',
+        options: [
+          helpOption,
+          CappOption(
+            name: 'create',
+            shortName: 'c',
+            description: 'Create new project and move files',
+          ),
+          CappOption(
+            name: 'name',
+            shortName: 'n',
+            description: 'Name of migration file (only for create option)',
+          ),
+          CappOption(
+            name: 'sqlite',
+            shortName: 's',
+            description: 'Migrate SQLite files',
+          ),
+        ],
+        run: (c) async {
+          if (c.existsOption('create')) {
+            return await ProjectCommands().createMigrateFile(c);
+          }
+          return CappConsole.empty;
+        },
       ),
       CappController(
         'test',

@@ -1,5 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:capp/capp.dart';
+import 'package:finch/model_less.dart';
+import 'package:finch/src/db/mysql/mysql_migration.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
 import 'package:finch/src/tools/convertor/widget_to_dart.dart';
 import 'package:finch/src/tools/extensions/directory.dart';
@@ -8,16 +11,15 @@ import 'package:finch/finch_app.dart';
 import 'package:archive/archive_io.dart';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as p;
+import 'package:http/http.dart' as http;
 
 class ProjectCommands {
-  Map finchConfigs = {};
+  Map<String, dynamic> finchConfigs = {};
   ProjectCommands() {
     var pubspecPath = _findPubspecPath(Directory.current.path);
     var pubspec = _loadPubspec(pubspecPath);
     var finchYaml = pubspec['finch'] as YamlMap?;
-    for (var key in finchYaml?.keys ?? []) {
-      finchConfigs[key] = finchYaml?[key];
-    }
+    finchConfigs = _reformYamlToMap(finchYaml);
   }
 
   Future<CappConsole> get(CappController controller) async {
@@ -381,6 +383,37 @@ class ProjectCommands {
     );
   }
 
+  Future<CappConsole> createMigrateFile(CappController c) async {
+    var isSqlite = c.existsOption('sqlite');
+
+    var defaultMigratePath = _pubspec(
+      isSqlite ? 'sqlite_migrate/path' : 'mysql_migrate/path',
+    );
+    var path = c.getOption('path', def: defaultMigratePath);
+
+    if (path.isEmpty) {
+      return CappConsole(
+        "The path of migration directory is not found."
+        " please set it in pubspec.yaml"
+        " \n\nfinch:\n\tmysql_migrate:\n\t\tpath: ./migrate\n",
+        CappColors.error,
+      );
+    }
+
+    var name = c.getOption('name', def: '');
+    if (name.isEmpty) {
+      name = CappConsole.read("Enter migration name:", isRequired: true);
+    }
+    var res = await CappConsole.progress<String>(
+      "Creating migration...",
+      () async => MysqlMigration.migrateCreate(
+        name: name,
+        migrationPath: path,
+      ),
+    );
+    return CappConsole(res);
+  }
+
   String _findPubspecPath(String startPath) {
     var pubspecFile = File(joinPaths([startPath, 'pubspec.yaml']));
     if (pubspecFile.existsSync()) {
@@ -394,5 +427,66 @@ class ProjectCommands {
     var content = pubspecFile.readAsStringSync();
     var pubspec = loadYaml(content);
     return pubspec;
+  }
+
+  String _pubspec(String path, {String def = ''}) {
+    return finchConfigs.navigation<String>(path: path, def: def);
+  }
+
+  Map<String, dynamic> _reformYamlToMap(YamlMap? finchYaml) {
+    var res = <String, dynamic>{};
+    if (finchYaml == null) return res;
+    finchYaml.forEach((key, value) {
+      if (value is YamlMap) {
+        res[key] = _reformYamlToMap(value);
+      } else {
+        res[key] = value;
+      }
+    });
+    return res;
+  }
+
+  Future<CappConsole> getTemplateList(CappController c) async {
+    var res = [
+      ['#', 'Key', 'Github', 'Description'],
+    ];
+    var githubUrl = 'https://api.github.com/users/uproid/repos';
+    var request = await CappConsole.progress(
+      "Fetching templates from GitHub",
+      () async => http.get(Uri.parse(githubUrl)),
+      type: CappProgressType.timer,
+    );
+
+    if (request.statusCode == 200) {
+      var repos = jsonDecode(request.body) as List<dynamic>;
+      int index = 0;
+      for (var repo in repos) {
+        var name = repo['name'] as String;
+        if (name.contains('-finch-docker')) {
+          var description = repo['description'] as String? ?? '';
+          var htmlUrl = repo['html_url'] as String;
+          res.add([
+            (++index).toString(),
+            name.replaceAll('-finch-docker', ''),
+            htmlUrl,
+            '${description.substring(
+              0,
+              description.length > 20 ? 20 : description.length,
+            )}...',
+          ]);
+        }
+      }
+    } else {
+      return CappConsole(
+        "Failed to fetch templates from GitHub. Status code: ${request.statusCode}",
+        CappColors.error,
+      );
+    }
+    CappConsole.writeTable(res, color: CappColors.info);
+    CappConsole.write(
+      "* Use 'finch create --template <key>' to create project with template",
+      CappColors.success,
+    );
+    return CappConsole.empty;
   }
 }
