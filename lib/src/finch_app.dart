@@ -795,7 +795,7 @@ class FinchApp {
 
     return _getCommandManager(args).processWhile(
       initArgs: args,
-      promptLabel: 'Finch> ',
+      appLabel: () => 'Finch> ',
     );
   }
 

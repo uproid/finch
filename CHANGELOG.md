@@ -10,6 +10,9 @@
     finch migrate --rollback=2    # rolls back the last 2 migrations
     finch migrate --rollback      # rolls back the last migration
     ```
+- Fixed bug of cookies
+- Improved the cookie options
+- Updated dependencies
 
 ## 1.1.2
 - Adding -template option to Finch CLI to create new projects with different templates
