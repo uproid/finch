@@ -69,6 +69,7 @@ class FinchConfigs {
     int? domainPort,
     FinchDBConfig? dbConfig,
     this.widgetsType = 'html',
+    this.jinjaMapTemplate,
     this.fakeDelay = 0,
     List<String>? languages,
     this.mailDefault = "example@uproid.com",
@@ -138,6 +139,7 @@ class FinchConfigs {
   late final String mailDefault;
   late final String mailHost;
   late final String widgetsType;
+  Map<String, String>? jinjaMapTemplate;
   late final String blockStart;
   late final String blockEnd;
   late final String variableStart;
@@ -315,7 +317,7 @@ class FinchDBConfig {
     this.auth = auth ?? env['MONGO_INITDB_ROOT_AUTH'] ?? 'admin';
     this.host = host ?? env['MONGO_CONNECTION'] ?? 'localhost';
     this.port = port ?? env['MONGO_PORT'] ?? '27017';
-    this.dbName = env['MONGO_INITDB_DATABASE'] ?? 'database_name';
+    this.dbName = dbName ?? env['MONGO_INITDB_DATABASE'] ?? 'database_name';
     this.enable = enable ?? false;
   }
 

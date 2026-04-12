@@ -4,17 +4,17 @@
  */
 module.exports = {
 	content: [
-		'../../lib/**/*.j2.html',              // all Jinja templates
-		'../../lib/widgets/template/**/*.j2.html', // explicit template dir
-		'../../lib/widgets/example/**/*.j2.html',  // example widgets
-		'../../lib/**/*.dart',
-		'../../lib/**/*.html',
-		'../../lib/**/*.js',
-		'../../lib/**/*.ts',
-		'../../lib/**/*.vue',
-		'../../lib/**/*.svelte',
-		'../../lib/**/*.jsx',
-		'../../lib/**/*.tsx'
+		'./lib/**/*.j2.html',              // all Jinja templates
+		'./lib/widgets/template/**/*.j2.html', // explicit template dir
+		'./lib/widgets/example/**/*.j2.html',  // example widgets
+		'./lib/**/*.dart',
+		'./lib/**/*.html',
+		'./lib/**/*.js',
+		'./lib/**/*.ts',
+		'./lib/**/*.vue',
+		'./lib/**/*.svelte',
+		'./lib/**/*.jsx',
+		'./lib/**/*.tsx'
 	],
 	theme: {
 		ripple: theme => ({

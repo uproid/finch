@@ -167,12 +167,13 @@ class MysqlMigration {
   /// - Rollback SQL statements (-- ## ROLL BACK:)
   /// The filename format is: `{timestamp}_migration.sql`
   /// Returns a success message with the path of the created file.
-  Future<String> migrateCreate({
+  static Future<String> migrateCreate({
     String name = '',
+    String? migrationPath,
   }) async {
     File file = File(
       path.join(
-        pathTo(FinchApp.config.pathMigrationMySQL),
+        migrationPath ?? pathTo(FinchApp.config.pathMigrationMySQL),
         '${DateTime.now().millisecondsSinceEpoch}_'
         '${name.isNotEmpty ? '${name.toSlug().replaceAll('-', '_')}_' : ''}'
         'migration.sql',

@@ -218,5 +218,20 @@
   "person.form.label.color": "Väri",
   "person.form.tooltip.color": "Valitse väri",
   "person.form.button.submit": "Lähetä",
-  "person.form.button.cancel": "Peruuta"
+  "person.form.button.cancel": "Peruuta",
+  "Login Form": "Kirjautumislomake",
+  "Enter your credentials to continue": "Anna kirjautumistietosi jatkaaksesi",
+  "File References": "Tiedostoviitteet",
+  "Related files for this form example": "Tähän lomake-esimerkkiin liittyvät tiedostot",
+  "Books Management": "Kirjojen hallinta",
+  "MySQL database operations with advanced features": "MySQL-tietokantaoperaatiot edistyneillä ominaisuuksilla",
+  "Category deleted successfully": "Kategoria poistettu onnistuneesti",
+  "Book deleted successfully": "Kirja poistettu onnistuneesti",
+  "Category title is required": "Kategorian nimi vaaditaan",
+  "Category added successfully": "Kategoria lisätty onnistuneesti",
+  "Error adding category:": "Virhe kategoriaa lisättäessä:",
+  "Book saved successfully": "Kirja tallennettu onnistuneesti",
+  "Error saving book": "Virhe kirjaa tallennettaessa",
+  "Example SQLite": "SQLite-esimerkki",
+  "Example SQLite Categories": "SQLite-kategorioiden esimerkki"
 }

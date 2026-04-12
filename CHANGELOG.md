@@ -1,4 +1,53 @@
 
+## 1.1.3
+- Added new command to create migration files for mysql and sqlite databases in Finch CLI
+    ```bash
+    finch migrate --create --mysql --name create_users_table
+    finch migrate --create --sqlite --name create_users_table
+    ```
+- Fixs bugs in migration roll back command and added deep option to specify how many migrations should be rolled back in command line
+    ```bash
+    finch migrate --rollback=2    # rolls back the last 2 migrations
+    finch migrate --rollback      # rolls back the last migration
+    ```
+- Fixed bug of cookies
+- Improved the cookie options
+- Updated dependencies
+- Added `finch templates` command to show the list of available templates in GitHub #40
+
+## 1.1.2
+- Adding -template option to Finch CLI to create new projects with different templates
+    ```bash
+    finch create --template simple
+    finch create -t simple
+    ```
+- Fixing commands help in Finch CLI
+
+
+## 1.1.1
+- Updated the Finch CLI to create new projects in new paths
+- Fixed the example
+- Added new extension for CappManager to write help in a modern way
+- Added new command for build cli in Finch CLI
+    ```bash
+    finch build --cli --path ./lib/app.dart
+    ```
+    
+## 1.1.0
+- Added Finch serve CLI command to serve to run watch mode for development
+    ```bash
+    finch serve
+    ```
+- Improved the example section
+- Fixed Finch CLI
+- [#29](https://github.com/uproid/finch/issues/29) New ability to serve all languages json files to one dart file
+- [#29](https://github.com/uproid/finch/issues/29) New ability to serve all widget files to one dart file
+- Fixed asset managers for duplicated assets
+- Developed Middleware [#30](https://github.com/uproid/finch/issues/30) classes for routes to have more control on routes
+- Fixed Console debugger in frontend
+- Fixed swagger UI
+- Updated dependencies
+
 ## 1.0.4
 - Fixed [#22](https://github.com/uproid/finch/issues/22) fixed checking isApiEndpoint property in WebRequest class
 - Disabled MongoDB by default in FinchConfig [#25](https://github.com/uproid/finch/issues/25)

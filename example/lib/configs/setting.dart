@@ -115,5 +115,10 @@ class Setting {
       "flag":
           "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/svg/1f1f9-1f1ed.svg"
     },
+    "ur": {
+      "name": "Urdu",
+      "flag":
+          "https://cdn.jsdelivr.net/gh/twitter/twemoji@14.0.3/assets/svg/1f1f5-1f1f0.svg"
+    },
   };
 }

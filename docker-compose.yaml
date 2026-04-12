@@ -2,8 +2,10 @@ services:
   finch:
     hostname: finch
     container_name: finch
-    image: dart:stable
+    image: uproid/finch:latest
     restart: always
+    stdin_open: true
+    tty: true
     ports:
       - "8085:8085"
       - "8181:8181"
@@ -11,8 +13,6 @@ services:
       context: .
     environment:
       # DATABASE Configuration
-      MONGO_CONNECTION: mongodb
-      MONGO_PORT: 27017
       NODE_ENV: development
       LOCAL_DEBUG: true
       DOMAIN_PORT: 8085
@@ -21,8 +21,16 @@ services:
       WIDGETS_TYPE: j2.html
       LANGUAGE_PATH: ./lib/languages
       PUBLIC_DIR: ./public
-      SQLITE_PATH: ./example/sqlite/example_database.sqlite
+      SQLITE_PATH: /www/finch/example/sqlite/example_database.sqlite
+      # MongoDB Configuration
       ENABLE_DATABASE: true
+      MONGODB_CONNECTION: mongodb
+      MONGODB_PORT: 27017
+      MONGODB_NAME: database_name
+      MONGODB_AUTH: admin
+      MONGODB_PASSWORD: PasswordMongoDB
+      MONGODB_USER: root
+
     volumes:
       - ${PWD-.}/lib:/www/finch/lib
       - ${PWD-.}/bin:/www/finch/bin
@@ -43,6 +51,18 @@ services:
     volumes:
       - ${PWD-.}/example/public/:/var/www/html/public
       - ${PWD-.}/example/docker/nginx.conf:/etc/nginx/conf.d/default.conf
+
+  nodejs:
+    image: node:20-alpine
+    container_name: nodejs
+    hostname: nodejs
+    working_dir: /app
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./example:/app
+    command: sh -c "npm install && npm run tailwind:watch"
+    restart: always
 
   mongodb:
     image: mongo:latest

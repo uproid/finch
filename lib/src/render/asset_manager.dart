@@ -87,6 +87,18 @@ class AssetManager {
     return this;
   }
 
+  // Replaces an existing asset with the same path.
+  // The [asset] parameter is the [Asset] instance to replace the existing one.
+  // Returns the updated [AssetManager] instance.
+  AssetManager addUnique(Asset asset) {
+    var exist =
+        includes.any((a) => a._path == asset._path && a.type == asset.type);
+    if (!exist) {
+      includes.add(asset);
+    }
+    return this;
+  }
+
   /// Adds additional data to be passed to the frontend.
   ///
   /// The [params] parameter is a map of key-value pairs to be added to the existing data.

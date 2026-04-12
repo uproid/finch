@@ -675,7 +675,7 @@ class Request {
       return renderDataParam(status: status, data: viewParams);
     }
 
-    if (isFile) {
+    if (isFile && FinchApp.config.jinjaMapTemplate == null) {
       File file = File(joinPaths([
         FinchApp.config.widgetsPath,
         "$path.${FinchApp.config.widgetsType}",
@@ -695,12 +695,22 @@ class Request {
     params.addAll(viewParams);
     Template template;
     if (isFile) {
-      template = env.getTemplate(File(
-        joinPaths([
-          FinchApp.config.widgetsPath,
-          "$path.${FinchApp.config.widgetsType}",
-        ]),
-      ).path);
+      if (FinchApp.config.jinjaMapTemplate == null) {
+        template = env.getTemplate(File(
+          joinPaths([
+            FinchApp.config.widgetsPath,
+            "$path.${FinchApp.config.widgetsType}",
+          ]),
+        ).path);
+      } else {
+        template = env.getTemplate(
+          pathNorm(
+            "$path.${FinchApp.config.widgetsType}",
+            normSlashs: true,
+            endWithSlash: false,
+          ),
+        );
+      }
     } else {
       template = env.fromString(path);
     }
@@ -817,7 +827,7 @@ class Request {
   }) {
     if (isClosed) return '';
 
-    if (isFile) {
+    if (isFile && FinchApp.config.jinjaMapTemplate == null) {
       File file = File(joinPaths([
         FinchApp.config.widgetsPath,
         "$path.${FinchApp.config.widgetsType}",
@@ -837,12 +847,22 @@ class Request {
     params.addAll(viewParams);
     Template template;
     if (isFile) {
-      template = env.getTemplate(File(
-        joinPaths([
-          FinchApp.config.widgetsPath,
-          "$path.${FinchApp.config.widgetsType}",
-        ]),
-      ).path);
+      if (FinchApp.config.jinjaMapTemplate == null) {
+        template = env.getTemplate(File(
+          joinPaths([
+            FinchApp.config.widgetsPath,
+            "$path.${FinchApp.config.widgetsType}",
+          ]),
+        ).path);
+      } else {
+        template = env.getTemplate(
+          pathNorm(
+            "$path.${FinchApp.config.widgetsType}",
+            normSlashs: true,
+            endWithSlash: false,
+          ),
+        );
+      }
     } else {
       template = env.fromString(path);
     }
@@ -854,7 +874,9 @@ class Request {
     return Environment(
         globals: getGlobalEvents(),
         autoReload: false,
-        loader: FileSystemLoader(paths: <String>[FinchApp.config.widgetsPath]),
+        loader: FinchApp.config.jinjaMapTemplate != null
+            ? MapLoader(FinchApp.config.jinjaMapTemplate!)
+            : FileSystemLoader(paths: <String>[FinchApp.config.widgetsPath]),
         leftStripBlocks: false,
         trimBlocks: false,
         blockStart: FinchApp.config.blockStart,
@@ -1652,15 +1674,24 @@ class Request {
     String value, {
     Duration? duration,
     bool safe = true,
+    bool secure = false,
+    bool httpOnly = false,
+    SameSite? sameSite,
+    String path = '/',
+    DateTime? expires,
+    String? domain,
   }) {
     key = fixCookieName(key);
     removeCookie(key);
     value = safe ? value.toSafe(FinchApp.config.cookiePassword) : value;
     var cookie = Cookie(key, value);
     cookie.maxAge = duration?.inSeconds;
-    cookie.path = '/';
-    cookie.secure = false;
-    cookie.httpOnly = false;
+    cookie.path = path;
+    cookie.secure = secure;
+    cookie.httpOnly = httpOnly;
+    cookie.sameSite = sameSite;
+    cookie.expires = expires;
+    cookie.domain = domain;
     _rq.response.cookies.add(cookie);
     _rq.cookies.add(cookie);
   }
@@ -1668,10 +1699,17 @@ class Request {
   /// Removes a cookie by setting its value to an empty string and expiration to a past date.
   ///
   /// [key] - The name of the cookie to be removed.
-  void removeCookie(String key) {
+  void removeCookie(String key, {String path = '/'}) {
     key = fixCookieName(key);
     _rq.cookies.removeWhere((element) => element.name == key);
     _rq.response.cookies.removeWhere((element) => element.name == key);
+
+    // Add expired cookie to tell browser to remove it
+    var cookie = Cookie(key, '');
+    cookie.maxAge = 0;
+    cookie.expires = DateTime.now().subtract(const Duration(days: 1));
+    cookie.path = path;
+    _rq.response.cookies.add(cookie);
   }
 
   /// Constructs a full URL by combining a base URL with a subpath and optional query parameters.

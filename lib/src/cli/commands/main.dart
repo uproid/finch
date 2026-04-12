@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:capp/capp.dart';
 import 'package:finch/src/finch_app.dart';
 
@@ -21,9 +20,6 @@ class Main {
       return CappConsole("Update Finch");
     }
 
-    return CappConsole(
-      controller.manager.getHelp(),
-      controller.existsOption('help') ? CappColors.none : CappColors.warning,
-    );
+    return controller.manager.writeHelpModern();
   }
 }

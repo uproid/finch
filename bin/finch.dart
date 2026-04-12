@@ -4,6 +4,16 @@ import 'package:finch/src/cli/commands/create.dart';
 import 'package:finch/src/cli/commands/main.dart';
 
 void main(List<String> args) async {
+  final helpOption = CappOption(
+    name: 'help',
+    shortName: 'h',
+    hideInHelp: true,
+    onSelect: (CappController controller) {
+      controller.writeHelp();
+      return false;
+    },
+  );
+
   final cmdManager = CappManager(
     args: args,
     main: CappController(
@@ -29,9 +39,16 @@ void main(List<String> args) async {
     ),
     controllers: [
       CappController(
+        'templates',
+        options: [helpOption],
+        description: 'Show the list of available templates',
+        run: (c) => ProjectCommands().getTemplateList(c),
+      ),
+      CappController(
         'create',
         description: 'Make new project',
         options: [
+          helpOption,
           CappOption(
             name: 'path',
             shortName: 'p',
@@ -47,31 +64,61 @@ void main(List<String> args) async {
             shortName: 'd',
             description: 'Use docker',
           ),
+          CappOption(
+            name: 'template',
+            shortName: 't',
+            description: 'Project template [simple, example,...]',
+            value: 'simple',
+          ),
         ],
         run: (controller) => CreateProject().create(controller),
       ),
       CappController(
         'get',
-        description: 'Get pacakges of project, (dart pub get)',
+        description: 'Get packages of project, (dart pub get)',
         run: (controller) => ProjectCommands().get(controller),
-        options: [],
+        options: [helpOption],
       ),
       CappController(
         'runner',
         description:
             'Build runner of project, (dart pub run build_runner build)',
         run: (controller) => ProjectCommands().runner(controller),
-        options: [],
+        options: [helpOption],
       ),
       CappController(
         'run',
         description: 'Run project, (dart run)',
         run: (controller) => ProjectCommands().run(controller),
         options: [
+          helpOption,
           CappOption(
             name: 'path',
             shortName: 'p',
             description: 'Path of app file',
+          ),
+          CappOption(
+            name: 'args',
+            shortName: 'a',
+            description: 'Arguments for app file',
+          ),
+        ],
+      ),
+      CappController(
+        'serve',
+        description: 'Serve project with file watcher',
+        run: (controller) => ProjectCommands().run(controller, serve: true),
+        options: [
+          helpOption,
+          CappOption(
+            name: 'path',
+            shortName: 'p',
+            description: 'Path of app file',
+          ),
+          CappOption(
+            name: 'args',
+            shortName: 'a',
+            description: 'Arguments for app file',
           ),
         ],
       ),
@@ -80,6 +127,12 @@ void main(List<String> args) async {
         description: 'Build Project (dart compile exe)',
         run: (controller) => ProjectCommands().build(controller),
         options: [
+          helpOption,
+          CappOption(
+            name: 'cli',
+            shortName: 'c',
+            description: 'Build for cli',
+          ),
           CappOption(
             name: 'appPath',
             shortName: 'a',
@@ -109,25 +162,48 @@ void main(List<String> args) async {
             name: 'output',
             shortName: 'o',
             description: 'Output path',
-            value: './finch_build',
           ),
           CappOption(
             name: 'type',
             shortName: 't',
             description: 'Type of build (zip, exe)',
           ),
+        ],
+      ),
+      CappController(
+        'migrate',
+        description: 'Migrate project to new version of Finch',
+        options: [
+          helpOption,
           CappOption(
-            name: 'help',
-            shortName: 'h',
-            description: 'Show the help',
+            name: 'create',
+            shortName: 'c',
+            description: 'Create new project and move files',
+          ),
+          CappOption(
+            name: 'name',
+            shortName: 'n',
+            description: 'Name of migration file (only for create option)',
+          ),
+          CappOption(
+            name: 'sqlite',
+            shortName: 's',
+            description: 'Migrate SQLite files',
           ),
         ],
+        run: (c) async {
+          if (c.existsOption('create')) {
+            return await ProjectCommands().createMigrateFile(c);
+          }
+          return CappConsole.empty;
+        },
       ),
       CappController(
         'test',
         description: 'Unit test of project, (dart test)',
         run: (controller) => ProjectCommands().test(controller),
         options: [
+          helpOption,
           CappOption(
             name: 'reporter',
             shortName: 'r',
