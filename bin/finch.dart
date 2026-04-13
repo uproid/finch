@@ -42,7 +42,7 @@ void main(List<String> args) async {
         'templates',
         options: [helpOption],
         description: 'Show the list of available templates',
-        run: (c) => ProjectCommands().getTemplateList(c),
+        run: (c) => ProjectCommands.getTemplateList(c),
       ),
       CappController(
         'create',
