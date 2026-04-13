@@ -1189,5 +1189,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.1.3';
+  final String version = '1.1.4';
 }
