@@ -446,7 +446,7 @@ class ProjectCommands {
     return res;
   }
 
-  Future<CappConsole> getTemplateList(CappController c) async {
+  static Future<CappConsole> getTemplateList(CappController c) async {
     var res = [
       ['#', 'Key', 'Github', 'Description'],
     ];
