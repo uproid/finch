@@ -448,7 +448,7 @@ class ProjectCommands {
 
   static Future<CappConsole> getTemplateList(CappController c) async {
     var res = [
-      ['#', 'Key', 'Github', 'Description'],
+      ['#', 'Key', 'Github Link', 'Description'],
     ];
     var githubUrl = 'https://api.github.com/users/uproid/repos';
     var request = await CappConsole.progress(
@@ -468,10 +468,10 @@ class ProjectCommands {
           res.add([
             (++index).toString(),
             name.replaceAll('-finch-docker', ''),
-            htmlUrl,
+            htmlUrl.split('//').last,
             '${description.substring(
               0,
-              description.length > 20 ? 20 : description.length,
+              description.length > 25 ? 25 : description.length,
             )}...',
           ]);
         }
