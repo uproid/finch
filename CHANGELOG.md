@@ -1,4 +1,8 @@
 
+## 1.1.4
+- Fixes bug of gettting template list in `finch templates` command in Finch CLI [#43](https://github.com/uproid/finch/issues/43)
+- Updated documentations
+
 ## 1.1.3
 - Added new command to create migration files for mysql and sqlite databases in Finch CLI
     ```bash
@@ -13,7 +17,7 @@
 - Fixed bug of cookies
 - Improved the cookie options
 - Updated dependencies
-- Added `finch templates` command to show the list of available templates in GitHub #40
+- Added `finch templates` command to show the list of available templates in GitHub [#40](https://github.com/uproid/finch/issues/40)
 
 ## 1.1.2
 - Adding -template option to Finch CLI to create new projects with different templates
