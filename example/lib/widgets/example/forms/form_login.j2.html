@@ -1,0 +1,87 @@
+<form action="{{ $e.routeUrl('root.form.post') }}" method="post">
+  <!-- CSRF Token -->
+  <input
+    type="hidden"
+    name="token"
+    value="{{ $n('form_login/token/value') }}"
+  />
+  {% if $n('form_login/token/failed') %}
+  <div class="mt-2 mb-4 flex items-start gap-2 text-sm text-rose-700">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ $t($n('form_login/token/errors/0')) }}</span>
+  </div>
+  {% endif %}
+  <!-- Email Field -->
+  <div>
+    <label for="email" class="mb-2 block text-sm font-semibold text-gray-700"
+      >{{ $t('form.validation.email') }}</label
+    >
+    <div class="relative">
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+      >
+        <i class="fas fa-envelope text-gray-400"></i>
+      </div>
+      <input
+        value="{{ $n('form_login/email/value') }}"
+        type="email"
+        name="email"
+        id="email"
+        placeholder="{{ $t('form.validation.emailPlaceholder') }}"
+        class="block h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/email/failed') else 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20' }}"
+      />
+    </div>
+    {% if $n('form_login/email/failed') %}
+    <div class="mt-2 mb-4 flex items-start gap-2 text-sm text-rose-700">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ $t($n('form_login/email/errors/0')) }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Password Field -->
+  <div>
+    <label for="password" class="mb-2 block text-sm font-semibold text-gray-700"
+      >{{ $t('form.validation.password') }}</label
+    >
+    <div class="relative">
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+      >
+        <i class="fas fa-lock text-gray-400"></i>
+      </div>
+      <input
+        value="{{ $n('form_login/password/value') }}"
+        type="password"
+        name="password"
+        id="password"
+        placeholder="{{ $t('form.validation.passwordPlaceholder') }}"
+        class="block mb-4  h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/password/failed') else 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20' }}"
+      />
+    </div>
+    {% if $n('form_login/password/failed') %}
+    <div class="mb-4 flex items-start gap-2 text-sm text-rose-700">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ $t($n('form_login/password/errors/0')) }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Submit Button -->
+  <button
+    type="submit"
+    class="wave group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30"
+  >
+    <i class="fas fa-sign-in-alt text-white"></i>
+    <span>{{ $t('form.validation.login') }}</span>
+  </button>
+
+  {% if errorLogin %}
+  <div
+    class="mt-4 flex items-start gap-3 rounded-lg border border-rose-300 bg-rose-50 p-4 shadow-sm"
+  >
+    <i class="fas fa-exclamation-circle text-rose-600"></i>
+    <span class="text-sm font-medium text-rose-800">{{ errorLogin }}</span>
+  </div>
+  {% endif %}
+</form>

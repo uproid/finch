@@ -1,7 +1,7 @@
+import '../forms/login_form.dart';
 import '../route/web_route.dart';
 import 'package:finch/finch_route.dart';
 import 'package:finch/finch_tools.dart';
-import 'package:finch/finch_ui.dart';
 import '../models/mock_user_model.dart';
 
 class AppAuthController extends AuthController<MockUserModel> {
@@ -96,44 +96,21 @@ class AppAuthController extends AuthController<MockUserModel> {
 
   @override
   Future<String> loginPost() async {
-    var loginForm = FormValidator(
-      name: 'loginForm',
-      fields: {
-        'email': [
-          FieldValidator.isEmailField(),
-          FieldValidator.requiredField(),
-          FieldValidator.fieldLength(min: 5, max: 255)
-        ],
-        'password': [
-          (value) async {
-            return FieldValidateResult(
-              success: value.toString().isPassword,
-              error: 'error.invalid.password'.tr.write(),
-            );
-          },
-          FieldValidator.requiredField(),
-          FieldValidator.fieldLength(min: 8, max: 255)
-        ],
+    var formLogin = LoginForm();
+
+    await formLogin.check(
+      onInvalid: (p0) {},
+      onValid: (p0) {
+        var mockUser = MockUserModel();
+        var email = formLogin.get<String>('email', def: '');
+        var password = formLogin.get<String>('password', def: '');
+        if (email == mockUser.email && password == mockUser.password) {
+          updateAuth(email, password, mockUser);
+        } else {
+          rq.addParam('errorLogin', 'form.validation.loginError'.tr);
+        }
       },
     );
-
-    var result = await loginForm.validateAndForm();
-    var loginResult = false;
-
-    if (result.result) {
-      var mockUser = MockUserModel();
-      var email = rq.get<String>('email', def: '');
-      var password = rq.get<String>('password', def: '');
-      if (email == mockUser.email && password == mockUser.password) {
-        loginResult = true;
-        updateAuth(email, password, mockUser);
-      }
-    }
-
-    rq.addParams({
-      'loginForm': result.form,
-      'loginResult': loginResult,
-    });
 
     return homeController.renderTemplate('example/form');
   }

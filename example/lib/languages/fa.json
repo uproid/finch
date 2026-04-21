@@ -253,5 +253,7 @@
   "Book saved successfully": "کتاب با موفقیت ذخیره شد",
   "Error saving book": "خطا در ذخیره کتاب",
   "Example SQLite": "مثال SQLite",
-  "Example SQLite Categories": "مثال دسته‌بندی‌های SQLite"
+  "Example SQLite Categories": "مثال دسته‌بندی‌های SQLite",
+  "error.field.password": "رمز عبور باید شامل حداقل 8 کاراکتر، یک حرف بزرگ، یک حرف کوچک، یک عدد و یک کاراکتر خاص باشد",
+  "Invalid CSRF token. Please try again.": "توکن CSRF نامعتبر است. لطفاً صفحه را دوباره بارگذاری کرده و دوباره تلاش کنید."
 }
