@@ -1,6 +1,6 @@
-<form method="POST" action="/example/person/{{ (data._id) if data._id else '' }}" class="space-y-6">
-  <input type="hidden" name="action" value="{{ 'EDIT' if data._id else 'ADD' }}" />
-  <input type="hidden" name="id" value="{{ data if data._id else '' }}" />
+<form method="POST" action="/example/person/{{ $n('data/_id') | oid ?? '' }}" class="space-y-6">
+  <input type="hidden" name="action" value="{{ $n('data/_id') ? 'EDIT' : 'ADD' }}" />
+  <input type="hidden" name="id" value="{{ $n('data/_id') | oid ?? '' }}" />
 
   <!-- Row 1: Name / Email -->
   <div class="grid gap-5 md:grid-cols-2">
@@ -18,10 +18,10 @@
           name="name"
           value="{{ $n('form/name/value') }}"
           placeholder="{{ $t('person.form.placeholder.name') }}"
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/name/failed') else '' }}"
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/name/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/name/failed') else 'hidden' }}">{{ $t($n('form/name/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/name/failed') ? '' : 'hidden' }}">{{ $t($n('form/name/errors/0')) }}</div>
     </div>
     <div>
       <label for="email" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.email') }}</label>
@@ -37,11 +37,11 @@
           name="email"
           value="{{ $n('form/email/value') }}"
           placeholder="{{ $t('person.form.placeholder.email') }}"
-          {% if data._id %}readonly disabled{% endif %}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'opacity-60 cursor-not-allowed' if data._id else '' }} {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/email/failed') else '' }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/email/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/email/failed') else 'hidden' }}">{{ $t($n('form/email/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/email/failed') ? '' : 'hidden' }}">{{ $t($n('form/email/errors/0')) }}</div>
     </div>
   </div>
 
@@ -61,10 +61,10 @@
           name="age"
           value="{{ $n('form/age/value') }}"
           placeholder="{{ $t('person.form.placeholder.age') }}"
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/age/failed') else '' }}"
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/age/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/age/failed') else 'hidden' }}">{{ $t($n('form/age/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/age/failed') ? '' : 'hidden' }}">{{ $t($n('form/age/errors/0')) }}</div>
     </div>
     <div>
       <label for="birthday" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.birthday') }}</label>
@@ -78,12 +78,12 @@
           type="datetime-local"
           id="birthday"
           name="birthday"
-          value="{{ $n('form/birthday/value') | dateFormat('yyyy-MM-ddThh:mm') }}"
-          {% if data._id %}readonly disabled{% endif %}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'opacity-60 cursor-not-allowed' if data._id else '' }} {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/birthday/failed') else '' }}"
+          value="{{ $n('form/birthday/value') ? $n('form/birthday/value') | dateFormat('yyyy-MM-ddThh:mm') : '1977-01-01T00:00' }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/birthday/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/birthday/failed') else 'hidden' }}">{{ $t($n('form/birthday/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/birthday/failed') ? '' : 'hidden' }}">{{ $t($n('form/birthday/errors/0')) }}</div>
     </div>
   </div>
 
@@ -98,23 +98,23 @@
         name="height"
         value="{{ $n('form/height/value') }}"
         placeholder="{{ $t('person.form.placeholder.height') }}"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/height/failed') else '' }}"
+        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/height/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       />
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/height/failed') else 'hidden' }}">{{ $t($n('form/height/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/height/failed') ? '' : 'hidden' }}">{{ $t($n('form/height/errors/0')) }}</div>
     </div>
     <div>
       <label for="job_id" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.job_title') }}</label>
       <select
         id="job_id"
         name="job_id"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/job_id/failed') else '' }}"
+        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/job_id/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       >
         <option value="">{{ $t('person.form.option.select_job') }}</option>
         {% for job in jobs %}
           <option {{ 'selected' if $n('form/job_id/value')|oid == job._id else '' }} value="{{ job._id }}">{{ job.title }}</option>
         {% endfor %}
       </select>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/job_id/failed') else 'hidden' }}">{{ $t($n('form/job_id/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/job_id/failed') ? '' : 'hidden' }}">{{ $t($n('form/job_id/errors/0')) }}</div>
     </div>
   </div>
 
@@ -137,7 +137,7 @@
       </label>
       {% endfor %}
     </div>
-    <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/jobs/failed') else 'hidden' }}">{{ $t($n('form/jobs/errors/0')) }}</div>
+    <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/jobs/failed') ? '' : 'hidden' }}">{{ $t($n('form/jobs/errors/0')) }}</div>
   </div>
 
   <!-- Row 5: Password / Gender -->
@@ -156,23 +156,23 @@
           name="password"
           value="{{ $n('form/password/value') }}"
           placeholder="{{ $t('person.form.placeholder.password') }}"
-          {% if data._id %} readonly disabled{% endif %}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'opacity-60 cursor-not-allowed' if data._id else '' }} {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/password/failed') else '' }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/password/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/password/failed') else 'hidden' }}">{{ $t($n('form/password/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/password/failed') ? '' : 'hidden' }}">{{ $t($n('form/password/errors/0')) }}</div>
     </div>
     <div>
       <label for="gender" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.gender') }}</label>
       <select
         id="gender"
         name="gender"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/gender/failed') else '' }}"
+        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/gender/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       >
-        <option {{ 'selected' if $n('form/gender/value') == 'none' else '' }} value="none">{{ $t('person.form.gender.dont_ask') }}</option>
-        <option {{ 'selected' if $n('form/gender/value') == 'male' else '' }} value="male">{{ $t('person.form.gender.male') }}</option>
-        <option {{ 'selected' if $n('form/gender/value') == 'female' else '' }} value="female">{{ $t('person.form.gender.female') }}</option>
-        <option {{ 'selected' if $n('form/gender/value') == 'other' else '' }} value="other">{{ $t('person.form.gender.other') }}</option>
+        <option {{ $n('form/gender/value') == 'none' ? 'selected' : '' }} value="none">{{ $t('person.form.gender.dont_ask') }}</option>
+        <option {{ $n('form/gender/value') == 'male' ? 'selected' : '' }} value="male">{{ $t('person.form.gender.male') }}</option>
+        <option {{ $n('form/gender/value') == 'female' ? 'selected' : '' }} value="female">{{ $t('person.form.gender.female') }}</option>
+        <option {{ $n('form/gender/value') == 'other' ? 'selected' : '' }} value="other">{{ $t('person.form.gender.other') }}</option>
       </select>
       <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/gender/failed') else 'hidden' }}">{{ $t($n('form/gender/errors/0')) }}</div>
     </div>
@@ -198,7 +198,7 @@
   <!-- Actions -->
   <div class="flex flex-wrap gap-3 border-t border-slate-200 pt-4">
     <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.submit') }}</button>
-    {% if data._id %}
+    {% if $n('data/_id') %}
     <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.cancel') }}</a>
     {% endif %}
   </div>

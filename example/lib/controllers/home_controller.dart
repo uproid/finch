@@ -279,6 +279,12 @@ class HomeController extends Controller {
           FieldValidator.requiredField(),
           FieldValidator.fieldLength(min: 5, max: 255),
         ],
+        'allowInsecure': [
+          FieldValidator.isSelectField(['true', 'false', '']),
+        ],
+        'ssl': [
+          FieldValidator.isSelectField(['true', 'false', '']),
+        ],
       },
     );
 
