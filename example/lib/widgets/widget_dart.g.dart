@@ -19,7 +19,7 @@ var mapTemplates = {
     </div>
   </div>
 
-  {% if data._id == null %}
+  {% if $n('data/_id') == '' %}
   <!-- Person List Table Card -->
   <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
     <div class="overflow-x-auto">
@@ -226,9 +226,9 @@ var mapTemplates = {
   </div>
 </div>
 {% endblock %}""",
-	r"example/forms/form_person.j2.html": r"""<form method="POST" action="/example/person/{{ (data._id) if data._id else '' }}" class="space-y-6">
-  <input type="hidden" name="action" value="{{ 'EDIT' if data._id else 'ADD' }}" />
-  <input type="hidden" name="id" value="{{ data if data._id else '' }}" />
+	r"example/forms/form_person.j2.html": r"""<form method="POST" action="/example/person/{{ $n('data/_id') | oid ?? '' }}" class="space-y-6">
+  <input type="hidden" name="action" value="{{ $n('data/_id') ? 'EDIT' : 'ADD' }}" />
+  <input type="hidden" name="id" value="{{ $n('data/_id') | oid ?? '' }}" />
 
   <!-- Row 1: Name / Email -->
   <div class="grid gap-5 md:grid-cols-2">
@@ -246,10 +246,10 @@ var mapTemplates = {
           name="name"
           value="{{ $n('form/name/value') }}"
           placeholder="{{ $t('person.form.placeholder.name') }}"
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/name/failed') else '' }}"
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/name/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/name/failed') else 'hidden' }}">{{ $t($n('form/name/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/name/failed') ? '' : 'hidden' }}">{{ $t($n('form/name/errors/0')) }}</div>
     </div>
     <div>
       <label for="email" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.email') }}</label>
@@ -265,11 +265,11 @@ var mapTemplates = {
           name="email"
           value="{{ $n('form/email/value') }}"
           placeholder="{{ $t('person.form.placeholder.email') }}"
-          {% if data._id %}readonly disabled{% endif %}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'opacity-60 cursor-not-allowed' if data._id else '' }} {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/email/failed') else '' }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/email/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/email/failed') else 'hidden' }}">{{ $t($n('form/email/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/email/failed') ? '' : 'hidden' }}">{{ $t($n('form/email/errors/0')) }}</div>
     </div>
   </div>
 
@@ -289,10 +289,10 @@ var mapTemplates = {
           name="age"
           value="{{ $n('form/age/value') }}"
           placeholder="{{ $t('person.form.placeholder.age') }}"
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/age/failed') else '' }}"
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/age/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/age/failed') else 'hidden' }}">{{ $t($n('form/age/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/age/failed') ? '' : 'hidden' }}">{{ $t($n('form/age/errors/0')) }}</div>
     </div>
     <div>
       <label for="birthday" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.birthday') }}</label>
@@ -306,12 +306,12 @@ var mapTemplates = {
           type="datetime-local"
           id="birthday"
           name="birthday"
-          value="{{ $n('form/birthday/value') | dateFormat('yyyy-MM-ddThh:mm') }}"
-          {% if data._id %}readonly disabled{% endif %}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'opacity-60 cursor-not-allowed' if data._id else '' }} {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/birthday/failed') else '' }}"
+          value="{{ $n('form/birthday/value') ? $n('form/birthday/value') | dateFormat('yyyy-MM-ddThh:mm') : '1977-01-01T00:00' }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/birthday/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/birthday/failed') else 'hidden' }}">{{ $t($n('form/birthday/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/birthday/failed') ? '' : 'hidden' }}">{{ $t($n('form/birthday/errors/0')) }}</div>
     </div>
   </div>
 
@@ -326,23 +326,23 @@ var mapTemplates = {
         name="height"
         value="{{ $n('form/height/value') }}"
         placeholder="{{ $t('person.form.placeholder.height') }}"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/height/failed') else '' }}"
+        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/height/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       />
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/height/failed') else 'hidden' }}">{{ $t($n('form/height/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/height/failed') ? '' : 'hidden' }}">{{ $t($n('form/height/errors/0')) }}</div>
     </div>
     <div>
       <label for="job_id" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.job_title') }}</label>
       <select
         id="job_id"
         name="job_id"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/job_id/failed') else '' }}"
+        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/job_id/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       >
         <option value="">{{ $t('person.form.option.select_job') }}</option>
         {% for job in jobs %}
           <option {{ 'selected' if $n('form/job_id/value')|oid == job._id else '' }} value="{{ job._id }}">{{ job.title }}</option>
         {% endfor %}
       </select>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/job_id/failed') else 'hidden' }}">{{ $t($n('form/job_id/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/job_id/failed') ? '' : 'hidden' }}">{{ $t($n('form/job_id/errors/0')) }}</div>
     </div>
   </div>
 
@@ -365,7 +365,7 @@ var mapTemplates = {
       </label>
       {% endfor %}
     </div>
-    <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/jobs/failed') else 'hidden' }}">{{ $t($n('form/jobs/errors/0')) }}</div>
+    <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/jobs/failed') ? '' : 'hidden' }}">{{ $t($n('form/jobs/errors/0')) }}</div>
   </div>
 
   <!-- Row 5: Password / Gender -->
@@ -384,23 +384,23 @@ var mapTemplates = {
           name="password"
           value="{{ $n('form/password/value') }}"
           placeholder="{{ $t('person.form.placeholder.password') }}"
-          {% if data._id %} readonly disabled{% endif %}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'opacity-60 cursor-not-allowed' if data._id else '' }} {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/password/failed') else '' }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/password/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/password/failed') else 'hidden' }}">{{ $t($n('form/password/errors/0')) }}</div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/password/failed') ? '' : 'hidden' }}">{{ $t($n('form/password/errors/0')) }}</div>
     </div>
     <div>
       <label for="gender" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.gender') }}</label>
       <select
         id="gender"
         name="gender"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' if $n('form/gender/failed') else '' }}"
+        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/gender/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       >
-        <option {{ 'selected' if $n('form/gender/value') == 'none' else '' }} value="none">{{ $t('person.form.gender.dont_ask') }}</option>
-        <option {{ 'selected' if $n('form/gender/value') == 'male' else '' }} value="male">{{ $t('person.form.gender.male') }}</option>
-        <option {{ 'selected' if $n('form/gender/value') == 'female' else '' }} value="female">{{ $t('person.form.gender.female') }}</option>
-        <option {{ 'selected' if $n('form/gender/value') == 'other' else '' }} value="other">{{ $t('person.form.gender.other') }}</option>
+        <option {{ $n('form/gender/value') == 'none' ? 'selected' : '' }} value="none">{{ $t('person.form.gender.dont_ask') }}</option>
+        <option {{ $n('form/gender/value') == 'male' ? 'selected' : '' }} value="male">{{ $t('person.form.gender.male') }}</option>
+        <option {{ $n('form/gender/value') == 'female' ? 'selected' : '' }} value="female">{{ $t('person.form.gender.female') }}</option>
+        <option {{ $n('form/gender/value') == 'other' ? 'selected' : '' }} value="other">{{ $t('person.form.gender.other') }}</option>
       </select>
       <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/gender/failed') else 'hidden' }}">{{ $t($n('form/gender/errors/0')) }}</div>
     </div>
@@ -426,7 +426,7 @@ var mapTemplates = {
   <!-- Actions -->
   <div class="flex flex-wrap gap-3 border-t border-slate-200 pt-4">
     <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.submit') }}</button>
-    {% if data._id %}
+    {% if $n('data/_id') %}
     <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.cancel') }}</a>
     {% endif %}
   </div>
@@ -1079,9 +1079,9 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
               type="text"
               name="from"
               id="from"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.from.failed else '' }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/from/failed') else '' }}"
             />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.from.failed else 'hidden' }}">
+            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/from/failed') else 'hidden' }}">
               {{ $t($n('emailForm/from/errors/0')) }}
             </div>
           </div>
@@ -1093,9 +1093,9 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
               name="fromName"
               id="fromName"
               placeholder="{{ $t('email.placeholder.name') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.fromName.failed else '' }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/fromName/failed') else '' }}"
             />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.fromName.failed else 'hidden' }}">
+            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/fromName/failed') else 'hidden' }}">
               {{ $t($n('emailForm/fromName/errors/0')) }}
             </div>
           </div>
@@ -1104,14 +1104,14 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
         <div>
           <label for="email" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.to') }}</label>
           <input
-            value="{{ emailForm.email.value }}"
+            value="{{ $n('emailForm/email/value') }}"
             type="email"
             name="email"
             id="email"
             placeholder="{{ $t('email.placeholder.to') }}"
-            class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.email.failed else '' }}"
+            class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/email/failed') else '' }}"
           />
-          <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.email.failed else 'hidden' }}">
+          <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/email/failed') else 'hidden' }}">
             {{ $t($n('emailForm/email/errors/0')) }}
           </div>
         </div>
@@ -1119,14 +1119,14 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
         <div>
           <label for="subject" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.subject') }}</label>
             <input
-              value="{{ emailForm.subject.value }}"
+              value="{{ $n('emailForm/subject/value') }}"
               type="text"
               name="subject"
               id="subject"
               placeholder="{{ $t('email.placeholder.subject') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.subject.failed else '' }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/subject/failed') else '' }}"
             />
-          <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.subject.failed else 'hidden' }}">
+          <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/subject/failed') else 'hidden' }}">
             {{ $t($n('emailForm/subject/errors/0')) }}
           </div>
         </div>
@@ -1137,9 +1137,9 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
             name="message"
             id="message"
             placeholder="{{ $t('email.placeholder.message') }}"
-            class="min-h-[140px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.message.failed else '' }}"
-          >{{ emailForm.message.value }}</textarea>
-          <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.message.failed else 'hidden' }}">
+            class="min-h-[140px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/message/failed') else '' }}"
+          >{{ $n('emailForm/message/value') }}</textarea>
+          <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/message/failed') else 'hidden' }}">
             {{ $t($n('emailForm/message/errors/0')) }}
           </div>
         </div>
@@ -1148,28 +1148,28 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
           <div>
             <label for="host" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.host') }}</label>
             <input
-              value="{{ emailForm.host.value }}"
+              value="{{ $n('emailForm/host/value') }}"
               type="text"
               name="host"
               id="host"
               placeholder="{{ $t('email.placeholder.host') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.host.failed else '' }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/host/failed') else '' }}"
             />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.host.failed else 'hidden' }}">
+            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/host/failed') else 'hidden' }}">
               {{ $t($n('emailForm/host/errors/0')) }}
             </div>
           </div>
           <div>
             <label for="port" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.port') }}</label>
             <input
-              value="{{ emailForm.port.value if emailForm.port.value else '1025' }}"
+              value="{{ $n('emailForm/port/value') if $n('emailForm/port/value') else '1025' }}"
               type="number"
               name="port"
               id="port"
               placeholder="{{ $t('email.placeholder.port') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.port.failed else '' }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/port/failed') else '' }}"
             />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.port.failed else 'hidden' }}">
+            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/port/failed') else 'hidden' }}">
               {{ $t($n('emailForm/port/errors/0')) }}
             </div>
           </div>
@@ -1179,28 +1179,28 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
           <div>
             <label for="username" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.username') }}</label>
             <input
-              value="{{ emailForm.username.value }}"
+              value="{{ $n('emailForm/username/value') }}"
               type="text"
               name="username"
               id="username"
               placeholder="{{ $t('email.placeholder.username') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.username.failed else '' }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/username/failed') else '' }}"
             />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.username.failed else 'hidden' }}">
+            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/username/failed') else 'hidden' }}">
               {{ $t($n('emailForm/username/errors/0')) }}
             </div>
           </div>
           <div>
             <label for="password" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.password') }}</label>
             <input
-              value="{{ emailForm.password.value }}"
+              value="{{ $n('emailForm/password/value') }}"
               type="password"
               name="password"
               id="password"
               placeholder="{{ $t('email.placeholder.password') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if emailForm.password.failed else '' }}"
+              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/password/failed') else '' }}"
             />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if emailForm.password.failed else 'hidden' }}">
+            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/password/failed') else 'hidden' }}">
               {{ $t($n('emailForm/password/errors/0')) }}
             </div>
           </div>
@@ -1209,7 +1209,8 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
         <div class="flex flex-wrap gap-6">
           <label for="allowInsecure" class="inline-flex items-center gap-2 text-sm text-slate-700">
             <input
-              value="{{ emailForm.allowInsecure.value }}"
+              value="true"
+              {{ $n('emailForm/allowInsecure/value') ? 'checked' : '' }}
               type="checkbox"
               name="allowInsecure"
               id="allowInsecure"
@@ -1219,7 +1220,8 @@ $t('sidebar.info') }} {% endblock %} {% block content %}
           </label>
           <label for="ssl" class="inline-flex items-center gap-2 text-sm text-slate-700">
             <input
-              value="{{ emailForm.ssl.value }}"
+              value="true"
+              {{ $n('emailForm/ssl/value') ? 'checked' : '' }}
               type="checkbox"
               name="ssl"
               id="ssl"
