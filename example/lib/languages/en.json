@@ -234,5 +234,7 @@
   "Book saved successfully": "Book saved successfully",
   "Error saving book": "Error saving book",
   "Example SQLite": "Example SQLite",
-  "Example SQLite Categories": "Example SQLite Categories"
+  "Example SQLite Categories": "Example SQLite Categories",
+  "error.field.password": "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character",
+  "Invalid CSRF token. Please try again.": "Invalid CSRF token. Please reload the page and try again."
 }

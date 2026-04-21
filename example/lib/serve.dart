@@ -57,17 +57,23 @@ Future<String> _modifyWidgets() async {
 
 Future<({Map<String, Map<String, String>> map, String path})>
     _modifyLanguages() async {
-  var res = await LanguageToDart(
+  late ({Map<String, Map<String, String>> map, String path}) res;
+  await LanguageToDart(
     app.configs.languagePath,
     fileExtention: '.json',
-  ).generate();
+  ).generate().then((value) {
+    res = value;
+    app.configs.dartLanguages = res.map;
+    FinchApp.appLanguages = res.map;
+    app.app.debugger?.sendToAll(
+      {'message': 'Languages is updated, reload the page to see the changes.'},
+      path: 'note',
+    );
+  }).catchError((e) {
+    Print.error('❌ Error converting language files: $e');
+    res = (map: {}, path: '');
+  });
 
-  app.configs.dartLanguages = res.map;
-  FinchApp.appLanguages = res.map;
-  app.app.debugger?.sendToAll(
-    {'message': 'Languages is updated, reload the page to see the changes.'},
-    path: 'note',
-  );
   return res;
 }
 

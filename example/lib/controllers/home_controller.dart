@@ -1,11 +1,10 @@
 import 'dart:io';
 import 'dart:math';
+import '../forms/login_form.dart';
 import '../route/web_route.dart';
-
 import '../db/sqlite/sqlite_books.dart';
 import '../db/sqlite/sqlite_categories.dart';
 import 'package:finch/finch_sqlite.dart';
-
 import '../forms/book_form.dart';
 import '../db/mysql/mysql_books.dart';
 import '../db/mysql/mysql_categories.dart';
@@ -50,45 +49,7 @@ class HomeController extends Controller {
   }
 
   Future<String> exampleForm() async {
-    if (rq.method == Methods.POST) {
-      var loginForm = FormValidator(
-        name: 'loginForm',
-        fields: {
-          'email': [
-            FieldValidator.isEmailField(),
-            FieldValidator.requiredField(),
-            FieldValidator.fieldLength(min: 5, max: 255)
-          ],
-          'password': [
-            (value) async {
-              return FieldValidateResult(
-                success: value.toString().isPassword,
-                error: 'error.invalid.password'.tr.write(),
-              );
-            },
-            FieldValidator.requiredField(),
-            FieldValidator.fieldLength(min: 8, max: 255)
-          ],
-        },
-      );
-
-      var result = await loginForm.validateAndForm();
-      var loginResult = false;
-
-      if (result.result) {
-        var email = rq.get<String>('email', def: '');
-        var password = rq.get<String>('password', def: '');
-        if (email == 'example@uproid.com' && password == '@Test123') {
-          loginResult = true;
-        }
-      }
-
-      rq.addParams({
-        'loginForm': result.form,
-        'loginResult': loginResult,
-      });
-    }
-
+    LoginForm();
     return renderTemplate('example/form');
   }
 
