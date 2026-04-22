@@ -196,8 +196,8 @@ Future<List<FinchRoute>> getWebRoute(Request rq) async {
       apiDoc: ApiDocuments.info,
       middlewares: [testMiddleware],
     ).cache(
-      cacheDuration: Duration(),
-      cacheType: [CacheParam.path, CacheParam.method],
+      cacheDuration: Duration(minutes: 10),
+      cacheType: [CacheParam.path, CacheParam.method, CacheParam.language],
       cacheSource: CacheSource.file,
     ),
     FinchRoute(
