@@ -51,6 +51,7 @@ class FinchConfigs {
     String? backupPath,
     String? widgetsPath,
     String? languagePath,
+    this.pathCache = './cache',
     this.pathMigrationMySQL = './migrations',
     this.pathMigrationSQLite = './migrations_sqlite',
     this.port = 8080,
@@ -162,6 +163,11 @@ class FinchConfigs {
   /// Take attention that this will only work in a local environment.
   /// dont activate it in production.
   late bool enableLocalDebugger = false;
+
+  /// Cache path for RouteCache
+  /// This is the directory where cached responses for RouteCache will be stored when using file-based caching.
+  /// The default value is 'cache' in the application root directory.
+  late final String pathCache;
 
   bool get isLocalDebug {
     if (env['LOCAL_DEBUG'] != null) {

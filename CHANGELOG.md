@@ -1,4 +1,10 @@
 
+## 1.2.0
+- Added route caching functionality to improve performance of frequently accessed routes. This includes in-memory caching and file-based caching options, with configurable cache duration and parameters.
+- Updated dependencies to their latest versions to ensure compatibility and performance improvements.
+- Improved documentation to include details about the new caching features and how to use them.
+- Improved the example section to demonstrate the usage of route caching in Finch applications.
+
 ## 1.1.4
 - Fixes bug of gettting template list in `finch templates` command in Finch CLI [#43](https://github.com/uproid/finch/issues/43)
 - Updated documentations
