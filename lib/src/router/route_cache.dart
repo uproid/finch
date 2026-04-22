@@ -63,6 +63,9 @@ enum CacheParam {
 
   /// Includes the request body data in the cache key.
   data,
+
+  // Include language
+  language,
 }
 
 /// The storage medium used for caching.
@@ -103,7 +106,11 @@ class RouteCache extends FinchRoute {
     required super.path,
     required this.handle,
     this.cacheDuration = const Duration(minutes: 10),
-    this.cacheType = const [CacheParam.method, CacheParam.path],
+    this.cacheType = const [
+      CacheParam.method,
+      CacheParam.path,
+      CacheParam.language,
+    ],
     this.cacheSource = CacheSource.memory,
     super.key,
     super.extraPath,
@@ -224,6 +231,8 @@ class RouteCache extends FinchRoute {
     final cacheKey = cacheType
         .map((param) {
           switch (param) {
+            case CacheParam.language:
+              return rq.getLanguage();
             case CacheParam.path:
               return rq.uri.path;
             case CacheParam.method:
