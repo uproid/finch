@@ -195,6 +195,10 @@ Future<List<FinchRoute>> getWebRoute(Request rq) async {
       index: homeController.info,
       apiDoc: ApiDocuments.info,
       middlewares: [testMiddleware],
+    ).cache(
+      cacheDuration: Duration(),
+      cacheType: [CacheParam.path, CacheParam.method],
+      cacheSource: CacheSource.file,
     ),
     FinchRoute(
       key: 'root.person.post',

@@ -17,3 +17,4 @@ export 'src/controllers/swagger_controller.dart';
 export 'src/router/include_controller.dart';
 export 'src/router/api_doc.dart';
 export 'src/core/context.dart';
+export 'src/router/route_cache.dart';
