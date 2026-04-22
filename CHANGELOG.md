@@ -1,4 +1,8 @@
 
+## 1.2.1
+- Fixed bugs in route caching functionality to ensure proper caching and retrieval of routes based on the specified parameters and cache source. [#46](https://github.com/uproid/finch/issues/46)
+- Adding language parameter to cache function to specify the language for which the route should be cached, allowing for better support of multilingual applications. [#47](https://github.com/uproid/finch/issues/47)
+
 ## 1.2.0
 - Added route caching functionality to improve performance of frequently accessed routes. This includes in-memory caching and file-based caching options, with configurable cache duration and parameters.
 - Updated dependencies to their latest versions to ensure compatibility and performance improvements.
