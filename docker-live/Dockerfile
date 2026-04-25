@@ -26,7 +26,7 @@ COPY --from=build /www/finch/cli/bundle/ /www/app
 COPY example/public ./public
 COPY example/migrations/ /www/app/migrations/
 COPY example/migrations_sqlite/ /www/app/migrations_sqlite/
-COPY .env .
+# COPY .env .
 
 # Create .env file
 # ENV MONGODB_NAME=
