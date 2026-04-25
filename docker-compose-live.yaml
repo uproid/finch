@@ -13,20 +13,20 @@ services:
       mysql:
         condition: service_healthy
 
-  mysql:
-    image: mysql:latest
-    container_name: mysql
-    hostname: mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: example_password
-      MYSQL_DATABASE: example_db
-      MYSQL_USER: example_user
-      MYSQL_PASSWORD: example_password
-    ports:
-      - "3306:3306"
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
+  # mysql:
+  #   image: mysql:latest
+  #   container_name: mysql
+  #   hostname: mysql
+  #   restart: always
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: example_password
+  #     MYSQL_DATABASE: example_db
+  #     MYSQL_USER: example_user
+  #     MYSQL_PASSWORD: example_password
+  #   ports:
+  #     - "3306:3306"
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 5s
+  #     timeout: 5s
+  #     retries: 10
