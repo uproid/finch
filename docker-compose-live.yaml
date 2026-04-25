@@ -9,9 +9,9 @@ services:
     build:
       context: .
       dockerfile: docker-live/Dockerfile
-    depends_on:
-      mysql:
-        condition: service_healthy
+    # depends_on:
+    #   mysql:
+    #     condition: service_healthy
 
   # mysql:
   #   image: mysql:latest
