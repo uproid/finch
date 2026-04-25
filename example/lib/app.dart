@@ -37,10 +37,10 @@ FinchConfigs configs = FinchConfigs(
   mysqlConfig: FinchMysqlConfig(
     enable: true,
     host: env['MYSQL_HOST'] ?? 'localhost',
-    port: 3306,
-    user: 'example_user',
-    pass: 'example_password',
-    databaseName: 'example_db',
+    port: (env['MYSQL_PORT'] ?? '3306').toInt(def: 3306),
+    user: env['MYSQL_USER'] ?? 'example_user',
+    pass: env['MYSQL_PASSWORD'] ?? 'example_password',
+    databaseName: env['MYSQL_DATABASE'] ?? 'example_db',
   ),
 
   /// Enable local debugger
