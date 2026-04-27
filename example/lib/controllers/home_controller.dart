@@ -415,6 +415,7 @@ class HomeController extends Controller {
         'URI': rq.uri.path,
         'Email default': configs.mailDefault,
         'IP': rq.getIP(),
+        'https': rq.uri.scheme
       },
       'Headers': headers,
       'Versions': {
