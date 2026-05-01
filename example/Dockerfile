@@ -19,4 +19,4 @@ RUN echo "MYSQL_HOST=mysql" > .env && \
 
 EXPOSE 8085 8181
 
-CMD ["finch", "serve", "-p", "/www/lib/serve.dart", "--args=\"migrate --init --sqlite\""]
+CMD ["finch", "serve", "-p", "/www/lib/watcher.dart", "--args=\"migrate --init --sqlite\""]

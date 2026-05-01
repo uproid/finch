@@ -1,4 +1,7 @@
 
+## 1.2.2
+- Fixes [#50](https://github.com/uproid/finch/issues/50). The conflict between watchers in the serve environment has been resolved.
+
 ## 1.2.1
 - Fixed bugs in route caching functionality to ensure proper caching and retrieval of routes based on the specified parameters and cache source. [#46](https://github.com/uproid/finch/issues/46)
 - Adding language parameter to cache function to specify the language for which the route should be cached, allowing for better support of multilingual applications. [#47](https://github.com/uproid/finch/issues/47)
