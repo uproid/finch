@@ -115,13 +115,23 @@ class ProjectCommands {
         .split(' ')
         .where((element) => element.trim().isNotEmpty)
         .toList();
-    List runCommand = ['dart', 'run', "--enable-asserts", path];
+    List<String> serveCommands = [
+      '--enable-vm-service',
+      '--disable-service-auth-codes'
+    ];
+    var runCommand = <String>[
+      'dart',
+      'run',
+      "--enable-asserts",
+      if (serve) ...serveCommands,
+      path,
+    ];
     runCommand.addAll(args);
 
-    CappConsole.write(runCommand.last);
+    CappConsole.write(runCommand.join(' '), CappColors.info);
     var proccess = await Process.start(
       'dart',
-      ['run', "--enable-asserts", path, ...args],
+      runCommand.sublist(1),
       mode: ProcessStartMode.normal,
       workingDirectory: File(path).parent.parent.path,
     );
@@ -156,14 +166,11 @@ class ProjectCommands {
         CappConsole.write("Restart project...", CappColors.warning);
         proccess.kill();
         proccess = await Process.start(
-            'dart',
-            [
-              'run',
-              "--enable-asserts",
-              path,
-              ...args,
-            ],
-            mode: ProcessStartMode.normal);
+          'dart',
+          runCommand.sublist(1),
+          mode: ProcessStartMode.normal,
+          workingDirectory: File(path).parent.parent.path,
+        );
         // Forward stdout and stderr to console
         proccess.stdout.listen((data) {
           stdout.add(data);
