@@ -17,4 +17,4 @@ RUN dart pub global activate --source path . --overwrite
 
 EXPOSE 8085 8181
 
-CMD ["finch", "serve", "-p", "/www/finch/example/lib/serve.dart", "--args=\"migrate --init --sqlite\""]
+CMD ["finch", "serve", "-p", "/www/finch/example/lib/watcher.dart", "--args=\"migrate --init --sqlite\""]

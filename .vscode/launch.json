@@ -8,7 +8,7 @@
             "name": "Serve",
             "type": "dart",
             "request": "launch",
-            "program": "./example/lib/serve.dart",
+            "program": "./example/lib/watcher.dart",
             "args": [
                 // "migration",
                 // "--init",
@@ -16,17 +16,6 @@
                 "--watch",
             ],
             "console": "terminal"
-        },
-        {
-            "name": "Dev",
-            "type": "dart",
-            "request": "launch",
-            "program": "./example/lib/watcher.dart",
-            "args": [
-                "--enable-asserts",
-                "--watch"
-            ],
-            "console": "debugConsole"
         },
         {
             "name": "Dev on Terminal",

@@ -4,7 +4,7 @@ import 'package:finch/console.dart';
 import 'package:finch/finch_app.dart';
 import 'app.dart' as app;
 
-void main(List<String>? args) {
+void main(List<String>? args) async {
   app.main(args);
   // Int first conversion on startup
   _modifyLanguages();
