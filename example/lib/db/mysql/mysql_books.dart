@@ -195,14 +195,15 @@ class MysqlBooks {
     return result.assocFirst;
   }
 
-  Future<void> deleteBook(String id) async {
+  Future<bool> deleteBook(String id) async {
     var query = Sqler()
       ..delete()
       ..from(QField(table.name))
       ..where(WhereOne(QField.id(), QO.EQ, QParam('id')))
       ..addParam('id', QVar(id));
 
-    table.delete(db, query);
+    var result = await table.delete(db, query);
+    return result.affectedRows > 0;
   }
 
   Future<void> deleteAllBooks(List<String> ids) async {
