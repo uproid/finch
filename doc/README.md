@@ -36,6 +36,10 @@ Welcome to the Finch Documentation! This documentation will walk you through the
 25. [Finch Database Migration Guide](25.database_migration.md)
 26. [Docker for Finch](26.docker_for_finch.md)
 27. [Nginx for Finch](27.nginx_for_finch.md)
+28. [Finch Capp Guide](28.capp.md)
+29. [Finch Middleware Guide](29.middleware.md)
+30. [Finch Route Cache Guide](30.route_cache.md)
+31. [Finch MCP Server Guide](31.mcp_server.md)
 
 ## Features
 

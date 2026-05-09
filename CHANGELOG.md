@@ -1,4 +1,15 @@
 
+## 1.3.0
+- Added **Model Context Protocol (MCP) Server** support for building AI-powered applications [#49](https://github.com/uproid/finch/issues/49)
+  - Full MCP 2.0 specification implementation with schema handler system
+  - Automatic JSON serialization/deserialization using factory pattern
+  - Built-in support for tools, resources, and prompts
+  - Complete calculator example demonstrating MCP protocol flow
+  - McpServerController for handling MCP requests and responses
+- Updated dependencies to their latest versions for improved performance and security
+- Improved documentation to include details about the new MCP Server features and how to use them in Finch applications
+- Added new examples demonstrating the usage of the MCP Server in Finch applications
+
 ## 1.2.2
 - Fixes [#50](https://github.com/uproid/finch/issues/50). The conflict between watchers in the serve environment has been resolved.
 

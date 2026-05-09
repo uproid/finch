@@ -36,6 +36,10 @@ Welkom bij de Finch Documentatie! Deze documentatie begeleidt je door het gebrui
 25. [Finch Database Migratie Gids](25.database_migration.md)
 26. [Docker voor Finch](26.docker_for_finch.md)
 27. [Nginx voor Finch](27.nginx_for_finch.md)
+28. [Finch Capp Gids](28.capp.md)
+29. [Finch Middleware Gids](29.middleware.md)
+30. [Finch Route Cache Gids](30.route_cache.md)
+31. [Finch MCP Server Gids](31.mcp_server.md)
 
 ## Functies
 
