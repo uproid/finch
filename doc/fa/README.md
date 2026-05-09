@@ -36,6 +36,10 @@ doc_meta:
 25. [راهنمای مهاجرت پایگاه داده](25.database_migration.md)
 26. [Docker برای فینچ](26.docker_for_finch.md)
 27. [Nginx برای فینچ](27.nginx_for_finch.md)
+28. [راهنمای Capp](28.capp.md)
+29. [راهنمای میان‌افزار](29.middleware.md)
+30. [راهنمای کش مسیر](30.route_cache.md)
+31. [راهنمای سرور MCP](31.mcp_server.md)
 
 ## امکانات
 

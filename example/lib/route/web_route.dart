@@ -1,3 +1,5 @@
+import '../controllers/mcp_auth_controller.dart';
+import '../controllers/mcp_controller.dart';
 import '../middleware/test_middleware.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/htmler_controller.dart';
@@ -248,6 +250,13 @@ Future<List<FinchRoute>> getWebRoute(Request rq) async {
       methods: Methods.ALL,
       index: authController.logout,
     ),
+    FinchRoute(
+      key: 'mcp.books',
+      path: 'mcp/books',
+      methods: Methods.ALL,
+      index: McpServerBooksController().index,
+      auth: McpAuthController(),
+    )
   ];
 
   return [

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:finch/finch_tools.dart';
 import 'package:finch/src/render/request.dart';
+import 'package:mcp_models/mcp_models.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 /// Provides utility methods for encoding and decoding JSON data.
@@ -45,6 +46,9 @@ class FinchJson {
       }
       if (obj is int) {
         return obj;
+      }
+      if (obj is MCP) {
+        return obj.toMap();
       }
       return obj.toString();
     });
