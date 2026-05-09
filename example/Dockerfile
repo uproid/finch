@@ -17,6 +17,8 @@ RUN echo "MYSQL_HOST=mysql" > .env && \
     echo "MONGO_CONNECTION=mongodb" >> .env && \
     echo "MONGO_PORT=27017" >> .env
 
+RUN finch -u
+
 EXPOSE 8085 8181
 
 CMD ["finch", "serve", "-p", "/www/lib/watcher.dart", "--args=\"migrate --init --sqlite\""]

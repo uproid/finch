@@ -6,6 +6,7 @@ import 'package:vm_service/vm_service.dart';
 import 'package:vm_service/vm_service_io.dart';
 import 'package:watcher/watcher.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:finch/console.dart';
 import 'serve.dart' as servApp;
 import 'package:finch/console.dart';
 
