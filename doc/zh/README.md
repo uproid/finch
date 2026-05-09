@@ -36,6 +36,10 @@ doc_meta:
 25. [Finch 数据库迁移指南](25.database_migration.md)
 26. [Finch 的 Docker](26.docker_for_finch.md)
 27. [Finch 的 Nginx](27.nginx_for_finch.md)
+28. [Finch Capp 指南](28.capp.md)
+29. [Finch 中间件指南](29.middleware.md)
+30. [Finch 路由缓存指南](30.route_cache.md)
+31. [Finch MCP 服务器指南](31.mcp_server.md)
 
 ## 功能特性
 
