@@ -1,5 +1,5 @@
-import 'package:example/app.dart';
-import 'package:example/db/mysql/mysql_books.dart';
+import '../app.dart';
+import '../db/mysql/mysql_books.dart';
 import 'package:finch/finch_model_less.dart';
 import 'package:finch/mcp.dart';
 

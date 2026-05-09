@@ -82,6 +82,11 @@ Finch comes packed with essential tools to streamline your development process. 
 - Automatic asset compilation and serving.
 - Support for public directories and custom paths.
 
+### 🔌 Model Context Protocol (MCP) Server
+- Expose AI-friendly endpoints following the Model Context Protocol standard.
+- Automated tool discovery and resource management for language models.
+- Seamless integration with AI agents and assistants for intelligent automation.
+
 ### 🎯 Dart Native Performance
 - Leverages Dart's speed and efficiency for high-performance applications.
 - Native compilation for better runtime performance.
