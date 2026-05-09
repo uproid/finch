@@ -2310,6 +2310,16 @@ $t('sidebar.info') }}
                   <span>{{ $t('sidebar.languageExample') }}</span>
                 </a>
               </li>
+              <li>
+                <a
+                  href="{{ $e.routeUrl('mcp.books') }}"
+                  class="wave flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all duration-150 hover:bg-blue-50 hover:text-blue-700 {{ $e.hasKey(['root.cookie','root.cookie.post']) ? 'bg-blue-50 font-semibold text-blue-700 shadow-sm' : 'text-gray-600' }}"
+                  aria-current="page"
+                >
+                  <i class="fa-solid fa-robot w-5 {{ $e.hasKey(['root.cookie','root.cookie.post']) ? 'text-blue-600' : 'text-gray-400' }}"></i>
+                  <span>{{ $t('MCP Server') }}</span>
+                </a>
+              </li>
             </ul>
           </details>
         </li>
