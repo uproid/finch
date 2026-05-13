@@ -258,7 +258,8 @@ class RouteCache extends FinchRoute {
     }
 
     if (cached == null) {
-      final res = await handle();
+      var res = await handle();
+      res = rq.onClose(res);
       if (response.statusCode != HttpStatus.ok) {
         return res;
       }
