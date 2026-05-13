@@ -33,6 +33,44 @@ void main() async {
         index: () => rq.renderString(text: "TEST"),
         children: [
           FinchRoute(
+            path: '/without_cache_test',
+            index: () async {
+              rq.assetManager.includes = [];
+              rq.addAsset(Asset(
+                  path: 'public/test.css',
+                  type: AssetType.css,
+                  cache: AssetCache.appVersion));
+              rq.addAsset(Asset(
+                  path: 'public/test.js',
+                  type: AssetType.js,
+                  cache: AssetCache.appVersion));
+              return rq.renderView(
+                path:
+                    '{{ assets.css() }}, {{ assets.js() }}, {{ assets.dataJs() }}',
+                isFile: false,
+              );
+            },
+          ),
+          FinchRoute(
+            path: '/with_cache_test',
+            index: () async {
+              rq.assetManager.includes = [];
+              rq.addAsset(Asset(
+                  path: 'public/test.css',
+                  type: AssetType.css,
+                  cache: AssetCache.appVersion));
+              rq.addAsset(Asset(
+                  path: 'public/test.js',
+                  type: AssetType.js,
+                  cache: AssetCache.appVersion));
+              return rq.renderView(
+                path:
+                    '{{ assets.css() }}, {{ assets.js() }}, {{ assets.dataJs() }}',
+                isFile: false,
+              );
+            },
+          ).cache(cacheDuration: Duration(days: 1)),
+          FinchRoute(
             path: '/test_cookies/list',
             index: () {
               rq.addCookie('SYSTEM_TEST', 'TEST_VALUE_2', safe: false);
@@ -641,6 +679,32 @@ void main() async {
         reason: "Data line $i should be 'data: test $i'",
       );
     }
+  });
+
+  test('Test Cache', () async {
+    var req1 = await http.get(
+      Uri.parse("http://localhost:${httpServer.port}/without_cache_test"),
+    );
+    var req2 = await http.get(
+      Uri.parse("http://localhost:${httpServer.port}/with_cache_test"),
+    );
+    await Future.delayed(Duration(seconds: 1));
+    var req3 = await http.get(
+      Uri.parse("http://localhost:${httpServer.port}/with_cache_test"),
+    );
+
+    expect(req1.statusCode, 200, reason: "Status code should be 200");
+    expect(req2.statusCode, 200, reason: "Status code should be 200");
+    expect(
+      req1.body,
+      equals(req2.body),
+      reason: "Response body should be different for requests without cache",
+    );
+    expect(
+      req2.body,
+      equals(req3.body),
+      reason: "Response body should be the same for requests with cache",
+    );
   });
 
   test('Test Advanced Form', () async {
