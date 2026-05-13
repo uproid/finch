@@ -1,4 +1,7 @@
 
+## 1.3.1
+- [#54](https://github.com/uproid/finch/issues/54) Fixed a bug in the route caching functionality where responses were not being properly cached and retrieved based
+
 ## 1.3.0
 - Added **Model Context Protocol (MCP) Server** support for building AI-powered applications [#49](https://github.com/uproid/finch/issues/49)
   - Full MCP 2.0 specification implementation with schema handler system
