@@ -1,0 +1,61 @@
+name: Dart
+
+on:
+  push:
+    branches: [ "*" ]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      - name: Install dependencies
+        run: dart pub get
+
+      - name: Check example structure
+        shell: bash
+        run: |
+          set -e
+          forbidden_text="package:example"
+          if grep -r "$forbidden_text" example/lib/; then
+              echo "Error: Forbidden text found in Dart files"
+              exit 1
+          else
+              echo "No forbidden text found"
+          fi
+
+      - name: Download OSV-Scanner
+        shell: bash
+        run: |
+          set -e
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            curl -sSfL https://github.com/google/osv-scanner/releases/download/v2.2.1/osv-scanner_windows_amd64.exe -o osv-scanner.exe
+            chmod +x osv-scanner.exe
+            ./osv-scanner.exe --lockfile=pubspec.lock
+          elif [[ "$RUNNER_OS" == "macOS" ]]; then
+            curl -sSfL https://github.com/google/osv-scanner/releases/download/v2.2.1/osv-scanner_darwin_amd64 -o osv-scanner
+            chmod +x osv-scanner
+            ./osv-scanner --lockfile=pubspec.lock
+          else
+            curl -sSfL https://github.com/google/osv-scanner/releases/download/v2.2.1/osv-scanner_linux_amd64 -o osv-scanner
+            chmod +x osv-scanner
+            ./osv-scanner --lockfile=pubspec.lock
+          fi
+
+      - name: Analyze project source
+        run: dart analyze
+
+      - name: Run tests
+        run: dart test
