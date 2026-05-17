@@ -443,7 +443,14 @@ class FinchApp {
               if (c.existsOption('init')) {
                 var res = await CappConsole.progress<List<String>>(
                   "Initializing migration...",
-                  () async => MysqlMigration(mysqlDriver).migrateInit(),
+                  () async =>
+                      MysqlMigration(mysqlDriver).migrateInit().catchError((e) {
+                    CappConsole.write(
+                      "\n\n$e\n",
+                      CappColors.error,
+                    );
+                    return <String>[];
+                  }),
                 );
                 var index = 1;
                 var table = res.map((e) => [(index++).toString(), e]).toList();
@@ -495,7 +502,15 @@ class FinchApp {
                 int deep = c.getOption('rollback', def: '1').toInt(def: 1);
                 var res = await CappConsole.progress<String>(
                   "Rolling back migration...",
-                  () async => MysqlMigration(mysqlDriver).migrateRollback(deep),
+                  () async => MysqlMigration(mysqlDriver)
+                      .migrateRollback(deep)
+                      .catchError((e) {
+                    CappConsole.write(
+                      "\n\n$e\n",
+                      CappColors.error,
+                    );
+                    return "Error rolling back migration";
+                  }),
                 );
                 return CappConsole(res);
               }
@@ -1189,5 +1204,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.3.1';
+  final String version = '1.3.2';
 }
