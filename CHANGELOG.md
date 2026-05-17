@@ -1,4 +1,8 @@
 
+## 1.3.2
+- [#58](https://github.com/uproid/finch/issues/58) Fixes #58: Resolved issues in the migrate -i and migrate -r processes. The migration process will now stop if a MySQL error occurs.
+- fixing issue for examples
+
 ## 1.3.1
 - [#54](https://github.com/uproid/finch/issues/54) Fixed a bug in the route caching functionality where responses were not being properly cached and retrieved based
 

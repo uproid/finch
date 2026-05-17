@@ -86,12 +86,18 @@ class MysqlMigration {
       var sqlContent = await file.readAsString();
       sqlContent = sqlContent.split('-- ## ROLL BACK:')[0];
       if (sqlContent.isEmpty) continue;
-      await db.executeString(sqlContent);
-      executedFiles.add(filename);
-      await migrationTable.insert(db, {
-        'file': QVar(filename),
-        'sort': QVar(DateTime.now().millisecondsSinceEpoch.toString()),
-      });
+      var res = await db.executeString(sqlContent);
+      if (res.success) {
+        executedFiles.add(filename);
+        await migrationTable.insert(db, {
+          'file': QVar(filename),
+          'sort': QVar(DateTime.now().millisecondsSinceEpoch.toString()),
+        });
+      } else {
+        throw Exception(
+          'Error executing migration file: $filename\nError message: ${res.errorMsg}',
+        );
+      }
     }
 
     if (executedFiles.isEmpty) {
@@ -142,7 +148,13 @@ class MysqlMigration {
       var rollbackContent = sqlContent.split('-- ## ROLL BACK:')[1];
       if (rollbackContent.isEmpty) continue;
 
-      await db.executeString(rollbackContent);
+      var res = await db.executeString(rollbackContent);
+      if (!res.success) {
+        throw Exception(
+          'Error executing rollback for migration file: $filename\nError message: ${res.errorMsg}',
+        );
+      }
+
       await migrationTable.delete(
         db,
         Sqler()
