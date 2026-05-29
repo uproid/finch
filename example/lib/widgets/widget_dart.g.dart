@@ -3992,7 +3992,7 @@ $t('sidebar.info') }}
         <img src="{{ $e.url('logo.svg') }}" alt="{{ $t('logo.title') }}" class="h-9 w-9 shrink-0" />
         <span class="flex items-baseline gap-1.5">
           <span class="text-lg font-extrabold tracking-tight text-zinc-900">{{ $t('logo.title') }}</span>
-          <span class="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-zinc-500 ring-1 ring-inset ring-zinc-200">v{{ version }}</span>
+          <span class="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-zinc-500 ring-1 ring-inset ring-zinc-200">{{ version }}</span>
         </span>
       </a>
     </div>
@@ -4368,7 +4368,7 @@ $t('sidebar.info') }}
         </span>
         <div class="min-w-0 flex-1">
           <div class="truncate text-xs font-bold text-zinc-800">Finch Framework</div>
-          <div class="truncate text-[10px] font-medium text-zinc-500">v{{ version }} · made with ❤</div>
+          <div class="truncate text-[10px] font-medium text-zinc-500">{{ version }} · made with ❤</div>
         </div>
       </div>
     </div>
