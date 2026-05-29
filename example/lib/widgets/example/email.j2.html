@@ -4,195 +4,342 @@
 {% endblock %}
 
 {% block content %}
+{% set hasSuccess = sendEmailSuccess %}
+{% set hasFailed = sendEmailFailed %}
+
 <div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center gap-3">
-    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 text-white shadow-lg">
-      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-      </svg>
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-sky-950 to-indigo-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-sky-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-paper-plane text-2xl text-sky-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-indigo-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-sky-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-sky-300 ring-1 ring-sky-400/30">
+              <i class="fa-solid fa-envelope-open-text text-[10px]"></i> SMTP
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
+              <i class="fa-solid fa-lock text-[10px]"></i> SSL / TLS
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+              <i class="fa-solid fa-list-check text-[10px]"></i> Validated
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('email.title') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Compose and dispatch a test email through any <span class="font-semibold text-sky-300">SMTP host</span> &mdash; with full per-field validation and inline error reporting.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Default port</div>
+          <div class="mt-1 text-2xl font-bold text-white font-mono">1025</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Status</div>
+          {% if hasSuccess %}
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-emerald-300">
+            <i class="fa-solid fa-circle-check"></i> Sent
+          </div>
+          {% elif hasFailed %}
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-rose-300">
+            <i class="fa-solid fa-circle-xmark"></i> Failed
+          </div>
+          {% else %}
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-zinc-200">
+            <i class="fa-solid fa-circle text-[10px] animate-pulse"></i> Idle
+          </div>
+          {% endif %}
+        </div>
+      </div>
     </div>
-    <div>
-      <h1 class="text-2xl font-bold text-gray-800">{{ $t('email.title') }}</h1>
-      <p class="text-sm text-gray-600">{{ $t('Send test emails with SMTP configuration') }}</p>
+  </section>
+
+  {# ============== FLASH ALERTS ============== #}
+  {% if hasSuccess %}
+  <div class="reveal-up flex items-start gap-3 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 p-4 shadow-soft">
+    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-500 text-white shadow-sm">
+      <i class="fa-solid fa-circle-check text-lg"></i>
+    </span>
+    <div class="flex-1">
+      <p class="text-sm font-bold text-emerald-900">{{ $t('email.success') }}</p>
+      <p class="mt-0.5 text-xs text-emerald-700">Your message was accepted by the SMTP server.</p>
     </div>
   </div>
-  <div class="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-    <div class="p-5">
-      <form method="post" action="{{ $e.routeUrl('root.email.post') }}" class="space-y-6">
+  {% endif %}
+
+  {% if hasFailed %}
+  <div class="reveal-up flex items-start gap-3 rounded-2xl border border-rose-200 bg-gradient-to-r from-rose-50 to-pink-50 p-4 shadow-soft">
+    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-rose-500 text-white shadow-sm">
+      <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+    </span>
+    <div class="flex-1">
+      <p class="text-sm font-bold text-rose-900">{{ $t('email.failed') }}</p>
+      <p class="mt-0.5 text-xs text-rose-700">Please review the SMTP host, port and credentials and try again.</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ============== EMAIL FORM ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-sky-50 to-indigo-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-sm ring-1 ring-sky-300/50">
+          <i class="fa-solid fa-paper-plane text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Compose email</h3>
+          <p class="text-xs text-zinc-500">Fill in the message and SMTP details to send</p>
+        </div>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-sky-800 ring-1 ring-sky-200">
+        <i class="fa-solid fa-shield-halved text-[9px]"></i> Validated
+      </span>
+    </div>
+
+    <form method="post" action="{{ $e.routeUrl('root.email.post') }}" class="space-y-6 p-5 sm:p-6">
+
+      {# ----- Sender section ----- #}
+      <fieldset>
+        <legend class="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-sky-700">
+          <span class="grid h-6 w-6 place-items-center rounded-md bg-sky-100 text-sky-600 ring-1 ring-sky-200">
+            <i class="fa-solid fa-user text-[10px]"></i>
+          </span>
+          Sender
+        </legend>
         <div class="grid gap-4 md:grid-cols-2">
           <div>
-            <label for="from" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.from') }}</label>
-            <input
-              value="{{ $n('emailForm/from/value') }}"
-              type="text"
-              name="from"
-              id="from"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/from/failed') else '' }}"
-            />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/from/failed') else 'hidden' }}">
+            <label for="from" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.from') }}</label>
+            <div class="relative">
+              <i class="fa-solid fa-at pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+              <input
+                value="{{ $n('emailForm/from/value') }}"
+                type="text"
+                name="from"
+                id="from"
+                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/from/failed') else '' }}"
+              />
+            </div>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/from/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
               {{ $t($n('emailForm/from/errors/0')) }}
             </div>
           </div>
           <div>
-            <label for="fromName" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.fromName') }}</label>
-            <input
-              value="{{ $n('emailForm/fromName/value') }}"
-              type="text"
-              name="fromName"
-              id="fromName"
-              placeholder="{{ $t('email.placeholder.name') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/fromName/failed') else '' }}"
-            />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/fromName/failed') else 'hidden' }}">
+            <label for="fromName" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.fromName') }}</label>
+            <div class="relative">
+              <i class="fa-solid fa-id-badge pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+              <input
+                value="{{ $n('emailForm/fromName/value') }}"
+                type="text"
+                name="fromName"
+                id="fromName"
+                placeholder="{{ $t('email.placeholder.name') }}"
+                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/fromName/failed') else '' }}"
+              />
+            </div>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/fromName/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
               {{ $t($n('emailForm/fromName/errors/0')) }}
             </div>
           </div>
         </div>
+      </fieldset>
 
-        <div>
-          <label for="email" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.to') }}</label>
-          <input
-            value="{{ $n('emailForm/email/value') }}"
-            type="email"
-            name="email"
-            id="email"
-            placeholder="{{ $t('email.placeholder.to') }}"
-            class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/email/failed') else '' }}"
-          />
-          <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/email/failed') else 'hidden' }}">
-            {{ $t($n('emailForm/email/errors/0')) }}
-          </div>
-        </div>
-
-        <div>
-          <label for="subject" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.subject') }}</label>
-            <input
-              value="{{ $n('emailForm/subject/value') }}"
-              type="text"
-              name="subject"
-              id="subject"
-              placeholder="{{ $t('email.placeholder.subject') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/subject/failed') else '' }}"
-            />
-          <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/subject/failed') else 'hidden' }}">
-            {{ $t($n('emailForm/subject/errors/0')) }}
-          </div>
-        </div>
-
-        <div>
-          <label for="message" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.message') }}</label>
-          <textarea
-            name="message"
-            id="message"
-            placeholder="{{ $t('email.placeholder.message') }}"
-            class="min-h-[140px] w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/message/failed') else '' }}"
-          >{{ $n('emailForm/message/value') }}</textarea>
-          <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/message/failed') else 'hidden' }}">
-            {{ $t($n('emailForm/message/errors/0')) }}
-          </div>
-        </div>
-
-        <div class="grid gap-4 md:grid-cols-[1fr,140px]">
+      {# ----- Message section ----- #}
+      <fieldset>
+        <legend class="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-indigo-700">
+          <span class="grid h-6 w-6 place-items-center rounded-md bg-indigo-100 text-indigo-600 ring-1 ring-indigo-200">
+            <i class="fa-solid fa-envelope text-[10px]"></i>
+          </span>
+          Message
+        </legend>
+        <div class="space-y-4">
           <div>
-            <label for="host" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.host') }}</label>
-            <input
-              value="{{ $n('emailForm/host/value') }}"
-              type="text"
-              name="host"
-              id="host"
-              placeholder="{{ $t('email.placeholder.host') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/host/failed') else '' }}"
-            />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/host/failed') else 'hidden' }}">
-              {{ $t($n('emailForm/host/errors/0')) }}
+            <label for="email" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.to') }}</label>
+            <div class="relative">
+              <i class="fa-solid fa-envelope pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-indigo-500"></i>
+              <input
+                value="{{ $n('emailForm/email/value') }}"
+                type="email"
+                name="email"
+                id="email"
+                placeholder="{{ $t('email.placeholder.to') }}"
+                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/email/failed') else '' }}"
+              />
+            </div>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/email/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              {{ $t($n('emailForm/email/errors/0')) }}
             </div>
           </div>
           <div>
-            <label for="port" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.port') }}</label>
-            <input
-              value="{{ $n('emailForm/port/value') if $n('emailForm/port/value') else '1025' }}"
-              type="number"
-              name="port"
-              id="port"
-              placeholder="{{ $t('email.placeholder.port') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/port/failed') else '' }}"
-            />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/port/failed') else 'hidden' }}">
-              {{ $t($n('emailForm/port/errors/0')) }}
+            <label for="subject" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.subject') }}</label>
+            <div class="relative">
+              <i class="fa-solid fa-heading pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-indigo-500"></i>
+              <input
+                value="{{ $n('emailForm/subject/value') }}"
+                type="text"
+                name="subject"
+                id="subject"
+                placeholder="{{ $t('email.placeholder.subject') }}"
+                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/subject/failed') else '' }}"
+              />
             </div>
-          </div>
-        </div>
-
-        <div class="grid gap-4 md:grid-cols-2">
-          <div>
-            <label for="username" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.username') }}</label>
-            <input
-              value="{{ $n('emailForm/username/value') }}"
-              type="text"
-              name="username"
-              id="username"
-              placeholder="{{ $t('email.placeholder.username') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/username/failed') else '' }}"
-            />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/username/failed') else 'hidden' }}">
-              {{ $t($n('emailForm/username/errors/0')) }}
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/subject/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              {{ $t($n('emailForm/subject/errors/0')) }}
             </div>
           </div>
           <div>
-            <label for="password" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('email.password') }}</label>
-            <input
-              value="{{ $n('emailForm/password/value') }}"
-              type="password"
-              name="password"
-              id="password"
-              placeholder="{{ $t('email.placeholder.password') }}"
-              class="h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-rose-500 ring-2 ring-rose-300 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/password/failed') else '' }}"
-            />
-            <div class="mt-1 text-sm text-rose-700 {{ '' if $n('emailForm/password/failed') else 'hidden' }}">
-              {{ $t($n('emailForm/password/errors/0')) }}
+            <label for="message" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.message') }}</label>
+            <textarea
+              name="message"
+              id="message"
+              placeholder="{{ $t('email.placeholder.message') }}"
+              class="min-h-[140px] w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/message/failed') else '' }}"
+            >{{ $n('emailForm/message/value') }}</textarea>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/message/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              {{ $t($n('emailForm/message/errors/0')) }}
             </div>
           </div>
         </div>
+      </fieldset>
 
-        <div class="flex flex-wrap gap-6">
-          <label for="allowInsecure" class="inline-flex items-center gap-2 text-sm text-slate-700">
-            <input
-              value="true"
-              {{ $n('emailForm/allowInsecure/value') ? 'checked' : '' }}
-              type="checkbox"
-              name="allowInsecure"
-              id="allowInsecure"
-              class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
-            />
-            <span>{{ $t('email.allowInsecure') }}</span>
-          </label>
-          <label for="ssl" class="inline-flex items-center gap-2 text-sm text-slate-700">
-            <input
-              value="true"
-              {{ $n('emailForm/ssl/value') ? 'checked' : '' }}
-              type="checkbox"
-              name="ssl"
-              id="ssl"
-              class="h-4 w-4 rounded border-slate-300 text-primary-600 focus:ring-primary-500"
-            />
-            <span>{{ $t('email.ssl') }}</span>
-          </label>
+      {# ----- SMTP section ----- #}
+      <fieldset class="rounded-xl border border-dashed border-sky-300 bg-sky-50/40 p-4">
+        <legend class="ml-2 flex items-center gap-2 rounded-md bg-white px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-sky-700 ring-1 ring-sky-200">
+          <i class="fa-solid fa-server text-[10px]"></i>
+          SMTP server
+        </legend>
+        <div class="space-y-4">
+          <div class="grid gap-4 md:grid-cols-[1fr_140px]">
+            <div>
+              <label for="host" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.host') }}</label>
+              <div class="relative">
+                <i class="fa-solid fa-server pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+                <input
+                  value="{{ $n('emailForm/host/value') }}"
+                  type="text"
+                  name="host"
+                  id="host"
+                  placeholder="{{ $t('email.placeholder.host') }}"
+                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/host/failed') else '' }}"
+                />
+              </div>
+              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/host/failed') else 'hidden' }}">
+                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                {{ $t($n('emailForm/host/errors/0')) }}
+              </div>
+            </div>
+            <div>
+              <label for="port" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.port') }}</label>
+              <div class="relative">
+                <i class="fa-solid fa-plug pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+                <input
+                  value="{{ $n('emailForm/port/value') if $n('emailForm/port/value') else '1025' }}"
+                  type="number"
+                  name="port"
+                  id="port"
+                  placeholder="{{ $t('email.placeholder.port') }}"
+                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/port/failed') else '' }}"
+                />
+              </div>
+              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/port/failed') else 'hidden' }}">
+                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                {{ $t($n('emailForm/port/errors/0')) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div>
+              <label for="username" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.username') }}</label>
+              <div class="relative">
+                <i class="fa-solid fa-user pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+                <input
+                  value="{{ $n('emailForm/username/value') }}"
+                  type="text"
+                  name="username"
+                  id="username"
+                  placeholder="{{ $t('email.placeholder.username') }}"
+                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/username/failed') else '' }}"
+                />
+              </div>
+              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/username/failed') else 'hidden' }}">
+                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                {{ $t($n('emailForm/username/errors/0')) }}
+              </div>
+            </div>
+            <div>
+              <label for="password" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.password') }}</label>
+              <div class="relative">
+                <i class="fa-solid fa-lock pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+                <input
+                  value="{{ $n('emailForm/password/value') }}"
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="{{ $t('email.placeholder.password') }}"
+                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/password/failed') else '' }}"
+                />
+              </div>
+              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/password/failed') else 'hidden' }}">
+                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                {{ $t($n('emailForm/password/errors/0')) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3 pt-1">
+            <label for="allowInsecure" class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-sky-400 hover:bg-sky-50">
+              <input
+                value="true"
+                {{ $n('emailForm/allowInsecure/value') ? 'checked' : '' }}
+                type="checkbox"
+                name="allowInsecure"
+                id="allowInsecure"
+                class="h-4 w-4 rounded border-zinc-300 text-sky-600 focus:ring-2 focus:ring-sky-500/30"
+              />
+              <i class="fa-solid fa-shield text-xs text-amber-600"></i>
+              <span>{{ $t('email.allowInsecure') }}</span>
+            </label>
+            <label for="ssl" class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-sky-400 hover:bg-sky-50">
+              <input
+                value="true"
+                {{ $n('emailForm/ssl/value') ? 'checked' : '' }}
+                type="checkbox"
+                name="ssl"
+                id="ssl"
+                class="h-4 w-4 rounded border-zinc-300 text-sky-600 focus:ring-2 focus:ring-sky-500/30"
+              />
+              <i class="fa-solid fa-lock text-xs text-emerald-600"></i>
+              <span>{{ $t('email.ssl') }}</span>
+            </label>
+          </div>
         </div>
+      </fieldset>
 
-        {% if sendEmailSuccess %}
-        <div class="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{{ $t('email.success') }}</div>
-        {% endif %}
-
-        {% if sendEmailFailed %}
-        <div class="rounded-md border border-rose-200 bg-rose-50 p-3 text-sm text-rose-800">{{ $t('email.failed') }}</div>
-        {% endif %}
-
-        <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">
-          {{ $t('email.send') }}
+      <div class="flex flex-col-reverse gap-3 border-t border-zinc-200 pt-5 sm:flex-row sm:items-center sm:justify-end">
+        <button type="submit" class="wave group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-sky-600 hover:to-indigo-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-sky-500/30">
+          <i class="fa-solid fa-paper-plane text-sm transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+          <span>{{ $t('email.send') }}</span>
         </button>
-      </form>
-    </div>
-  </div>
+      </div>
+    </form>
+  </section>
 </div>
 {% endblock %}

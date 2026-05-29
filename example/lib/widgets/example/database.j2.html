@@ -5,111 +5,187 @@
 
 {% block content %}
 <div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center gap-3">
-    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg">
-      <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 20 20">
-        <path d="M10 2c-1.716 0-3.408.106-5.07.31C3.806 2.45 3 3.414 3 4.517V17.25c0 .966.784 1.75 1.75 1.75h10.5A1.75 1.75 0 0017 17.25V4.517c0-1.103-.806-2.068-1.93-2.207A41.403 41.403 0 0010 2z"></path>
-      </svg>
-    </div>
-    <div>
-      <h1 class="text-2xl font-bold text-gray-800">{{ $t('database.test.title') }}</h1>
-      <p class="text-sm text-gray-600">{{ $t('MongoDB example with CRUD operations') }}</p>
-    </div>
-  </div>
 
-  <!-- Table Card -->
-  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-emerald-950 to-green-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-green-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-leaf text-2xl text-emerald-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-green-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+              <i class="fa-solid fa-bolt"></i>
+              MongoDB
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 ring-1 ring-white/10">
+              <i class="fa-solid fa-cubes text-green-300"></i>
+              Document
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 ring-1 ring-white/10">
+              <i class="fa-solid fa-code text-cyan-300"></i>
+              NoSQL
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl font-bold text-white sm:text-3xl">{{ $t('database.test.title') }}</h1>
+          <p class="mt-1 max-w-xl text-sm text-zinc-300">
+            MongoDB example with CRUD operations — flexible, schemaless documents with title and auto-generated slug.
+          </p>
+        </div>
+      </div>
+
+      {# Quick stats #}
+      <div class="grid grid-cols-2 gap-3 sm:flex sm:items-stretch">
+        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Records</div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span class="text-2xl font-bold text-white">{{ (allRecords | default([])) | length }}</span>
+            <span class="text-[11px] text-zinc-400">/ page</span>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Page</div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span class="text-2xl font-bold text-white">{{ data.page if data.page else 1 }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== RECORDS CARD ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    {# Header band #}
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 bg-gradient-to-r from-zinc-50 to-white px-5 py-4">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
+          <i class="fa-solid fa-database"></i>
+        </span>
+        <div>
+          <p class="text-sm font-semibold text-zinc-800 leading-tight">Documents</p>
+          <p class="text-[11px] text-zinc-500">Collection · title and slug</p>
+        </div>
+      </div>
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+        Live
+      </span>
+    </div>
+
+    {# Table #}
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200 text-sm">
-        <thead class="bg-gradient-to-r from-gray-50 to-white">
+      <table class="min-w-full divide-y divide-zinc-200 text-xs md:text-sm">
+        <thead class="bg-zinc-50">
           <tr class="text-left">
-            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('database.table.header.title') }}</th>
-            <th class="px-6 py-4 text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('database.table.header.slug') }}</th>
-            <th class="px-6 py-4 text-center text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('database.table.header.action') }}</th>
+            <th class="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.title') }}</th>
+            <th class="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.slug') }}</th>
+            <th class="px-5 py-3 text-end text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.action') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100 bg-white">
+        <tbody class="divide-y divide-zinc-100 bg-white">
           {% for record in allRecords %}
-          <tr class="group transition-colors duration-150 hover:bg-blue-50">
-            <td class="px-6 py-4 align-top">
-              <div class="flex items-center gap-2">
-                <div class="h-2 w-2 rounded-full bg-blue-600"></div>
-                <span class="font-semibold text-gray-800">{{ record.title }}</span>
+          <tr class="group transition hover:bg-emerald-50/40">
+            <td class="px-5 py-3 align-middle">
+              <div class="flex items-center gap-2.5">
+                <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
+                  <i class="fa-solid fa-file-lines text-[11px]"></i>
+                </span>
+                <span class="font-semibold text-zinc-800">{{ record.title }}</span>
               </div>
             </td>
-            <td class="px-6 py-4 align-top">
-              <code class="rounded-md bg-gray-100 px-2 py-1 text-xs text-gray-700">{{ record.slug }}</code>
+            <td class="px-5 py-3">
+              <code class="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2 py-1 font-mono text-[11px] text-zinc-700 ring-1 ring-zinc-200">
+                <i class="fa-solid fa-link text-[9px] text-zinc-400"></i>
+                {{ record.slug }}
+              </code>
             </td>
-            <td class="px-6 py-4 text-center">
+            <td class="px-5 py-3 text-end">
               <a
                 href="/example/database?page={{ data.page if data.page else 1 }}&action=delete&id={{ record.id }}"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-rose-200 text-rose-600 transition-all duration-150 hover:bg-rose-50 hover:border-rose-300 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-rose-500/30"
-                title="{{ $t('database.table.header.action') }}"
-              >
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                </svg>
+                class="wave inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 bg-white text-rose-600 transition hover:border-rose-300 hover:bg-rose-50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                title="{{ $t('database.table.header.action') }}">
+                <i class="fa-solid fa-trash-can text-xs"></i>
               </a>
             </td>
           </tr>
-          {% endfor %}
-          {% if not allRecords ?? allRecords|length == 0 %}
+          {% else %}
           <tr>
-            <td colspan="3" class="px-6 py-12 text-center">
-              <div class="flex flex-col items-center gap-3">
-                <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gray-100">
-                  <svg class="h-8 w-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                  </svg>
+            <td colspan="3" class="px-5 py-16 text-center">
+              <div class="mx-auto flex max-w-sm flex-col items-center gap-3">
+                <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-400">
+                  <i class="fa-solid fa-folder-open text-2xl"></i>
                 </div>
-                <p class="text-sm font-medium text-gray-500">{{ $t('database.table.empty') if $t('database.table.empty') else $t('No records found') }}</p>
+                <p class="text-sm font-semibold text-zinc-700">{{ $t('database.table.empty') if $t('database.table.empty') else $t('No records found') }}</p>
+                <p class="text-xs text-zinc-500">Insert your first document using the form below.</p>
               </div>
             </td>
           </tr>
-          {% endif %}
+          {% endfor %}
         </tbody>
       </table>
     </div>
-    
-    <!-- Footer with Add Form and Pagination -->
-    <div class="border-t border-gray-200 bg-gradient-to-r from-gray-50 to-white p-6 space-y-4">
-      <form method="post" class="flex flex-col gap-3 sm:flex-row sm:items-center">
+
+    {# Add document form + pagination #}
+    <div class="space-y-4 border-t border-zinc-200 bg-zinc-50/60 p-5">
+      <form method="post" class="rounded-xl border border-dashed border-zinc-300 bg-white p-4">
         <input type="hidden" name="action" value="add" />
-        <div class="flex-1">
-          <div class="relative">
-            <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path>
-              </svg>
+        <div class="mb-3 flex items-center gap-2">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
+            <i class="fa-solid fa-plus text-[11px]"></i>
+          </span>
+          <p class="text-xs font-semibold text-zinc-700">
+            {{ $t('database.table.button.add') }}
+            <span class="font-normal text-zinc-500">·</span>
+            <span class="font-normal text-zinc-500">New document</span>
+          </p>
+        </div>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-start">
+          <div class="flex-1">
+            <label class="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              {{ $t('database.table.header.title') }}
+            </label>
+            <div class="relative">
+              <span class="pointer-events-none absolute inset-y-0 start-3 flex items-center text-zinc-400">
+                <i class="fa-solid fa-heading text-xs"></i>
+              </span>
+              <input
+                type="text"
+                name="title"
+                placeholder="{{ $t('database.table.input.placeholder.title') }}"
+                class="block h-10 w-full rounded-lg border border-zinc-200 bg-white ps-9 pe-3 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+              />
             </div>
-            <input
-              type="text"
-              name="title"
-              placeholder="{{ $t('database.table.input.placeholder.title') }}"
-              class="block h-11 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20"
-            />
+          </div>
+          <div class="sm:pt-[22px]">
+            <button
+              type="submit"
+              class="wave inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 px-4 text-xs font-semibold text-white shadow-sm transition hover:from-emerald-700 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 sm:w-auto"
+            >
+              <i class="fa-solid fa-plus"></i>
+              <span>{{ $t('database.table.button.add') }}</span>
+            </button>
           </div>
         </div>
-        <button
-          type="submit"
-          class="wave group inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/30"
-        >
-          <svg class="h-5 w-5 transition-transform duration-200 group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-          </svg>
-          <span>{{ $t('database.table.button.add') }}</span>
-        </button>
       </form>
-      
+
       {% if pagination %}
-      <div class="flex items-center justify-center border-t border-gray-200 pt-4">
-        <div class="pagination-wrapper text-sm text-gray-600">
+      <div class="flex items-center justify-center pt-1">
+        <div class="pagination-wrapper text-sm text-zinc-600">
           {{ pagination }}
         </div>
       </div>
       {% endif %}
     </div>
-  </div>
+  </section>
 </div>
 {% endblock %}

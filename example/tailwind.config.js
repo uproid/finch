@@ -24,59 +24,66 @@ module.exports = {
 		}),
 		extend: {
 			colors: {
-				// Dart & Flutter brand colors
+				// Primary brand = Tailwind teal
 				primary: {
-					50: '#e3f2fd',
-					100: '#bbdefb',
-					200: '#90caf9',
-					300: '#2196F3', // darker blue
-					400: '#1976D2', // more saturated blue
-					500: '#01579B', // much bolder Dart blue
-					600: '#013A63', // extra dark blue
-					700: '#0D47A1', // deep blue
-					800: '#1565C0', // strong blue
-					900: '#1A237E'  // very dark blue
+					50:  '#f0fdfa',
+					100: '#ccfbf1',
+					200: '#99f6e4',
+					300: '#5eead4',
+					400: '#2dd4bf',
+					500: '#14b8a6',
+					600: '#0d9488',
+					700: '#0f766e',
+					800: '#115e59',
+					900: '#134e4a'
 				},
+				// Secondary = Tailwind cyan
 				secondary: {
-					50: '#e0f7fa',
-					100: '#b2ebf2',
-					200: '#80deea',
-					300: '#4dd0e1',
-					400: '#26c6da',
-					500: '#00bcd4',
-					600: '#00acc1',
-					700: '#0097a7',
-					800: '#00838f',
-					900: '#006064'
+					50:  '#ecfeff',
+					100: '#cffafe',
+					200: '#a5f3fc',
+					300: '#67e8f9',
+					400: '#22d3ee',
+					500: '#06b6d4',
+					600: '#0891b2',
+					700: '#0e7490',
+					800: '#155e75',
+					900: '#164e63'
 				},
+				// Tertiary = Tailwind emerald
 				tertiary: {
-					50: '#f1f8e9',
-					100: '#dcedc8',
-					200: '#c5e1a5',
-					300: '#aed581',
-					400: '#9ccc65',
-					500: '#8bc34a',
-					600: '#7cb342',
-					700: '#689f38',
-					800: '#558b2f',
-					900: '#33691e'
+					50:  '#ecfdf5',
+					100: '#d1fae5',
+					200: '#a7f3d0',
+					300: '#6ee7b7',
+					400: '#34d399',
+					500: '#10b981',
+					600: '#059669',
+					700: '#047857',
+					800: '#065f46',
+					900: '#064e3b'
 				},
 				/* Role aliases */
-				surface: '#e3f2fd',
-				'surface-variant': '#bbdefb',
-				background: '#e3f2fd',
-				outline: '#0175C2',
-				'on-primary': '#ffffff',
-				'on-secondary': '#ffffff',
-				'on-tertiary': '#ffffff',
-				'on-error': '#ffffff',
-				'on-surface': '#02569B',
-				'on-surface-variant': '#13B9FD'
+				surface:             '#ffffff',
+				'surface-variant':   '#f4f4f5', // zinc-100
+				background:          '#fafafa', // zinc-50
+				outline:             '#0d9488', // teal-600
+				'on-primary':        '#ffffff',
+				'on-secondary':      '#ffffff',
+				'on-tertiary':       '#ffffff',
+				'on-error':          '#ffffff',
+				'on-surface':        '#18181b', // zinc-900
+				'on-surface-variant':'#52525b'  // zinc-600
 			}
 		}
 	},
 	safelist: [
-		'bg-primary-600', 'border-primary-600', 'text-white', 'text-on-surface', 'text-primary-700',
-		'hover:bg-primary-50', 'focus:ring-primary-500/30'
+		'bg-primary-50','bg-primary-100','bg-primary-500','bg-primary-600','bg-primary-700',
+		'text-primary-600','text-primary-700','text-primary-800',
+		'border-primary-200','border-primary-300','border-primary-500','border-primary-600',
+		'ring-primary-200','ring-primary-300','ring-primary-500',
+		'hover:bg-primary-50','hover:bg-primary-700','hover:text-primary-700',
+		'focus:ring-primary-500','focus:ring-primary-500/30',
+		'text-white','text-on-surface'
 	],
 };

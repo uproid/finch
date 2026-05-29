@@ -1,170 +1,189 @@
 {% extends 'template/template.j2.html' %}
 
 {% block title %}
-    {{ $t('sidebar.home') }}
+  {{ $t('sidebar.home') }}
 {% endblock %}
 
 {% block content %}
-<div class="space-y-8">
-  <!-- Hero Section -->
-  <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-blue-500 via-blue-600 to-indigo-700 p-8 shadow-xl lg:p-12">
-    <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4xIj48cGF0aCBkPSJNMzYgMzRoLTJWMzJoMnptMCAyaC0ydjJoMnptMi0yaDJ2Mmgtem0wLTJoMnYyaC0yem0tMi0yaC0ydjJoMnptMi0yaDJ2Mmgtenz0iLz48L2c+PC9nPjwvc3ZnPg==')] opacity-20"></div>
+<div class="space-y-10">
+
+  <!-- ====== HERO ====== -->
+  <section class="relative isolate overflow-hidden rounded-[2rem] border border-white/10 bg-gradient-to-br from-zinc-900 via-zinc-900 to-teal-900 p-8 shadow-[0_30px_80px_-30px_rgba(13,148,136,.6)] lg:p-14 noise">
+    <!-- mesh blobs -->
+    <div aria-hidden="true" class="pointer-events-none absolute -top-32 -left-20 h-80 w-80 rounded-full bg-teal-500/40 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute -bottom-32 -right-20 h-96 w-96 rounded-full bg-emerald-500/30 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute top-1/2 left-1/3 h-72 w-72 -translate-y-1/2 rounded-full bg-cyan-500/20 blur-3xl"></div>
+    <!-- grid overlay -->
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0 opacity-[0.15]"
+         style="background-image: linear-gradient(rgba(255,255,255,.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.4) 1px, transparent 1px); background-size: 32px 32px; mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);"></div>
+    <!-- shine -->
+    <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/70 to-transparent"></div>
+
     <div class="relative">
-      <div dir="ltr" class="flex flex-col items-center justify-center gap-6 text-center lg:flex-row lg:text-left">
-        <div class="flex h-24 w-24 items-center justify-center rounded-2xl bg-white/20 shadow-lg backdrop-blur-sm ring-4 ring-white/30">
-          <img
-            src="{{ $e.url('logo.svg') }}"
-            alt="{{ $t('logo.title') }}"
-            class="h-full w-full object-contain drop-shadow-2xl"
-          />
+      <div dir="ltr" class="flex flex-col items-center gap-8 text-center lg:flex-row lg:text-left lg:gap-10">
+        <div class="relative">
+          <div class="absolute inset-0 -m-3 rounded-3xl bg-white/30 blur-xl"></div>
+          <div class="relative flex h-28 w-28 items-center justify-center rounded-3xl bg-white/15 shadow-2xl ring-1 ring-white/40 backdrop-blur-md">
+            <img src="{{ $e.url('logo.svg') }}" alt="{{ $t('logo.title') }}" class="h-20 w-20 object-contain drop-shadow-2xl"/>
+          </div>
         </div>
-        <div class="flex flex-col justify-center">
-          <h1 style="font-size: 2.5rem;" class="font-black text-white drop-shadow-lg">{{ $t('logo') }}</h1>
-          <p class="mt-2 text-sm font-medium tracking-wider text-blue-100">{{ $t('Version') }} {{ version }}</p>
+        <div class="flex flex-col items-center lg:items-start gap-3">
+          <span class="inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/90 ring-1 ring-inset ring-white/30 backdrop-blur-md">
+            <span class="relative flex h-2 w-2"><span class="absolute inset-0 animate-ping rounded-full bg-emerald-300 opacity-75"></span><span class="relative h-2 w-2 rounded-full bg-emerald-400"></span></span>
+            {{ $t('Version') }} {{ version }}
+          </span>
+          <h1 class="text-5xl font-black tracking-tight text-white drop-shadow-[0_6px_24px_rgba(0,0,0,.25)] sm:text-6xl">{{ $t('logo') }}</h1>
+          <p class="max-w-xl text-sm font-medium text-white/85 sm:text-base">
+            A modern, fast, full-featured backend framework crafted in Dart.
+          </p>
         </div>
       </div>
     </div>
-  </div>
+  </section>
 
   {% if loginResult != true %}
-  <!-- Features Card -->
-  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
-    <div class="border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white px-6 py-4">
-      <h2 class="text-2xl font-bold text-gray-800">{{ $t('features.title') }}</h2>
-      <p class="mt-2 text-sm text-gray-600">
-        {{ $t('features.description') }}
-      </p>
+
+  <!-- ====== FEATURES BENTO ====== -->
+  <section>
+    <div class="mb-6 flex flex-col gap-1.5">
+      <span class="text-xs font-bold uppercase tracking-[0.18em] text-teal-600">{{ $t('features.title') }}</span>
+      <h2 class="text-3xl font-extrabold tracking-tight text-zinc-900 sm:text-4xl">
+        Everything you need, <span class="text-gradient">built-in</span>.
+      </h2>
+      <p class="max-w-2xl text-sm text-zinc-600">{{ $t('features.description') }}</p>
     </div>
 
-    <div class="p-6">
-      <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <li class="flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50/50 p-4 transition-all duration-200 hover:border-blue-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-            </svg>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Feature: WebSocket (large) -->
+      <article class="group relative col-span-1 sm:col-span-2 lg:col-span-2 lg:row-span-2 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(99,102,241,.35)] hover:border-teal-200">
+        <div aria-hidden="true" class="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-gradient-to-br from-teal-300/40 to-cyan-300/40 blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-60"></div>
+        <div class="relative flex h-full flex-col">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/40">
+            <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
           </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.websocket') }}</span>
-        </li>
-        <li class="flex items-start gap-3 rounded-lg border border-green-100 bg-green-50/50 p-4 transition-all duration-200 hover:border-green-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-green-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
-            </svg>
+          <h3 class="mt-5 text-xl font-bold text-zinc-900">{{ $t('features.websocket') }}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-zinc-600">Real-time, bi-directional, low-latency communication out of the box.</p>
+          <div class="mt-auto pt-6">
+            <div class="inline-flex items-center gap-1.5 text-xs font-semibold text-teal-600">
+              <span class="h-1.5 w-1.5 rounded-full bg-teal-500 animate-pulse"></span> Realtime
+            </div>
           </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.mongodb') }}</span>
-        </li>
-        <li class="flex items-start gap-3 rounded-lg border border-purple-100 bg-purple-50/50 p-4 transition-all duration-200 hover:border-purple-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.cronjobs') }}</span>
-        </li>
-        <li class="flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50/50 p-4 transition-all duration-200 hover:border-blue-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-            </svg>
-          </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.routing') }}</span>
-        </li>
-        <li class="flex items-start gap-3 rounded-lg border border-amber-100 bg-amber-50/50 p-4 transition-all duration-200 hover:border-amber-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.formvalidators') }}</span>
-        </li>
-        <li class="flex items-start gap-3 rounded-lg border border-indigo-100 bg-indigo-50/50 p-4 transition-all duration-200 hover:border-indigo-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-            </svg>
-          </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.htmltools') }}</span>
-        </li>
-        <li class="flex items-start gap-3 rounded-lg border border-teal-100 bg-teal-50/50 p-4 transition-all duration-200 hover:border-teal-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"></path>
-            </svg>
-          </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.dbmodel') }}</span>
-        </li>
-        <li class="flex items-start gap-3 rounded-lg border border-rose-100 bg-rose-50/50 p-4 transition-all duration-200 hover:border-rose-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-rose-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-            </svg>
-          </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.fastapi') }}</span>
-        </li>
-        <li class="flex items-start gap-3 rounded-lg border border-gray-200 bg-gray-50/50 p-4 transition-all duration-200 hover:border-gray-300 hover:shadow-md">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-600 text-white shadow-sm">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>
-            </svg>
-          </div>
-          <span class="text-sm font-medium text-gray-700">{{ $t('features.other') }}</span>
-        </li>
-      </ul>
+        </div>
+      </article>
 
-      <!-- Action Buttons -->
-      <div class="mt-8 flex flex-wrap gap-3" role="group" aria-label="Quick links">
-        <a
-          href="https://github.com/uproid/finch"
-          class="wave group inline-flex items-center gap-2 rounded-lg border-2 border-blue-600 bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md transition-all duration-200 hover:bg-blue-700 hover:border-blue-700 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/30"
-        >
-          <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path>
-          </svg>
-          <span>{{ $t('project.github') }}</span>
-        </a>
-        <a
-          href="https://github.com/uproid/finch/blob/master/CONTRIBUTING.md"
-          class="wave inline-flex items-center gap-2 rounded-lg border-2 border-blue-600 bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 shadow-md transition-all duration-200 hover:bg-blue-50 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/30"
-        >
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-          </svg>
-          <span>{{ $t('project.contributing') }}</span>
-        </a>
-        <a
-          href="https://github.com/uproid/finch/tree/master/doc"
-          class="wave inline-flex items-center gap-2 rounded-lg border-2 border-blue-600 bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 shadow-md transition-all duration-200 hover:bg-blue-50 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/30"
-        >
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-          </svg>
-          <span>{{ $t('project.documentation') }}</span>
-        </a>
-        <a
-          href="https://pub.dev/packages/finch"
-          class="wave inline-flex items-center gap-2 rounded-lg border-2 border-blue-600 bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 shadow-md transition-all duration-200 hover:bg-blue-50 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-blue-500/30"
-        >
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-          </svg>
-          <span>{{ $t('project.pubdev') }}</span>
-        </a>
+      <!-- Feature: MongoDB -->
+      <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(16,185,129,.35)] hover:border-emerald-200">
+        <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-md shadow-emerald-500/40"><i class="fa-solid fa-leaf"></i></div>
+        <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.mongodb') }}</h3>
+      </article>
+
+      <!-- Feature: Cronjobs -->
+      <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(8,145,178,.35)] hover:border-cyan-200">
+        <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-sky-500 text-white shadow-md shadow-cyan-500/40">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.cronjobs') }}</h3>
+      </article>
+
+      <!-- Feature: Routing -->
+      <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(59,130,246,.35)] hover:border-blue-200">
+        <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-sky-500 text-white shadow-md shadow-blue-500/40">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+        </div>
+        <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.routing') }}</h3>
+      </article>
+
+      <!-- Feature: Form Validators -->
+      <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(245,158,11,.35)] hover:border-amber-200">
+        <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/40">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.formvalidators') }}</h3>
+      </article>
+
+      <!-- Feature: HTML Tools -->
+      <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(99,102,241,.35)] hover:border-teal-200">
+        <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-blue-500 text-white shadow-md shadow-teal-500/40">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+        </div>
+        <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.htmltools') }}</h3>
+      </article>
+
+      <!-- Feature: DB Model -->
+      <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(20,184,166,.35)] hover:border-teal-200">
+        <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/40">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+        </div>
+        <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.dbmodel') }}</h3>
+      </article>
+
+      <!-- Feature: Fast API -->
+      <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(245,158,11,.35)] hover:border-amber-200">
+        <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/40">
+          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        </div>
+        <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.fastapi') }}</h3>
+      </article>
+
+      <!-- Feature: Other (wide) -->
+      <article class="group relative col-span-1 sm:col-span-2 overflow-hidden rounded-2xl border border-zinc-800/70 bg-gradient-to-br from-zinc-900 to-zinc-800 p-5 text-white shadow-[0_8px_30px_-12px_rgba(15,23,42,.4)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(15,23,42,.6)]">
+        <div aria-hidden="true" class="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-gradient-to-br from-teal-500/40 to-emerald-500/40 blur-2xl"></div>
+        <div class="relative">
+          <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-white ring-1 ring-white/20 backdrop-blur">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          </div>
+          <h3 class="mt-4 text-base font-bold">{{ $t('features.other') }}</h3>
+          <p class="mt-1 text-xs text-zinc-300">And much more — explore the docs to discover all built-in capabilities.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ====== ACTION BUTTONS ====== -->
+  <section>
+    <div class="relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-6 shadow-soft sm:p-8">
+      <div aria-hidden="true" class="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-48 w-[120%] rounded-full bg-gradient-to-r from-teal-200/40 via-cyan-200/40 to-emerald-200/40 blur-3xl"></div>
+      <div class="relative">
+        <h3 class="text-lg font-bold text-zinc-900">{{ $t('project.documentation') }}</h3>
+        <p class="mt-1 text-sm text-zinc-600">Get started, contribute, or explore the package.</p>
+        <div class="mt-6 flex flex-wrap gap-3" role="group" aria-label="Quick links">
+          <a href="https://github.com/uproid/finch" class="wave group inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-zinc-900/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-zinc-800 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-zinc-700/30">
+            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <span>{{ $t('project.github') }}</span>
+          </a>
+          <a href="https://github.com/uproid/finch/blob/master/CONTRIBUTING.md" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <span>{{ $t('project.contributing') }}</span>
+          </a>
+          <a href="https://github.com/uproid/finch/tree/master/doc" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <span>{{ $t('project.documentation') }}</span>
+          </a>
+          <a href="https://pub.dev/packages/finch" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <span>{{ $t('project.pubdev') }}</span>
+          </a>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
+
   {% else %}
-  <div class="flex items-start gap-4 rounded-xl border border-emerald-300 bg-gradient-to-r from-emerald-50 to-green-50 p-6 shadow-lg">
-    <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white shadow-md">
-      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-      </svg>
+
+  <!-- ====== LOGIN SUCCESS ====== -->
+  <section class="relative overflow-hidden rounded-2xl border border-emerald-200/70 bg-gradient-to-br from-emerald-50 via-green-50 to-teal-50 p-6 shadow-[0_8px_30px_-12px_rgba(16,185,129,.3)] backdrop-blur-md sm:p-8">
+    <div aria-hidden="true" class="pointer-events-none absolute -top-20 -right-20 h-56 w-56 rounded-full bg-emerald-300/40 blur-3xl"></div>
+    <div class="relative flex items-start gap-5">
+      <div class="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-xl shadow-emerald-500/40 ring-4 ring-white">
+        <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div class="flex-1">
+        <h3 class="text-xl font-bold text-emerald-900">{{ $t('login.success') }}</h3>
+        <p class="mt-1.5 text-sm text-emerald-700">You have successfully logged in!</p>
+      </div>
     </div>
-    <div class="flex-1">
-      <h3 class="text-lg font-semibold text-emerald-900">{{ $t('login.success') }}</h3>
-      <p class="mt-1 text-sm text-emerald-700">You have successfully logged in!</p>
-    </div>
-  </div>
+  </section>
+
   {% endif %}
 </div>
 {% endblock %}

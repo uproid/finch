@@ -5,10 +5,10 @@
   <!-- Row 1: Name / Email -->
   <div class="grid gap-5 md:grid-cols-2">
     <div>
-      <label for="name" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.name') }}</label>
+      <label for="name" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.name') }}</label>
       <div class="relative">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
         </div>
@@ -18,16 +18,16 @@
           name="name"
           value="{{ $n('form/name/value') }}"
           placeholder="{{ $t('person.form.placeholder.name') }}"
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/name/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/name/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
       <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/name/failed') ? '' : 'hidden' }}">{{ $t($n('form/name/errors/0')) }}</div>
     </div>
     <div>
-      <label for="email" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.email') }}</label>
+      <label for="email" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.email') }}</label>
       <div class="relative">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
           </svg>
         </div>
@@ -38,7 +38,7 @@
           value="{{ $n('form/email/value') }}"
           placeholder="{{ $t('person.form.placeholder.email') }}"
           {{ $n('data/_id') ? 'readonly disabled' : '' }}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/email/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/email/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
       <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/email/failed') ? '' : 'hidden' }}">{{ $t($n('form/email/errors/0')) }}</div>
@@ -48,10 +48,10 @@
   <!-- Row 2: Age / Birthday -->
   <div class="grid gap-5 md:grid-cols-2">
     <div>
-      <label for="age" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.age') }}</label>
+      <label for="age" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.age') }}</label>
       <div class="relative">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
           </svg>
         </div>
@@ -61,16 +61,16 @@
           name="age"
           value="{{ $n('form/age/value') }}"
           placeholder="{{ $t('person.form.placeholder.age') }}"
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/age/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/age/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
       <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/age/failed') ? '' : 'hidden' }}">{{ $t($n('form/age/errors/0')) }}</div>
     </div>
     <div>
-      <label for="birthday" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.birthday') }}</label>
+      <label for="birthday" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.birthday') }}</label>
       <div class="relative">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
           </svg>
         </div>
@@ -80,7 +80,7 @@
           name="birthday"
           value="{{ $n('form/birthday/value') ? $n('form/birthday/value') | dateFormat('yyyy-MM-ddThh:mm') : '1977-01-01T00:00' }}"
           {{ $n('data/_id') ? 'readonly disabled' : '' }}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/birthday/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/birthday/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
       <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/birthday/failed') ? '' : 'hidden' }}">{{ $t($n('form/birthday/errors/0')) }}</div>
@@ -90,7 +90,7 @@
   <!-- Row 3: Height / Job Title -->
   <div class="grid gap-5 md:grid-cols-2">
     <div>
-      <label for="height" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.height') }}</label>
+      <label for="height" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.height') }}</label>
       <input
         type="number"
         step="0.1"
@@ -98,16 +98,16 @@
         name="height"
         value="{{ $n('form/height/value') }}"
         placeholder="{{ $t('person.form.placeholder.height') }}"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/height/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/height/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       />
       <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/height/failed') ? '' : 'hidden' }}">{{ $t($n('form/height/errors/0')) }}</div>
     </div>
     <div>
-      <label for="job_id" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.job_title') }}</label>
+      <label for="job_id" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.job_title') }}</label>
       <select
         id="job_id"
         name="job_id"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/job_id/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/job_id/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       >
         <option value="">{{ $t('person.form.option.select_job') }}</option>
         {% for job in jobs %}
@@ -120,17 +120,17 @@
 
   <!-- Row 4: Skills -->
   <div>
-    <label class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.skills') }}</label>
+    <label class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.skills') }}</label>
     {% set oids = $n('form/jobs/value') | oid %}
     <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
       {% for job in jobs %}
-      <label for="jobs_{{ job._id }}" class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition-all duration-150 hover:border-blue-400 hover:bg-blue-50 cursor-pointer">
+      <label for="jobs_{{ job._id }}" class="flex items-center gap-3 rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-all duration-150 hover:border-teal-400 hover:bg-teal-50 cursor-pointer">
         <input
           type="checkbox"
           id="jobs_{{ job._id }}"
           name="jobs[]"
           value="{{ job._id | oid }}"
-          class="h-5 w-5 rounded border-gray-300 text-blue-600 transition-all duration-200 focus:ring-4 focus:ring-blue-500/20"
+          class="h-5 w-5 rounded border-zinc-300 text-teal-600 transition-all duration-200 focus:ring-4 focus:ring-teal-500/20"
           {{ 'checked' if ((job._id) in oids) else '' }}
         />
         <span class="truncate">{{ job.title }}</span>
@@ -143,10 +143,10 @@
   <!-- Row 5: Password / Gender -->
   <div class="grid gap-5 md:grid-cols-2">
     <div>
-      <label for="password" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.password') }}</label>
+      <label for="password" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.password') }}</label>
       <div class="relative">
         <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
           </svg>
         </div>
@@ -157,17 +157,17 @@
           value="{{ $n('form/password/value') }}"
           placeholder="{{ $t('person.form.placeholder.password') }}"
           {{ $n('data/_id') ? 'readonly disabled' : '' }}
-          class="h-12 w-full rounded-lg border border-gray-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/password/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/password/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
         />
       </div>
       <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/password/failed') ? '' : 'hidden' }}">{{ $t($n('form/password/errors/0')) }}</div>
     </div>
     <div>
-      <label for="gender" class="mb-2 block text-sm font-semibold text-gray-700">{{ $t('person.form.label.gender') }}</label>
+      <label for="gender" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.gender') }}</label>
       <select
         id="gender"
         name="gender"
-        class="h-12 w-full rounded-lg border border-gray-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 {{ $n('form/gender/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/gender/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
       >
         <option {{ $n('form/gender/value') == 'none' ? 'selected' : '' }} value="none">{{ $t('person.form.gender.dont_ask') }}</option>
         <option {{ $n('form/gender/value') == 'male' ? 'selected' : '' }} value="male">{{ $t('person.form.gender.male') }}</option>
@@ -181,25 +181,25 @@
   <!-- Row 6: Married / Color -->
   <div class="grid gap-6 md:grid-cols-2">
     <div>
-      <label for="married" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('person.form.label.married') }}</label>
+      <label for="married" class="mb-1 block text-sm font-medium text-zinc-700">{{ $t('person.form.label.married') }}</label>
       <input name="married" type="hidden" value="false" />
       <label class="relative inline-flex cursor-pointer items-center">
         <input name="married" id="married" type="checkbox" value="true" class="peer sr-only" {{ 'checked' if $n('form/married/value') else '' }} />
-        <div class="h-5 w-9 rounded-full bg-slate-300 transition peer-checked:bg-primary-600"></div>
+        <div class="h-5 w-9 rounded-full bg-zinc-300 transition peer-checked:bg-primary-600"></div>
         <div class="absolute left-0 top-0 h-5 w-5 translate-x-0 rounded-full bg-white shadow transition peer-checked:translate-x-4"></div>
       </label>
     </div>
     <div>
-      <label for="color" class="mb-1 block text-sm font-medium text-slate-700">{{ $t('person.form.label.color') }}</label>
-      <input type="color" id="color" name="color" value="{{ $n('form/color/value','#FF0055') }}" title="{{ $t('person.form.tooltip.color') }}" class="h-10 w-24 cursor-pointer rounded-md border border-slate-300 bg-white p-1 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" />
+      <label for="color" class="mb-1 block text-sm font-medium text-zinc-700">{{ $t('person.form.label.color') }}</label>
+      <input type="color" id="color" name="color" value="{{ $n('form/color/value','#FF0055') }}" title="{{ $t('person.form.tooltip.color') }}" class="h-10 w-24 cursor-pointer rounded-md border border-zinc-300 bg-white p-1 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" />
     </div>
   </div>
 
   <!-- Actions -->
-  <div class="flex flex-wrap gap-3 border-t border-slate-200 pt-4">
+  <div class="flex flex-wrap gap-3 border-t border-zinc-200 pt-4">
     <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.submit') }}</button>
     {% if $n('data/_id') %}
-    <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.cancel') }}</a>
+    <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.cancel') }}</a>
     {% endif %}
   </div>
 </form>

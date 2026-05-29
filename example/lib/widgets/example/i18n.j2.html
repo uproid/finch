@@ -5,117 +5,247 @@
 
 {% block content %}
 <div class="space-y-6">
-  <!-- Page Header with Language Selector -->
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex items-center gap-3">
-      <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path>
-        </svg>
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-fuchsia-950 to-purple-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-purple-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-language text-2xl text-fuchsia-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-purple-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-purple-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-fuchsia-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-fuchsia-300 ring-1 ring-fuchsia-400/30">
+              <i class="fa-solid fa-globe text-[10px]"></i> i18n
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-purple-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-purple-300 ring-1 ring-purple-400/30">
+              <i class="fa-solid fa-arrows-left-right text-[10px]"></i> RTL/LTR
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-cyan-300 ring-1 ring-cyan-400/30">
+              <i class="fa-solid fa-code text-[10px]"></i> {$t} helper
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('i18n.title') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Translate any string with <span class="font-semibold text-fuchsia-300">{$t('key')}</span>, support parameters, dynamic keys, and switch the active language on the fly.</p>
+        </div>
       </div>
+
+      <div class="flex flex-col gap-3 sm:flex-row lg:flex-col lg:items-end">
+        {# ---- Language Dropdown ---- #}
+        <details class="group relative w-full sm:w-auto">
+          <summary class="list-none inline-flex w-full cursor-pointer select-none items-center justify-between gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-semibold text-white shadow-soft backdrop-blur transition hover:bg-white/15 focus:outline-none focus:ring-4 focus:ring-fuchsia-400/30 sm:w-64">
+            <span class="flex items-center gap-2.5">
+              {% for key, language in languages %}
+                {% if $e.ln == key %}
+                <img src="{{ language.flag }}" class="h-5 w-7 shrink-0 rounded-sm object-cover ring-1 ring-white/30"/>
+                <span class="truncate">{{ language.name }}</span>
+                {% endif %}
+              {% endfor %}
+            </span>
+            <span class="flex items-center gap-2">
+              <span class="rounded-md bg-fuchsia-500/20 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-fuchsia-200 ring-1 ring-fuchsia-400/30">{{ $e.ln }}</span>
+              <i class="fa-solid fa-chevron-down text-xs text-zinc-300 transition-transform duration-200 group-open:rotate-180"></i>
+            </span>
+          </summary>
+          <ul class="absolute end-0 z-30 mt-2 w-full max-h-80 min-w-[16rem] overflow-y-auto rounded-2xl border border-zinc-200 bg-white p-1.5 shadow-soft-lg sm:w-72">
+            {% for key, language in languages %}
+            <li>
+              <a href="{{ $e.urlToLanguage(key) }}" class="wave flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-150 {{ 'bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white shadow-sm' if $e.ln == key else 'text-zinc-700 hover:bg-fuchsia-50 hover:text-fuchsia-700' }}">
+                <img src="{{ language.flag }}" class="h-5 w-7 shrink-0 rounded-sm object-cover ring-1 {{ 'ring-white/40' if $e.ln == key else 'ring-zinc-200' }}"/>
+                <span class="flex-1 truncate font-medium">{{ language.name }}</span>
+                <span class="font-mono text-[10px] uppercase {{ 'text-white/80' if $e.ln == key else 'text-zinc-400' }}">{{ key }}</span>
+                {% if $e.ln == key %}<i class="fa-solid fa-circle-check text-xs text-white"></i>{% endif %}
+              </a>
+            </li>
+            {% endfor %}
+          </ul>
+        </details>
+
+        {# ---- Stat Cards ---- #}
+        <div class="grid grid-cols-2 gap-3 sm:gap-4">
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+            <div class="text-[10px] uppercase tracking-wider text-zinc-400">Languages</div>
+            <div class="mt-1 text-2xl font-bold text-white">{{ languages | length }}</div>
+          </div>
+          <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+            <div class="text-[10px] uppercase tracking-wider text-zinc-400">Active</div>
+            <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-white">
+              <i class="fa-solid fa-circle text-[10px] text-fuchsia-400 animate-pulse"></i>
+              <span class="font-mono uppercase">{{ $e.ln }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== LANGUAGE PICKER ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-fuchsia-50 to-purple-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white shadow-sm ring-1 ring-fuchsia-300/50">
+          <i class="fa-solid fa-earth-americas text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Choose a language</h3>
+          <p class="text-xs text-zinc-500">Click any flag to switch the active locale</p>
+        </div>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-fuchsia-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-fuchsia-800 ring-1 ring-fuchsia-200">
+        <i class="fa-solid fa-flag text-[9px]"></i> {{ $e.ln }}
+      </span>
+    </div>
+    <div class="grid grid-cols-2 gap-2 p-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+      {% for key, language in languages %}
+      <a href="{{ $e.urlToLanguage(key) }}" class="wave group relative flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-sm transition-all duration-200 {{ 'border-fuchsia-400 bg-gradient-to-r from-fuchsia-500 to-purple-600 text-white shadow-soft' if $e.ln == key else 'border-zinc-200 bg-white text-zinc-700 hover:border-fuchsia-300 hover:bg-fuchsia-50 hover:shadow-sm' }}">
+        <img src="{{ language.flag }}" class="h-5 w-7 shrink-0 rounded-sm object-cover ring-1 {{ 'ring-white/40' if $e.ln == key else 'ring-zinc-200' }}"/>
+        <span class="truncate font-medium">{{ language.name }}</span>
+        {% if $e.ln == key %}
+        <i class="fa-solid fa-circle-check ml-auto text-xs text-white"></i>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  {# ============== TRANSLATION EXAMPLES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white shadow-sm ring-1 ring-fuchsia-300/50">
+          <i class="fa-solid fa-quote-left text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Translation examples</h3>
+          <p class="text-xs text-zinc-500">Same template, six different ways to call <code class="rounded bg-zinc-100 px-1 text-[11px] text-fuchsia-700">$t()</code></p>
+        </div>
+      </div>
+    </div>
+    <div class="grid gap-3 p-5 md:grid-cols-2">
+      {# ----- 1 ----- #}
+      <div class="group flex items-start gap-3 rounded-xl border border-zinc-200 bg-gradient-to-br from-white to-fuchsia-50/30 p-4 transition hover:border-fuchsia-300 hover:shadow-sm">
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white shadow-sm">
+          <i class="fa-solid fa-1 text-xs font-bold"></i>
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="mb-1 text-[10px] font-bold uppercase tracking-wider text-fuchsia-700">Plain string</p>
+          <p class="text-sm font-medium text-zinc-800">{{ $t('i18n.exampleTString') }}</p>
+        </div>
+      </div>
+      {# ----- 2 ----- #}
+      <div class="group flex items-start gap-3 rounded-xl border border-zinc-200 bg-gradient-to-br from-white to-purple-50/30 p-4 transition hover:border-purple-300 hover:shadow-sm">
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white shadow-sm">
+          <i class="fa-solid fa-2 text-xs font-bold"></i>
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="mb-1 text-[10px] font-bold uppercase tracking-wider text-purple-700">Nested path</p>
+          <p class="text-sm font-medium text-zinc-800">{{ $t('i18n.examplePath') }}</p>
+        </div>
+      </div>
+      {# ----- 3 ----- #}
+      <div class="group flex items-start gap-3 rounded-xl border border-zinc-200 bg-gradient-to-br from-white to-fuchsia-50/30 p-4 transition hover:border-fuchsia-300 hover:shadow-sm">
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-fuchsia-500 to-purple-600 text-white shadow-sm">
+          <i class="fa-solid fa-3 text-xs font-bold"></i>
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="mb-1 text-[10px] font-bold uppercase tracking-wider text-fuchsia-700">Path string</p>
+          <p class="text-sm font-medium text-zinc-800">{{ $t('i18n.examplePathString') }}</p>
+        </div>
+      </div>
+      {# ----- 4 ----- #}
+      <div class="group flex items-start gap-3 rounded-xl border border-zinc-200 bg-gradient-to-br from-white to-purple-50/30 p-4 transition hover:border-purple-300 hover:shadow-sm">
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white shadow-sm">
+          <i class="fa-solid fa-4 text-xs font-bold"></i>
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="mb-1 text-[10px] font-bold uppercase tracking-wider text-purple-700">Params (raw)</p>
+          <p class="text-sm font-medium text-zinc-800">{{ $t('example.params') }}</p>
+        </div>
+      </div>
+      {# ----- 5 ----- #}
+      <div class="group flex items-start gap-3 rounded-xl border border-zinc-200 bg-gradient-to-br from-white to-cyan-50/30 p-4 transition hover:border-cyan-300 hover:shadow-sm">
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-fuchsia-500 text-white shadow-sm">
+          <i class="fa-solid fa-5 text-xs font-bold"></i>
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-cyan-700">
+            Params (with values)
+            <span class="rounded bg-cyan-100 px-1 py-0.5 text-[9px] font-mono text-cyan-800">name=Jack, age=20</span>
+          </p>
+          <p class="text-sm font-medium text-zinc-800">{{ $t('i18n.exampleParams', {'name': 'Jack', 'age': 20}) }}</p>
+        </div>
+      </div>
+      {# ----- 6 ----- #}
+      <div class="group flex items-start gap-3 rounded-xl border border-zinc-200 bg-gradient-to-br from-white to-amber-50/30 p-4 transition hover:border-amber-300 hover:shadow-sm">
+        <span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm">
+          <i class="fa-solid fa-6 text-xs font-bold"></i>
+        </span>
+        <div class="min-w-0 flex-1">
+          <p class="mb-1 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-700">
+            Dynamic key
+            <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+          </p>
+          <p class="text-sm font-medium text-zinc-800">{{ $t(exampleTranslateDynamic) }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== FILE REFERENCES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+        <i class="fa-solid fa-folder-tree text-sm"></i>
+      </span>
       <div>
-        <h1 class="text-2xl font-bold text-gray-800">{{ $t('i18n.title') }}</h1>
-        <p class="text-sm text-gray-600">{{ $t('Localization and internationalization') }}</p>
+        <h3 class="text-base font-bold text-zinc-900">File References</h3>
+        <p class="text-xs text-zinc-500">Where i18n is wired up</p>
       </div>
     </div>
-    <details class="group relative">
-      <summary class="list-none inline-flex cursor-pointer select-none items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-all duration-200 hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500/20">
-        <span class="font-mono text-xs uppercase">{{ $e.ln }}</span>
-        <svg class="h-4 w-4 text-gray-500 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 1l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </summary>
-      <ul class="absolute end-0 z-20 mt-2 w-64 max-h-80 overflow-y-auto rounded-lg border border-gray-200 bg-white p-1.5 shadow-xl">
-        {% for key, language in languages %}
-        <li>
-          <a href="{{ $e.urlToLanguage(key) }}" class="wave flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-all duration-150 {{ 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md' if $e.ln == key else 'text-gray-700 hover:bg-blue-50' }}">
-            <img src="{{ language.flag }}" class="inline-flex w-6 items-center justify-center text-base"/>
-            <span class="font-medium truncate">{{ language.name }}</span>
-          </a>
-        </li>
-        {% endfor %}
-      </ul>
-    </details>
-  </div>
-
-  <!-- Translation Examples Card -->
-  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
-    <div class="space-y-3">
-      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
-        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span class="text-sm font-medium text-emerald-800">{{ $t('i18n.exampleTString') }}</span>
-      </div>
-      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
-        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span class="text-sm font-medium text-emerald-800">{{ $t('i18n.examplePath') }}</span>
-      </div>
-      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
-        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span class="text-sm font-medium text-emerald-800">{{ $t('i18n.examplePathString') }}</span>
-      </div>
-      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
-        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span class="text-sm font-medium text-emerald-800">{{ $t('example.params') }}</span>
-      </div>
-      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
-        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span class="text-sm font-medium text-emerald-800">{{ $t('i18n.exampleParams', {'name': 'Jack', 'age': 20}) }}</span>
-      </div>
-      <div class="flex items-start gap-3 rounded-lg border-l-4 border-emerald-500 bg-gradient-to-r from-emerald-50 to-emerald-100/50 px-4 py-3">
-        <svg class="h-5 w-5 shrink-0 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-        </svg>
-        <span class="text-sm font-medium text-emerald-800">{{ $t(exampleTranslateDynamic) }}</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- File References Card -->
-  <div class="rounded-xl border border-gray-200 bg-white shadow-lg">
-    <div class="divide-y divide-gray-100">
-      <div class="flex items-center gap-4 px-6 py-4 transition-colors duration-150 hover:bg-blue-50">
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-600">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-          </svg>
+    <ul class="divide-y divide-zinc-100">
+      <li class="group transition-colors duration-150 hover:bg-fuchsia-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-fuchsia-100 text-fuchsia-600 ring-1 ring-fuchsia-200">
+              <i class="fa-regular fa-eye text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('i18n.view') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-fuchsia-700 ring-1 ring-zinc-200 group-hover:bg-fuchsia-100 group-hover:ring-fuchsia-200">example/lib/widgets/example/i18n.j2.html</code>
         </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-semibold text-gray-700">{{ $t('i18n.view') }}</p>
-          <code class="text-xs text-blue-600 truncate block">example/lib/widgets/example/i18n.j2.html</code>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-fuchsia-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-purple-100 text-purple-700 ring-1 ring-purple-200">
+              <i class="fa-solid fa-code text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('i18n.controller') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-purple-700 ring-1 ring-zinc-200 group-hover:bg-purple-100 group-hover:ring-purple-200">example/lib/controllers/home_controller.dart</code>
         </div>
-      </div>
-      <div class="flex items-center gap-4 px-6 py-4 transition-colors duration-150 hover:bg-blue-50">
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-          </svg>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-fuchsia-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-100 text-amber-700 ring-1 ring-amber-200">
+              <i class="fa-solid fa-folder-open text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('i18n.languagesDirectory') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-amber-800 ring-1 ring-zinc-200 group-hover:bg-amber-100 group-hover:ring-amber-200">example/lib/languages</code>
         </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-semibold text-gray-700">{{ $t('i18n.controller') }}</p>
-          <code class="text-xs text-purple-600 truncate block">example/lib/controllers/home_controller.dart</code>
-        </div>
-      </div>
-      <div class="flex items-center gap-4 px-6 py-4 transition-colors duration-150 hover:bg-blue-50">
-        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-600">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"></path>
-          </svg>
-        </div>
-        <div class="flex-1 min-w-0">
-          <p class="text-sm font-semibold text-gray-700">{{ $t('i18n.languagesDirectory') }}</p>
-          <code class="text-xs text-amber-600 truncate block">example/lib/languages</code>
-        </div>
-      </div>
-    </div>
-  </div>
+      </li>
+    </ul>
+  </section>
 </div>
 {% endblock %}
