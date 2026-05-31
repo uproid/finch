@@ -1,43 +1,43 @@
 <form method="get" class="contents">
-    <th class="p-1 align-top" style="max-width:80px;">
+    <th class="p-1.5 align-top">
         <input
-            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_b.id/value') else '' }}"
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_b.id/value') else 'border-zinc-200' }}"
             type="number"
             name="filter_b.id"
             placeholder="{{ $t('mysql.placeholder.id') }}"
             value="{{ $n('filter_books/filter_b.id/value') }}"
         />
     </th>
-    <th class="p-1 align-top">
+    <th class="p-1.5 align-top">
         <input
-            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_title/value') else '' }}"
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_title/value') else 'border-zinc-200' }}"
             type="text"
             name="filter_title"
             placeholder="{{ $t('mysql.placeholder.title') }}"
             value="{{ $n('filter_books/filter_title/value') }}"
         />
     </th>
-    <th class="p-1 align-top">
+    <th class="p-1.5 align-top">
         <input
-            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_author/value') else '' }}"
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_author/value') else 'border-zinc-200' }}"
             type="text"
             name="filter_author"
             placeholder="{{ $t('mysql.placeholder.author') }}"
             value="{{ $n('filter_books/filter_author/value') }}"
         />
     </th>
-    <th class="p-1 align-top">
+    <th class="p-1.5 align-top">
         <input
-            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_published_date/value') else '' }}"
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_published_date/value') else 'border-zinc-200' }}"
             type="date"
             name="filter_published_date"
             placeholder="{{ $t('mysql.placeholder.publishedDate') }}"
             value="{{ $n('filter_books/filter_published_date/value') }}"
         />
     </th>
-    <th class="p-1 align-top">
+    <th class="p-1.5 align-top">
         <select
-            class="h-8 w-full rounded border px-2 text-xs shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30 {{ 'border-emerald-500 ring-2 ring-emerald-300' if $n('filter_books/filter_category_id/value') else '' }}"
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_category_id/value') else 'border-zinc-200' }}"
             name="filter_category_id"
             aria-label="Filter Category ID"
         >
@@ -48,17 +48,25 @@
             {% endfor %}
         </select>
     </th>
-    <th colspan="2" class="p-1 align-top text-end">
+    <th colspan="2" class="p-1.5 align-top text-end">
         {% set filterIsDirty = $l.existUrlQuery(['filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) %}
-        <a
-            href="{{ $l.removeUrlQuery(['page','filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) }}"
-            class="wave inline-flex h-8 items-center rounded-md border px-3 text-xs font-medium shadow-sm {{ 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50' if not filterIsDirty else 'border-slate-700 bg-slate-700 text-white hover:bg-slate-800' }}"
-            type="reset"
-        >{{ $t('mysql.button.reset') }}</a>
-        <input
-            class="wave ml-2 inline-flex h-8 cursor-pointer items-center rounded-md bg-primary-600 px-3 text-xs font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30"
-            type="submit"
-            value="{{ $t('mysql.button.filter') }}"
-        />
+        <div class="flex items-center justify-end gap-1.5">
+            <a
+                href="{{ $l.removeUrlQuery(['page','filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) }}"
+                class="wave inline-flex h-9 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium shadow-sm transition {{ 'border-zinc-200 bg-white text-zinc-500 hover:bg-zinc-50' if not filterIsDirty else 'border-zinc-800 bg-zinc-900 text-white hover:bg-zinc-800' }}"
+                type="reset"
+                title="{{ $t('mysql.button.reset') }}"
+            >
+                <i class="fa-solid fa-rotate-left text-[11px]"></i>
+                <span class="hidden sm:inline">{{ $t('mysql.button.reset') }}</span>
+            </a>
+            <button
+                class="wave inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg bg-gradient-to-r from-teal-600 to-cyan-600 px-3.5 text-xs font-semibold text-white shadow-sm transition hover:from-teal-700 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-teal-500/40"
+                type="submit"
+            >
+                <i class="fa-solid fa-filter text-[11px]"></i>
+                <span>{{ $t('mysql.button.filter') }}</span>
+            </button>
+        </div>
     </th>
 </form>

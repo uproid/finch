@@ -1,73 +1,128 @@
 <!DOCTYPE html>
-<html lang="{{ $e.ln }}" dir="{{ $t('dir') }}" class="h-full overflow-x-hidden">
+<html lang="{{ $e.ln }}" dir="{{ $t('dir') }}" class="h-full scroll-smooth">
 
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}{% endblock %} | {{ $t(title) }}</title>
   <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0d9488" />
   <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="/assets/effects/wave/wave.css" />
-  <!-- Local built Tailwind CSS (generated via Tailwind CLI) -->
   <link rel="stylesheet" href="/assets/generated-tailwind.css" />
   <link rel="stylesheet" href="/assets/app.css" crossorigin="anonymous" />
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <style>
+    html, body {
+      font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    body { font-feature-settings: "cv11","ss01","ss03"; }
+
+    /* Subtle scrollbar */
+    *::-webkit-scrollbar { width: 10px; height: 10px; }
+    *::-webkit-scrollbar-track { background: transparent; }
+    *::-webkit-scrollbar-thumb {
+      background: #d4d4d8; /* zinc-300 */
+      border-radius: 9999px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+    *::-webkit-scrollbar-thumb:hover { background: #14b8a6; background-clip: padding-box; }
+
+    /* Reveal animation */
+    @keyframes reveal-up { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal-up { animation: reveal-up .35s ease-out both; }
+
+    /* Brand gradient text — high contrast on white */
+    .text-gradient-brand {
+      background: linear-gradient(90deg, #0f766e 0%, #0891b2 55%, #047857 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    /* Soft elevation tokens */
+    .shadow-soft   { box-shadow: 0 1px 2px rgba(24,24,27,.04), 0 1px 3px rgba(24,24,27,.06); }
+    .shadow-soft-lg{ box-shadow: 0 4px 10px -2px rgba(24,24,27,.06), 0 10px 30px -10px rgba(24,24,27,.12); }
+  </style>
   {% block stylesheets %}
   {{ assets.css() }}
   {% endblock %}
 </head>
 
-<body class="h-full bg-gray-50 font-sans antialiased overflow-x-hidden">
+<body class="h-full min-h-screen bg-zinc-50 text-zinc-800 font-sans antialiased selection:bg-teal-200 selection:text-teal-900">
+
   {% block navbar %}
   {% include 'template/navbar.j2.html' %}
   {% endblock %}
 
-  <div class="flex min-h-screen w-screen max-w-full bg-gradient-to-br from-gray-50 to-blue-50/30 overflow-x-hidden">
+  <div class="flex min-h-screen w-full">
     {% block sidebar %}
     {% include 'template/sidebar.j2.html' %}
     {% endblock %}
-    <!-- Main Component -->
-    <div class="main flex-1 flex flex-col lg:ms-[280px] min-w-0 w-full">
-      <main class="content flex-1 px-4 py-6 mt-16 lg:px-8 lg:py-8 w-full min-w-0">
-        <div class="mx-auto w-full max-w-7xl min-w-0">
+
+    <!-- Main column -->
+    <div class="flex flex-1 min-w-0 flex-col lg:ms-[280px]">
+      <main class="flex-1 px-4 pt-20 pb-10 sm:px-6 lg:px-10 lg:pt-24">
+        <div class="mx-auto w-full max-w-7xl reveal-up">
+
           {% block flash %}
           {% if $l.hasFlash() %}
+          <div class="mb-6 space-y-3">
           {% for flash in $l.getFlashs() %}
-          <div
-            class="mb-6 flex items-start gap-3 rounded-lg border p-4 text-sm shadow-sm animate-in fade-in slide-in-from-top-2 duration-300
-            {% if flash.type == 'success' %} bg-emerald-50 border-emerald-300 text-emerald-900 {% endif %}
-            {% if flash.type == 'info' %} bg-blue-50 border-blue-300 text-blue-900 {% endif %}
-            {% if flash.type == 'warning' %} bg-amber-50 border-amber-300 text-amber-900 {% endif %}
-            {% if flash.type == 'danger' ?? flash.type == 'error' %} bg-rose-50 border-rose-300 text-rose-900 {% endif %}
-            {% if flash.type != 'success' and flash.type != 'info' and flash.type != 'warning' and flash.type != 'danger' and flash.type != 'error' %} bg-slate-50 border-slate-300 text-slate-900 {% endif %}
-            ">
-            <span class="shrink-0">
+          <div role="alert"
+               class="relative flex items-start gap-3 overflow-hidden rounded-xl border p-4 text-sm shadow-soft
+               {% if flash.type == 'success' %} border-emerald-200 bg-emerald-50 text-emerald-900 {% endif %}
+               {% if flash.type == 'info' %} border-sky-200 bg-sky-50 text-sky-900 {% endif %}
+               {% if flash.type == 'warning' %} border-amber-200 bg-amber-50 text-amber-900 {% endif %}
+               {% if flash.type == 'danger' ?? flash.type == 'error' %} border-rose-200 bg-rose-50 text-rose-900 {% endif %}
+               {% if flash.type != 'success' and flash.type != 'info' and flash.type != 'warning' and flash.type != 'danger' and flash.type != 'error' %} border-zinc-200 bg-white text-zinc-900 {% endif %}">
+            <span class="pointer-events-none absolute inset-y-0 start-0 w-1
+              {% if flash.type == 'success' %} bg-emerald-500 {% endif %}
+              {% if flash.type == 'info' %} bg-sky-500 {% endif %}
+              {% if flash.type == 'warning' %} bg-amber-500 {% endif %}
+              {% if flash.type == 'danger' ?? flash.type == 'error' %} bg-rose-500 {% endif %}
+              {% if flash.type != 'success' and flash.type != 'info' and flash.type != 'warning' and flash.type != 'danger' and flash.type != 'error' %} bg-zinc-400 {% endif %}"></span>
+            <span class="ms-2 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg
+              {% if flash.type == 'success' %} bg-emerald-100 text-emerald-700 {% endif %}
+              {% if flash.type == 'info' %} bg-sky-100 text-sky-700 {% endif %}
+              {% if flash.type == 'warning' %} bg-amber-100 text-amber-700 {% endif %}
+              {% if flash.type == 'danger' ?? flash.type == 'error' %} bg-rose-100 text-rose-700 {% endif %}
+              {% if flash.type != 'success' and flash.type != 'info' and flash.type != 'warning' and flash.type != 'danger' and flash.type != 'error' %} bg-zinc-100 text-zinc-600 {% endif %}">
               {% if flash.type == 'success' %}
-              <svg class="h-5 w-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               {% elif flash.type == 'info' %}
-              <svg class="h-5 w-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               {% elif flash.type == 'warning' %}
-              <svg class="h-5 w-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
               {% else %}
-              <svg class="h-5 w-5 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               {% endif %}
             </span>
-            <span class="flex-1">{{ flash.text }}</span>
+            <span class="flex-1 pt-1.5 font-medium leading-relaxed">{{ flash.text }}</span>
           </div>
           {% endfor %}
+          </div>
           {% endif %}
           {% endblock %}
-          {% block content %}
-          {% endblock %}
+
+          {% block content %}{% endblock %}
         </div>
       </main>
+
+      {% block footer %}
+      {% include 'template/footer.j2.html' %}
+      {% endblock %}
     </div>
   </div>
 
-  {% block footer %}
-  {% include 'template/footer.j2.html' %}
-  {% endblock %}
+  <!-- Mobile sidebar backdrop -->
+  <div id="sidebar-backdrop"
+       class="fixed inset-0 z-30 hidden bg-zinc-900/50 backdrop-blur-sm transition-opacity duration-200 lg:hidden"></div>
 
   <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -98,9 +153,8 @@
         }
       }
 
-      // Initialize sidebar state based on screen size
-      var prefersOpen = lgQuery.matches; // lg and up
-      setSidebarOpen(prefersOpen);
+      // Initialize based on screen size
+      setSidebarOpen(lgQuery.matches);
 
       toggle.addEventListener('click', function () {
         var isClosed = sidebar.dataset.state !== 'open';
@@ -108,24 +162,20 @@
       });
 
       if (backdrop) {
-        backdrop.addEventListener('click', function(){ setSidebarOpen(false); });
+        backdrop.addEventListener('click', function () { setSidebarOpen(false); });
       }
 
-      lgQuery.addEventListener('change', function(e){
+      lgQuery.addEventListener('change', function (e) {
         if (e.matches) {
           if (backdrop) backdrop.classList.add('hidden');
-          setSidebarOpen(true); // auto-open when entering large
+          setSidebarOpen(true);
         } else {
-          setSidebarOpen(false); // collapse leaving large
+          setSidebarOpen(false);
         }
       });
     });
   </script>
 
-  
-
   {% block script %}{% endblock %}
-  <div id="sidebar-backdrop" class="fixed top-0 bottom-0 left-0 right-0 z-30 hidden bg-black/40 backdrop-blur-sm transition-opacity duration-300"></div>
 </body>
-
 </html>

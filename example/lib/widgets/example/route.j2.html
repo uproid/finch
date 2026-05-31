@@ -6,80 +6,190 @@
 
 {% block content %}
 <div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center gap-3">
-    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 text-white shadow-lg">
-      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-      </svg>
-    </div>
-    <div>
-      <h1 class="text-2xl font-bold text-gray-800">{{ $t('webRouteExample.title') }}</h1>
-      <p class="text-sm text-gray-600">{{ $t('List of all registered application routes') }}</p>
-    </div>
-  </div>
 
-  <!-- Routes Table Card -->
-  <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-blue-950 to-indigo-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-route text-2xl text-blue-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-indigo-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-blue-300 ring-1 ring-blue-400/30">
+              <i class="fa-solid fa-sitemap text-[10px]"></i> Router map
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
+              <i class="fa-solid fa-shield text-[10px]"></i> Middleware
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+              <i class="fa-solid fa-lock text-[10px]"></i> Auth-aware
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('webRouteExample.title') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">A live registry of every <span class="font-semibold text-blue-300">FinchRoute</span> &mdash; methods, paths, permissions, auth requirements and the controllers that handle them.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Routes</div>
+          <div class="mt-1 text-2xl font-bold text-white">{{ routes | length }}</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Status</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-emerald-300">
+            <i class="fa-solid fa-circle text-[10px] animate-pulse"></i>
+            Active
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== ROUTES TABLE ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm ring-1 ring-blue-300/50">
+          <i class="fa-solid fa-sitemap text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Registered routes</h3>
+          <p class="text-xs text-zinc-500">{{ routes | length }} {{ 'route' if routes | length == 1 else 'routes' }} discovered</p>
+        </div>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-800 ring-1 ring-blue-200">
+        <i class="fa-solid fa-bolt text-[9px]"></i> Runtime
+      </span>
+    </div>
+
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gradient-to-r from-gray-50 to-white">
+      <table class="min-w-full divide-y divide-zinc-200">
+        <thead class="bg-zinc-50">
           <tr>
-            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">#</th>
-            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.path') }}</th>
-            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.type') }}</th>
-            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.permissions') }}</th>
-            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.auth') }}</th>
-            <th class="px-6 py-4 text-left text-xs font-bold uppercase tracking-wider text-gray-700">{{ $t('webRouteExample.controller') }}</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">#</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.path') }}</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.type') }}</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.permissions') }}</th>
+            <th class="px-4 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.auth') }}</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.controller') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-100 bg-white">
+        <tbody class="divide-y divide-zinc-100 bg-white">
           {% for route in routes %}
-          <tr class="group transition-colors duration-150 hover:bg-blue-50">
-            <td class="px-6 py-4 align-top text-sm font-semibold text-gray-600">{{ loop.index }}</td>
-            <td class="px-6 py-4 align-top text-sm">
-              <div>
-                <a class="inline-flex items-center gap-1.5 font-semibold text-blue-600 transition-colors duration-150 hover:text-blue-700 hover:underline" href="{{ route.fullPath }}">
-                  <span class="inline-flex items-center rounded-md bg-indigo-100 px-2 py-0.5 text-xs font-bold text-indigo-800">[{{ route.method }}]</span>
+          <tr class="group transition-colors duration-150 hover:bg-blue-50/50">
+            <td class="px-4 py-3 align-middle">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-zinc-100 text-[11px] font-bold text-zinc-600 ring-1 ring-zinc-200">{{ loop.index }}</span>
+            </td>
+            <td class="px-4 py-3 align-middle text-sm">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">{{ route.method }}</span>
+                <a class="inline-flex items-center gap-1.5 font-mono text-sm font-semibold text-blue-700 transition-colors duration-150 hover:text-blue-900 hover:underline" href="{{ route.fullPath }}">
                   <span>{{ route.fullPath }}</span>
-                  <svg class="h-3 w-3 opacity-0 transition-opacity duration-150 group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
-                  </svg>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-0 transition-opacity duration-150 group-hover:opacity-100"></i>
                 </a>
               </div>
-              <div class="mt-1 text-xs font-mono text-gray-500">{{ route.key }}</div>
-            </td>
-            <td class="px-6 py-4 align-top text-sm">
-              <span class="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-semibold text-blue-800">{{ route.type }}</span>
-            </td>
-            <td class="px-6 py-4 align-top text-sm text-gray-700">{{ route.permissions }}</td>
-            <td class="px-6 py-4 align-top text-sm text-gray-700">{{ route.hasAuth | string }}</td>
-            <td class="px-6 py-4 align-top text-sm font-mono text-gray-600 text-center">
-              {% if route.middlewares %}
-              <span class="bg-gray-200 rounded m-1 px-2 py-0.5">{{ route.middlewares | join(', ') }}</span>
+              {% if route.key %}
+              <div class="mt-1 inline-flex items-center gap-1 text-[11px] font-mono text-zinc-500">
+                <i class="fa-solid fa-key text-[9px] text-zinc-400"></i>
+                {{ route.key }}
+              </div>
               {% endif %}
-              <div>{{ route.controller }}{{ route.index }}</div>
+            </td>
+            <td class="px-4 py-3 align-middle">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-2.5 py-1 text-[11px] font-semibold text-indigo-800 ring-1 ring-indigo-200">
+                <i class="fa-solid fa-tag text-[9px]"></i>
+                {{ route.type }}
+              </span>
+            </td>
+            <td class="px-4 py-3 align-middle text-sm text-zinc-700">
+              {% if route.permissions %}
+              <span class="inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800 ring-1 ring-amber-200">
+                <i class="fa-solid fa-shield-halved text-[10px]"></i>
+                {{ route.permissions }}
+              </span>
+              {% else %}
+              <span class="text-xs text-zinc-400">&mdash;</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 align-middle text-center">
+              {% if route.hasAuth %}
+              <span class="inline-flex h-7 items-center gap-1 rounded-full bg-emerald-100 px-2.5 text-[11px] font-bold text-emerald-700 ring-1 ring-emerald-200">
+                <i class="fa-solid fa-lock text-[10px]"></i> Yes
+              </span>
+              {% else %}
+              <span class="inline-flex h-7 items-center gap-1 rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-zinc-500 ring-1 ring-zinc-200">
+                <i class="fa-solid fa-lock-open text-[10px]"></i> No
+              </span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 align-middle text-sm">
+              {% if route.middlewares %}
+              <div class="mb-1 flex flex-wrap gap-1">
+                {% for mw in route.middlewares %}
+                <span class="inline-flex items-center gap-1 rounded-md bg-violet-50 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-violet-700 ring-1 ring-violet-200">
+                  <i class="fa-solid fa-layer-group text-[8px]"></i>{{ mw }}
+                </span>
+                {% endfor %}
+              </div>
+              {% endif %}
+              <div class="font-mono text-xs text-zinc-700">{{ route.controller }}{{ route.index }}</div>
             </td>
           </tr>
           {% endfor %}
+          {% if routes | length == 0 %}
+          <tr>
+            <td colspan="6" class="px-5 py-10 text-center">
+              <div class="mx-auto flex max-w-sm flex-col items-center gap-2">
+                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-blue-50 text-blue-400 ring-1 ring-blue-100">
+                  <i class="fa-solid fa-route text-2xl"></i>
+                </span>
+                <p class="text-sm font-semibold text-zinc-700">No routes registered</p>
+              </div>
+            </td>
+          </tr>
+          {% endif %}
         </tbody>
       </table>
     </div>
-  </div>
+  </section>
 
-  <!-- File References Card -->
-  <div class="rounded-xl border border-gray-200 bg-white shadow-lg">
-    <div class="flex items-center gap-4 px-6 py-4 transition-colors duration-150 hover:bg-blue-50">
-      <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600">
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
-        </svg>
-      </div>
-      <div class="flex-1 min-w-0">
-        <p class="text-sm font-semibold text-gray-700">{{ $t('webRouteExample.router') }}</p>
-        <code class="text-xs text-indigo-600 truncate block">example/lib/route/web_route.dart</code>
+  {# ============== FILE REFERENCES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+          <i class="fa-solid fa-folder-tree text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">File References</h3>
+          <p class="text-xs text-zinc-500">Where the router lives</p>
+        </div>
       </div>
     </div>
-  </div>
+    <ul class="divide-y divide-zinc-100">
+      <li class="group transition-colors duration-150 hover:bg-blue-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-100 text-blue-600 ring-1 ring-blue-200">
+              <i class="fa-solid fa-route text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('webRouteExample.router') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-blue-700 ring-1 ring-zinc-200 group-hover:bg-blue-100 group-hover:ring-blue-200">example/lib/route/web_route.dart</code>
+        </div>
+      </li>
+    </ul>
+  </section>
 </div>
 {% endblock %}

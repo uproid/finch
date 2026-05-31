@@ -13,14 +13,14 @@
   {% endif %}
   <!-- Email Field -->
   <div>
-    <label for="email" class="mb-2 block text-sm font-semibold text-gray-700"
+    <label for="email" class="mb-2 block text-sm font-semibold text-zinc-700"
       >{{ $t('form.validation.email') }}</label
     >
     <div class="relative">
       <div
         class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
       >
-        <i class="fas fa-envelope text-gray-400"></i>
+        <i class="fas fa-envelope text-zinc-400"></i>
       </div>
       <input
         value="{{ $n('form_login/email/value') }}"
@@ -28,7 +28,7 @@
         name="email"
         id="email"
         placeholder="{{ $t('form.validation.emailPlaceholder') }}"
-        class="block h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/email/failed') else 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20' }}"
+        class="block h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/email/failed') else 'border-zinc-300 bg-white text-zinc-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20' }}"
       />
     </div>
     {% if $n('form_login/email/failed') %}
@@ -41,14 +41,14 @@
 
   <!-- Password Field -->
   <div>
-    <label for="password" class="mb-2 block text-sm font-semibold text-gray-700"
+    <label for="password" class="mb-2 block text-sm font-semibold text-zinc-700"
       >{{ $t('form.validation.password') }}</label
     >
     <div class="relative">
       <div
         class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
       >
-        <i class="fas fa-lock text-gray-400"></i>
+        <i class="fas fa-lock text-zinc-400"></i>
       </div>
       <input
         value="{{ $n('form_login/password/value') }}"
@@ -56,7 +56,7 @@
         name="password"
         id="password"
         placeholder="{{ $t('form.validation.passwordPlaceholder') }}"
-        class="block mb-4  h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/password/failed') else 'border-gray-300 bg-white text-gray-900 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20' }}"
+        class="block mb-4  h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/password/failed') else 'border-zinc-300 bg-white text-zinc-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20' }}"
       />
     </div>
     {% if $n('form_login/password/failed') %}
@@ -70,7 +70,7 @@
   <!-- Submit Button -->
   <button
     type="submit"
-    class="wave group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-3 text-sm font-semibold text-white shadow-lg transition-all duration-200 hover:from-blue-700 hover:to-blue-800 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-blue-500/30"
+    class="wave group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-teal-600 to-cyan-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:from-teal-700 hover:to-cyan-800 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-teal-500/30"
   >
     <i class="fas fa-sign-in-alt text-white"></i>
     <span>{{ $t('form.validation.login') }}</span>

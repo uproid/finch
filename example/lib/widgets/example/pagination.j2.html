@@ -6,34 +6,232 @@
 
 {% block content %}
 <div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center gap-3">
-    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
-      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
-      </svg>
-    </div>
-    <div>
-      <h1 class="text-2xl font-bold text-gray-800">{{ $t('sidebar.paginationExample') }}</h1>
-      <p class="text-sm text-gray-600">{{ $t('Pagination component examples') }}</p>
-    </div>
-  </div>
 
-  <!-- Pagination Examples Card -->
-  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
-    <div class="space-y-6">
-      <div class="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 p-4">
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-cyan-950 to-blue-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-bars-staggered text-2xl text-cyan-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-blue-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-cyan-300 ring-1 ring-cyan-400/30">
+              <i class="fa-solid fa-table-list text-[10px]"></i> UIPaging
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-blue-300 ring-1 ring-blue-400/30">
+              <i class="fa-solid fa-arrows-left-right text-[10px]"></i> Multi-instance
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
+              <i class="fa-solid fa-link text-[10px]"></i> Query-preserving
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('sidebar.paginationExample') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Render multiple <span class="font-semibold text-cyan-300">UIPaging</span> widgets on the same page with independent <code class="rounded bg-white/10 px-1 text-[12px] text-cyan-200">prefix</code> and <code class="rounded bg-white/10 px-1 text-[12px] text-cyan-200">otherQuery</code> so each pager preserves the others' state.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Pagers</div>
+          <div class="mt-1 text-2xl font-bold text-white">3</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Records</div>
+          <div class="mt-1 text-2xl font-bold text-white">2,500</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Styles</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-white">
+            <i class="fa-solid fa-palette text-[12px] text-cyan-300"></i>
+            <span>3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== PAGER A — DEFAULT ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-cyan-50 to-blue-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-sm ring-1 ring-cyan-300/50">
+          <i class="fa-solid fa-1 text-sm font-bold"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Pager A — default width</h3>
+          <p class="text-xs text-zinc-500">1,000 records · 10 per page · prefix <code class="rounded bg-cyan-100 px-1 text-cyan-800">page_a</code></p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-700 ring-1 ring-cyan-200">
+          <i class="fa-solid fa-database text-[9px]"></i> total 1000
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-700 ring-1 ring-blue-200">
+          <i class="fa-solid fa-layer-group text-[9px]"></i> page-size 10
+        </span>
+      </div>
+    </div>
+    <div class="p-5">
+      <div class="rounded-xl border border-dashed border-cyan-200 bg-gradient-to-br from-cyan-50/40 to-blue-50/40 p-4">
         {{ paginationA }}
       </div>
-      <div class="h-px bg-gray-200"></div>
-      <div class="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 p-4">
+    </div>
+  </section>
+
+  {# ============== PAGER B — WIDE SIDE ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm ring-1 ring-blue-300/50">
+          <i class="fa-solid fa-2 text-sm font-bold"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Pager B — wide side</h3>
+          <p class="text-xs text-zinc-500">500 records · 10 per page · <code class="rounded bg-blue-100 px-1 text-blue-800">widthSide: 5</code> · prefix <code class="rounded bg-blue-100 px-1 text-blue-800">page_b</code></p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-700 ring-1 ring-blue-200">
+          <i class="fa-solid fa-database text-[9px]"></i> total 500
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-indigo-700 ring-1 ring-indigo-200">
+          <i class="fa-solid fa-arrows-left-right-to-line text-[9px]"></i> side 5
+        </span>
+      </div>
+    </div>
+    <div class="p-5">
+      <div class="rounded-xl border border-dashed border-blue-200 bg-gradient-to-br from-blue-50/40 to-indigo-50/40 p-4">
         {{ paginationB }}
       </div>
-      <div class="h-px bg-gray-200"></div>
-      <div class="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-blue-100/50 p-4">
+    </div>
+  </section>
+
+  {# ============== PAGER C — LARGE PAGE SIZE ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 to-cyan-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 text-white shadow-sm ring-1 ring-indigo-300/50">
+          <i class="fa-solid fa-3 text-sm font-bold"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Pager C — large page size</h3>
+          <p class="text-xs text-zinc-500">1,000 records · 100 per page · prefix <code class="rounded bg-indigo-100 px-1 text-indigo-800">page_c</code></p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-indigo-700 ring-1 ring-indigo-200">
+          <i class="fa-solid fa-database text-[9px]"></i> total 1000
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-700 ring-1 ring-cyan-200">
+          <i class="fa-solid fa-layer-group text-[9px]"></i> page-size 100
+        </span>
+      </div>
+    </div>
+    <div class="p-5">
+      <div class="rounded-xl border border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50/40 to-cyan-50/40 p-4">
         {{ paginationC }}
       </div>
     </div>
-  </div>
+  </section>
+
+  {# ============== USAGE / TIPS ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-sm ring-1 ring-cyan-300/50">
+        <i class="fa-solid fa-lightbulb text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">How it works</h3>
+        <p class="text-xs text-zinc-500">Each pager owns its own query parameter prefix</p>
+      </div>
+    </div>
+    <div class="grid gap-3 p-5 md:grid-cols-3">
+      <div class="rounded-xl border border-cyan-200 bg-gradient-to-br from-white to-cyan-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-cyan-100 text-cyan-700 ring-1 ring-cyan-200">
+            <i class="fa-solid fa-hashtag text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">prefix</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Sets the query key — e.g. <code class="rounded bg-zinc-100 px-1 text-cyan-700">?page_a=2</code>. Lets several pagers coexist independently.</p>
+      </div>
+      <div class="rounded-xl border border-blue-200 bg-gradient-to-br from-white to-blue-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-blue-100 text-blue-700 ring-1 ring-blue-200">
+            <i class="fa-solid fa-shuffle text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">otherQuery</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Forward the other pagers' current page so clicking one pager doesn't reset the others.</p>
+      </div>
+      <div class="rounded-xl border border-indigo-200 bg-gradient-to-br from-white to-indigo-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200">
+            <i class="fa-solid fa-arrows-left-right-to-line text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">widthSide</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Number of page links on each side of the current page. Larger values produce wider button strips.</p>
+      </div>
+    </div>
+  </section>
+
+  {# ============== FILE REFERENCES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+        <i class="fa-solid fa-folder-tree text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">File References</h3>
+        <p class="text-xs text-zinc-500">Where this example lives</p>
+      </div>
+    </div>
+    <ul class="divide-y divide-zinc-100">
+      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-cyan-100 text-cyan-600 ring-1 ring-cyan-200">
+              <i class="fa-regular fa-eye text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">View</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-cyan-700 ring-1 ring-zinc-200 group-hover:bg-cyan-100 group-hover:ring-cyan-200">example/lib/widgets/example/pagination.j2.html</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-100 text-blue-700 ring-1 ring-blue-200">
+              <i class="fa-solid fa-code text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">Controller</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-blue-700 ring-1 ring-zinc-200 group-hover:bg-blue-100 group-hover:ring-blue-200">example/lib/controllers/home_controller.dart → paginationExample()</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200">
+              <i class="fa-solid fa-puzzle-piece text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">Paging widget</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-indigo-700 ring-1 ring-zinc-200 group-hover:bg-indigo-100 group-hover:ring-indigo-200">example/lib/widgets/template/paging.j2.html</code>
+        </div>
+      </li>
+    </ul>
+  </section>
 </div>
 {% endblock %}

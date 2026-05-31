@@ -1,33 +1,206 @@
-{% extends 'template/template.j2.html' %} {% block title %} {{
-$t('sidebar.info') }} {% endblock %} {% block content %}
-<div class="space-y-6">
-  <!-- Page Header -->
-  <div class="flex items-center gap-3">
-    <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-400 to-purple-600 text-white shadow-lg">
-      <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-      </svg>
-    </div>
-    <div>
-      <h1 class="text-2xl font-bold text-gray-800">{{ $t('Variable Dump') }}</h1>
-      <p class="text-sm text-gray-600">{{ $t('Debug variable output') }}</p>
-    </div>
-  </div>
+{% extends 'template/template.j2.html' %}
 
-  <!-- Dump Output Card -->
-  <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
-    <div class="space-y-4">
-      <div class="rounded-lg border border-purple-200 bg-gradient-to-r from-purple-50 to-purple-100/50 p-4">
+{% block title %}
+    {{ $t('sidebar.dumpExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-950 via-slate-900 to-zinc-800 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-lime-500/15 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-cyan-500/15 blur-3xl"></div>
+
+    {# subtle terminal grid #}
+    <div class="pointer-events-none absolute inset-0 opacity-[0.06]" style="background-image: linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-bug text-2xl text-lime-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-lime-400 ring-2 ring-zinc-950"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-lime-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-lime-300 ring-1 ring-lime-400/30">
+              <i class="fa-solid fa-magnifying-glass text-[10px]"></i> Inspect
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-cyan-300 ring-1 ring-cyan-400/30">
+              <i class="fa-solid fa-diagram-project text-[10px]"></i> Nested
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-300 ring-1 ring-amber-400/30">
+              <i class="fa-solid fa-code text-[10px]"></i> dump()
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('Variable Dump') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Pretty-print any Dart value — primitives, lists, maps, nested objects — straight from your Jinja template with <code class="rounded bg-white/10 px-1 text-[12px] text-lime-200">{{ '{{ dump(variable) }}' }}</code>.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Helper</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-lg font-bold text-white">
+            <i class="fa-solid fa-wand-magic-sparkles text-sm text-lime-300"></i>
+            <span class="font-mono">dump()</span>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Mode</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base font-bold text-white">
+            <i class="fa-solid fa-circle text-[10px] text-amber-400 animate-pulse"></i>
+            <span>Debug</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== RENDERED DUMP ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-slate-50 to-zinc-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-slate-700 to-zinc-900 text-white shadow-sm ring-1 ring-slate-400/40">
+          <i class="fa-solid fa-eye text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Rendered output</h3>
+          <p class="text-xs text-zinc-500">Interactive, expandable tree of your variable</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-lime-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime-800 ring-1 ring-lime-200">
+          <i class="fa-solid fa-circle text-[8px] text-lime-500 animate-pulse"></i> Live
+        </span>
+        <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-700 ring-1 ring-zinc-200">
+          <i class="fa-solid fa-cube text-[9px]"></i> Map
+        </span>
+      </div>
+    </div>
+    <div class="p-5">
+      <div class="rounded-xl border border-dashed border-slate-300 bg-gradient-to-br from-slate-50 to-zinc-50 p-4 overflow-x-auto">
         {{ dump(variable) }}
       </div>
-      <div class="rounded-lg border border-gray-300 bg-gray-50 p-4">
-        <code class="block text-sm font-mono text-purple-700">
-          {% raw  %}
-            {{ dump(variable) }}
-          {% endraw %}
-        </code>
+    </div>
+  </section>
+
+  {# ============== CODE SOURCE ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-zinc-900 to-slate-900 px-5 py-4 border-b border-zinc-700">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+          <i class="fa-solid fa-terminal text-sm text-lime-300"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-white">Source snippet</h3>
+          <p class="text-xs text-zinc-400">The exact Jinja call used above</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-rose-500/80"></span>
+        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-amber-400/80"></span>
+        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-lime-400/80"></span>
       </div>
     </div>
-  </div>
+    <div class="bg-zinc-950 p-5">
+      <pre class="overflow-x-auto text-sm font-mono leading-relaxed text-lime-300"><code>{% raw %}{{ dump(variable) }}{% endraw %}</code></pre>
+    </div>
+  </section>
+
+  {# ============== TIPS ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm ring-1 ring-amber-300/50">
+        <i class="fa-solid fa-lightbulb text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">Good to know</h3>
+        <p class="text-xs text-zinc-500">When and how to reach for <code class="rounded bg-zinc-100 px-1 text-amber-700">dump()</code></p>
+      </div>
+    </div>
+    <div class="grid gap-3 p-5 md:grid-cols-3">
+      <div class="rounded-xl border border-lime-200 bg-gradient-to-br from-white to-lime-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
+            <i class="fa-solid fa-bolt text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Any type</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Pass strings, numbers, booleans, lists, maps, even controller objects — <code class="rounded bg-zinc-100 px-1 text-lime-700">dump()</code> walks them recursively.</p>
+      </div>
+      <div class="rounded-xl border border-cyan-200 bg-gradient-to-br from-white to-cyan-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-cyan-100 text-cyan-700 ring-1 ring-cyan-200">
+            <i class="fa-solid fa-folder-tree text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Collapsible tree</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Click any node to expand/collapse — perfect for inspecting deeply nested API responses and session payloads.</p>
+      </div>
+      <div class="rounded-xl border border-rose-200 bg-gradient-to-br from-white to-rose-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-rose-100 text-rose-700 ring-1 ring-rose-200">
+            <i class="fa-solid fa-triangle-exclamation text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Dev only</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Strip <code class="rounded bg-zinc-100 px-1 text-rose-700">dump()</code> calls before going to production — they expose internal state to every visitor.</p>
+      </div>
+    </div>
+  </section>
+
+  {# ============== FILE REFERENCES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+        <i class="fa-solid fa-folder-tree text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">File References</h3>
+        <p class="text-xs text-zinc-500">Where this example lives</p>
+      </div>
+    </div>
+    <ul class="divide-y divide-zinc-100">
+      <li class="group transition-colors duration-150 hover:bg-slate-50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-700 ring-1 ring-slate-200">
+              <i class="fa-regular fa-eye text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">View</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-slate-700 ring-1 ring-zinc-200 group-hover:bg-slate-100 group-hover:ring-slate-300">example/lib/widgets/example/dump.j2.html</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-slate-50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
+              <i class="fa-solid fa-code text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">Controller</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-lime-700 ring-1 ring-zinc-200 group-hover:bg-lime-100 group-hover:ring-lime-200">example/lib/controllers/home_controller.dart → exampleDump()</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-slate-50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-100 text-amber-700 ring-1 ring-amber-200">
+              <i class="fa-solid fa-route text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">Router</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-amber-800 ring-1 ring-zinc-200 group-hover:bg-amber-100 group-hover:ring-amber-200">example/lib/route/web_route.dart → key: 'root.dump'</code>
+        </div>
+      </li>
+    </ul>
+  </section>
 </div>
 {% endblock %}
