@@ -59,7 +59,7 @@
         <div aria-hidden="true" class="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-gradient-to-br from-teal-300/40 to-cyan-300/40 blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-60"></div>
         <div class="relative flex h-full flex-col">
           <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/40">
-            <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <i class="fas fa-broadcast-tower text-sm"></i>
           </div>
           <h3 class="mt-5 text-xl font-bold text-zinc-900">{{ $t('features.websocket') }}</h3>
           <p class="mt-2 text-sm leading-relaxed text-zinc-600">Real-time, bi-directional, low-latency communication out of the box.</p>
@@ -80,7 +80,7 @@
       <!-- Feature: Cronjobs -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(8,145,178,.35)] hover:border-cyan-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-sky-500 text-white shadow-md shadow-cyan-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <i class="fas fa-clock text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.cronjobs') }}</h3>
       </article>
@@ -88,7 +88,7 @@
       <!-- Feature: Routing -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(59,130,246,.35)] hover:border-blue-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-sky-500 text-white shadow-md shadow-blue-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <i class="fas fa-route text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.routing') }}</h3>
       </article>
@@ -96,7 +96,7 @@
       <!-- Feature: Form Validators -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(245,158,11,.35)] hover:border-amber-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <i class="fas fa-check-circle text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.formvalidators') }}</h3>
       </article>
@@ -104,7 +104,7 @@
       <!-- Feature: HTML Tools -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(99,102,241,.35)] hover:border-teal-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-blue-500 text-white shadow-md shadow-teal-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          <i class="fas fa-file-code text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.htmltools') }}</h3>
       </article>
@@ -112,7 +112,7 @@
       <!-- Feature: DB Model -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(20,184,166,.35)] hover:border-teal-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+          <i class="fa-solid fa-database text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.dbmodel') }}</h3>
       </article>
@@ -120,7 +120,7 @@
       <!-- Feature: Fast API -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(245,158,11,.35)] hover:border-amber-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <i class="fas fa-bolt text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.fastapi') }}</h3>
       </article>
@@ -130,7 +130,7 @@
         <div aria-hidden="true" class="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-gradient-to-br from-teal-500/40 to-emerald-500/40 blur-2xl"></div>
         <div class="relative">
           <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-white ring-1 ring-white/20 backdrop-blur">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+            <i class="fas fa-cogs text-sm"></i>
           </div>
           <h3 class="mt-4 text-base font-bold">{{ $t('features.other') }}</h3>
           <p class="mt-1 text-xs text-zinc-300">And much more — explore the docs to discover all built-in capabilities.</p>
@@ -148,19 +148,19 @@
         <p class="mt-1 text-sm text-zinc-600">Get started, contribute, or explore the package.</p>
         <div class="mt-6 flex flex-wrap gap-3" role="group" aria-label="Quick links">
           <a href="https://github.com/uproid/finch" class="wave group inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-zinc-900/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-zinc-800 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-zinc-700/30">
-            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <i class="fab fa-github text-sm"></i>
             <span>{{ $t('project.github') }}</span>
           </a>
           <a href="https://github.com/uproid/finch/blob/master/CONTRIBUTING.md" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <i class="fas fa-users text-sm"></i>
             <span>{{ $t('project.contributing') }}</span>
           </a>
           <a href="https://github.com/uproid/finch/tree/master/doc" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <i class="fas fa-book text-sm"></i>
             <span>{{ $t('project.documentation') }}</span>
           </a>
           <a href="https://pub.dev/packages/finch" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <i class="fas fa-box text-sm"></i>
             <span>{{ $t('project.pubdev') }}</span>
           </a>
         </div>
@@ -175,7 +175,7 @@
     <div aria-hidden="true" class="pointer-events-none absolute -top-20 -right-20 h-56 w-56 rounded-full bg-emerald-300/40 blur-3xl"></div>
     <div class="relative flex items-start gap-5">
       <div class="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-xl shadow-emerald-500/40 ring-4 ring-white">
-        <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <i class="fas fa-check text-sm"></i>
       </div>
       <div class="flex-1">
         <h3 class="text-xl font-bold text-emerald-900">{{ $t('login.success') }}</h3>

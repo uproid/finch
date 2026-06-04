@@ -1,4 +1,3 @@
-<!-- Sidebar -->
 {% set dir = $t('dir') %}
 <aside
   id="sidebar"
@@ -23,8 +22,8 @@
               <i class="fa-solid fa-bolt-lightning"></i>
             </span>
             <div class="min-w-0 flex-1">
-              <div class="truncate text-[10px] font-bold uppercase tracking-[0.18em] text-teal-300">Finch</div>
-              <div class="truncate text-sm font-bold">All systems normal</div>
+              <div class="truncate text-xs font-bold text-white">Finch Framework</div>
+              <div class="truncate text-[10px] font-medium text-white">{{ version }} · made with ❤</div>
             </div>
           </div>
         </div>
@@ -45,9 +44,7 @@
         >
           {% if $e.isKey('root.home') %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if $e.isKey('root.home') else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-            </svg>
+            <i class="fa-solid fa-house text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.home') }}</span>
         </a>
@@ -58,9 +55,7 @@
         >
           {% if $e.isKey('root.info') %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if $e.isKey('root.info') else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+            <i class="fa-solid fa-circle-info text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.info') }}</span>
         </a>
@@ -78,7 +73,7 @@
         <a href="{{ $e.routeUrl('root.form') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isFormActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isFormActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isFormActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            <i class="fa-solid fa-pen-to-square text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.formExample') }}</span>
         </a>
@@ -96,7 +91,7 @@
         <a href="{{ $e.routeUrl('root.route') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isRouteActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isRouteActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isRouteActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <i class="fa-solid fa-route text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.routeExample') }}</span>
         </a>
@@ -105,7 +100,7 @@
         <a href="{{ $e.routeUrl('root.socket') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isSocketActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isSocketActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-yellow-400 to-amber-500 text-white shadow-md shadow-yellow-500/30' if isSocketActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-amber-100 group-hover:text-amber-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <i class="fa-solid fa-bolt text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.socketExample') }}</span>
         </a>
@@ -114,7 +109,7 @@
         <a href="{{ $e.routeUrl('root.email') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isEmailActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isEmailActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-sky-500 to-cyan-500 text-white shadow-md shadow-sky-500/30' if isEmailActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-sky-100 group-hover:text-sky-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <i class="fa-solid fa-envelope text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.emailExample') }}</span>
         </a>
@@ -123,7 +118,7 @@
         <a href="{{ $e.routeUrl('root.panel') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isAuthActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isAuthActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30' if isAuthActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <i class="fa-solid fa-shield-alt text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.authExample') }}</span>
         </a>
@@ -132,7 +127,7 @@
         <a href="{{ $e.routeUrl('root.language') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isLangActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isLangActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-rose-500 text-white shadow-md shadow-emerald-500/30' if isLangActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+            <i class="fa-solid fa-language text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.languageExample') }}</span>
         </a>
@@ -169,7 +164,7 @@
         <a href="{{ $e.routeUrl('root.persons') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isPersonsActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isPersonsActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isPersonsActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <i class="fa-solid fa-users text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.freeModelDbExample') }}</span>
         </a>
@@ -209,7 +204,7 @@
         <a href="{{ $e.routeUrl('root.pagination') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isPagActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isPagActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isPagActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+            <i class="fa-solid fa-route text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.paginationExample') }}</span>
         </a>
@@ -260,18 +255,5 @@
         </a>
       </div>
     </nav>
-
-    <!-- Sidebar Footer -->
-    <div class="border-t border-zinc-200/70 px-4 py-4">
-      <div class="flex items-center gap-3 rounded-xl bg-gradient-to-br from-teal-50 via-cyan-50 to-emerald-50 p-3 ring-1 ring-teal-100">
-        <span class="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 via-cyan-500 to-emerald-500 text-white shadow-md shadow-teal-500/30">
-          <i class="fa-solid fa-feather text-sm"></i>
-        </span>
-        <div class="min-w-0 flex-1">
-          <div class="truncate text-xs font-bold text-zinc-800">Finch Framework</div>
-          <div class="truncate text-[10px] font-medium text-zinc-500">{{ version }} · made with ❤</div>
-        </div>
-      </div>
-    </div>
   </div>
 </aside>

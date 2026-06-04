@@ -240,1295 +240,6 @@ var mapTemplates = {
 </div>
 {% endblock %}
 """,
-	r"example/socket.j2.html": r"""{% extends 'template/template.j2.html' %}
-
-{% block title %}
-    {{ $t('sidebar.socketExample') }}
-{% endblock %}
-
-{% block content %}
-
-{# Reusable button templates used by websocket.js (do NOT remove) #}
-<template id="btn-template-client">
-  <button data-id="{id}"
-          class="wave socket-client-send group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm font-medium text-zinc-700 transition hover:-translate-y-0.5 hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700 hover:shadow-sm disable-wave">
-    <span class="inline-flex items-center gap-2 truncate">
-      <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 text-white text-[11px] font-semibold shadow-sm">
-        <i class="fa-solid fa-user"></i>
-      </span>
-      <span class="truncate">{text}</span>
-    </span>
-    <i class="fa-solid fa-paper-plane text-xs text-zinc-400 transition group-hover:text-teal-600 group-hover:translate-x-0.5"></i>
-  </button>
-</template>
-
-{# ============== HERO ============== #}
-<section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-teal-950 to-cyan-950 p-6 sm:p-8 shadow-soft">
-  <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-teal-500/20 blur-3xl"></div>
-  <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl"></div>
-
-  <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-    <div class="flex items-start gap-4">
-      <div class="relative">
-        <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-          <i class="fa-solid fa-tower-broadcast text-2xl text-teal-300"></i>
-        </div>
-        <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-          <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-emerald-400 ring-2 ring-zinc-900"></span>
-        </span>
-      </div>
-      <div>
-        <div class="flex flex-wrap items-center gap-2">
-          <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
-            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-            Realtime
-          </span>
-          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 ring-1 ring-white/10">
-            <i class="fa-solid fa-bolt text-amber-300"></i>
-            Bi-directional
-          </span>
-        </div>
-        <h1 class="mt-2 text-2xl font-bold text-white sm:text-3xl">
-          {{ $t('testWebSocket.title') }}
-        </h1>
-        <p class="mt-1 max-w-xl text-sm text-zinc-300">
-          Send and receive messages over a persistent WebSocket connection — broadcast time, random text, list peers, or stream live video.
-        </p>
-      </div>
-    </div>
-
-    <div class="flex flex-col gap-2 sm:flex-row lg:flex-col lg:items-end">
-      <div class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs text-zinc-200 backdrop-blur">
-        <i class="fa-solid fa-link text-teal-300"></i>
-        <span class="text-zinc-400">endpoint</span>
-        <span class="text-white">/ws</span>
-      </div>
-      <div class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 backdrop-blur">
-        <i class="fa-solid fa-shield-halved text-cyan-300"></i>
-        Protocol&nbsp;<span class="font-semibold text-white">ws / wss</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-{# ============== MAIN GRID ============== #}
-<section class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
-
-  {# ---------- CONSOLE (left, 2 cols) ---------- #}
-  <div class="lg:col-span-2 reveal-up">
-    <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-      {# Console header #}
-      <div class="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-4 py-3">
-        <div class="flex items-center gap-3">
-          <div class="flex items-center gap-1.5">
-            <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
-            <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
-            <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-          </div>
-          <div class="hidden items-center gap-2 sm:flex">
-            <i class="fa-solid fa-terminal text-xs text-zinc-500"></i>
-            <span class="text-sm font-semibold text-zinc-700">
-              {{ $t('testWebSocket.output') }}
-            </span>
-          </div>
-        </div>
-        <button
-          onclick="document.getElementById('socket-output').value='';document.getElementById('socket-output').innerHTML='';document.getElementById('client-list').innerHTML=''"
-          class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/30 disable-wave">
-          <i class="fa-solid fa-broom"></i>
-          {{ $t('testWebSocket.clear') }}
-        </button>
-      </div>
-
-      {# Console body — dark terminal #}
-      <div class="relative bg-zinc-950">
-        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(20,184,166,0.08),transparent_60%)]"></div>
-        <label for="socket-output" class="sr-only">{{ $t('testWebSocket.output') }}</label>
-        <textarea id="socket-output" readonly
-                  class="relative block h-[420px] w-full resize-none border-0 bg-transparent p-5 font-mono text-[13px] leading-relaxed text-emerald-300 placeholder:text-zinc-600 focus:outline-none focus:ring-0"
-                  placeholder="// Waiting for messages from /ws ...
-// Click an action below to send a frame."></textarea>
-      </div>
-
-      {# Action bar #}
-      <div class="flex flex-wrap items-center gap-2 border-t border-zinc-200 bg-zinc-50 px-4 py-3">
-        <button id="btn-socket-time"
-                class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30 disable-wave">
-          <i class="fa-regular fa-clock text-teal-600"></i>
-          {{ $t('testWebSocket.getTime') }}
-        </button>
-        <button id="btn-socket-fa"
-                class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 disable-wave">
-          <i class="fa-solid fa-shuffle text-cyan-600"></i>
-          {{ $t('testWebSocket.randomMessage') }}
-        </button>
-        <button id="btn-socket-clients"
-                class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500/30 disable-wave">
-          <i class="fa-solid fa-users text-violet-600"></i>
-          {{ $t('testWebSocket.clientLists') }}
-        </button>
-        <div class="ms-auto">
-          <button id="btn-socket-stream"
-                  class="wave inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 disable-wave">
-            <i class="fa-solid fa-video"></i>
-            {{ $t('testWebSocket.stream') }}
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {# ---------- CLIENTS (right) ---------- #}
-  <aside class="reveal-up">
-    <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-      <div class="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-4 py-3">
-        <div class="flex items-center gap-2">
-          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 text-white shadow-sm">
-            <i class="fa-solid fa-network-wired text-xs"></i>
-          </span>
-          <div>
-            <p class="text-sm font-semibold text-zinc-800 leading-tight">Connected clients</p>
-            <p class="text-[11px] text-zinc-500">Click a peer to send a hello</p>
-          </div>
-        </div>
-        <button id="btn-refresh-clients" type="button"
-                onclick="document.getElementById('btn-socket-clients')?.click()"
-                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-500 transition hover:border-teal-300 hover:text-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/30"
-                title="Refresh">
-          <i class="fa-solid fa-arrows-rotate text-xs"></i>
-        </button>
-      </div>
-
-      <div class="p-4">
-        <div id="client-list" class="flex flex-col gap-2 min-h-[200px]">
-          {# Empty-state placeholder is overwritten by JS once clients arrive #}
-          <div class="flex h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-zinc-200 bg-zinc-50/60 px-4 text-center">
-            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-zinc-400 shadow-sm ring-1 ring-zinc-200">
-              <i class="fa-solid fa-user-slash"></i>
-            </div>
-            <p class="mt-3 text-sm font-medium text-zinc-700">No peers yet</p>
-            <p class="mt-1 text-xs text-zinc-500">
-              Press <span class="rounded bg-white px-1.5 py-0.5 font-mono text-[11px] text-zinc-700 ring-1 ring-zinc-200">{{ $t('testWebSocket.clientLists') }}</span>
-              to query.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    {# Info card #}
-    <div class="mt-4 rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
-      <div class="flex items-start gap-3">
-        <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-          <i class="fa-solid fa-lightbulb"></i>
-        </div>
-        <div class="text-xs leading-relaxed text-amber-900">
-          Open this page in two browser tabs, list the clients, then click any peer to deliver a direct message to that socket.
-        </div>
-      </div>
-    </div>
-  </aside>
-</section>
-
-{# ============== VIDEO STREAM (hidden by default, toggled by JS) ============== #}
-<section id="videoStream" class="reveal-up mt-6 hidden">
-  <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 bg-gradient-to-r from-emerald-50 to-teal-50 px-5 py-3">
-      <div class="flex items-center gap-3">
-        <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm">
-          <i class="fa-solid fa-video"></i>
-        </span>
-        <div>
-          <p class="text-sm font-semibold text-zinc-800 leading-tight">Live video stream</p>
-          <p class="text-[11px] text-zinc-500">Local camera ⇄ Server playback</p>
-        </div>
-        <span class="ms-2 inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-rose-600 ring-1 ring-rose-300">
-          <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-rose-500"></span>
-          LIVE
-        </span>
-      </div>
-      <button id="btn-stop-stream"
-              class="wave inline-flex items-center gap-2 rounded-lg bg-rose-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/40 disable-wave">
-        <i class="fa-solid fa-stop"></i>
-        {{ $t('testWebSocket.stopStream') }}
-      </button>
-    </div>
-
-    <div class="grid grid-cols-1 gap-4 p-5 md:grid-cols-2">
-      <div class="relative overflow-hidden rounded-xl border border-zinc-200 bg-zinc-950">
-        <div class="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
-          <i class="fa-solid fa-camera"></i> Local
-        </div>
-        <video id="localVideo" class="block aspect-video w-full bg-black" autoplay muted></video>
-      </div>
-      <div class="relative overflow-hidden rounded-xl border border-zinc-200 bg-zinc-950">
-        <div class="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
-          <i class="fa-solid fa-server"></i> Server
-        </div>
-        <video id="serverVideo" class="block aspect-video w-full bg-black" controls></video>
-      </div>
-    </div>
-  </div>
-</section>
-
-{% endblock %}
-""",
-	r"example/database.j2.html": r"""{% extends 'template/template.j2.html' %}
-{% block title %}
-  {{ $t('sidebar.mongo') }}
-{% endblock %}
-
-{% block content %}
-<div class="space-y-6">
-
-  {# ============== HERO ============== #}
-  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-emerald-950 to-green-950 p-6 sm:p-8 shadow-soft">
-    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-green-500/20 blur-3xl"></div>
-
-    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <div class="flex items-start gap-4">
-        <div class="relative">
-          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <i class="fa-solid fa-leaf text-2xl text-emerald-300"></i>
-          </div>
-          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
-            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-green-400 ring-2 ring-zinc-900"></span>
-          </span>
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
-              <i class="fa-solid fa-bolt"></i>
-              MongoDB
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 ring-1 ring-white/10">
-              <i class="fa-solid fa-cubes text-green-300"></i>
-              Document
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 ring-1 ring-white/10">
-              <i class="fa-solid fa-code text-cyan-300"></i>
-              NoSQL
-            </span>
-          </div>
-          <h1 class="mt-2 text-2xl font-bold text-white sm:text-3xl">{{ $t('database.test.title') }}</h1>
-          <p class="mt-1 max-w-xl text-sm text-zinc-300">
-            MongoDB example with CRUD operations — flexible, schemaless documents with title and auto-generated slug.
-          </p>
-        </div>
-      </div>
-
-      {# Quick stats #}
-      <div class="grid grid-cols-2 gap-3 sm:flex sm:items-stretch">
-        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Records</div>
-          <div class="mt-1 flex items-baseline gap-1.5">
-            <span class="text-2xl font-bold text-white">{{ (allRecords | default([])) | length }}</span>
-            <span class="text-[11px] text-zinc-400">/ page</span>
-          </div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
-          <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Page</div>
-          <div class="mt-1 flex items-baseline gap-1.5">
-            <span class="text-2xl font-bold text-white">{{ data.page if data.page else 1 }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============== RECORDS CARD ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    {# Header band #}
-    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 bg-gradient-to-r from-zinc-50 to-white px-5 py-4">
-      <div class="flex items-center gap-3">
-        <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
-          <i class="fa-solid fa-database"></i>
-        </span>
-        <div>
-          <p class="text-sm font-semibold text-zinc-800 leading-tight">Documents</p>
-          <p class="text-[11px] text-zinc-500">Collection · title and slug</p>
-        </div>
-      </div>
-      <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200">
-        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-        Live
-      </span>
-    </div>
-
-    {# Table #}
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-zinc-200 text-xs md:text-sm">
-        <thead class="bg-zinc-50">
-          <tr class="text-left">
-            <th class="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.title') }}</th>
-            <th class="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.slug') }}</th>
-            <th class="px-5 py-3 text-end text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.action') }}</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-zinc-100 bg-white">
-          {% for record in allRecords %}
-          <tr class="group transition hover:bg-emerald-50/40">
-            <td class="px-5 py-3 align-middle">
-              <div class="flex items-center gap-2.5">
-                <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
-                  <i class="fa-solid fa-file-lines text-[11px]"></i>
-                </span>
-                <span class="font-semibold text-zinc-800">{{ record.title }}</span>
-              </div>
-            </td>
-            <td class="px-5 py-3">
-              <code class="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2 py-1 font-mono text-[11px] text-zinc-700 ring-1 ring-zinc-200">
-                <i class="fa-solid fa-link text-[9px] text-zinc-400"></i>
-                {{ record.slug }}
-              </code>
-            </td>
-            <td class="px-5 py-3 text-end">
-              <a
-                href="/example/database?page={{ data.page if data.page else 1 }}&action=delete&id={{ record.id }}"
-                class="wave inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 bg-white text-rose-600 transition hover:border-rose-300 hover:bg-rose-50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30"
-                title="{{ $t('database.table.header.action') }}">
-                <i class="fa-solid fa-trash-can text-xs"></i>
-              </a>
-            </td>
-          </tr>
-          {% else %}
-          <tr>
-            <td colspan="3" class="px-5 py-16 text-center">
-              <div class="mx-auto flex max-w-sm flex-col items-center gap-3">
-                <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-400">
-                  <i class="fa-solid fa-folder-open text-2xl"></i>
-                </div>
-                <p class="text-sm font-semibold text-zinc-700">{{ $t('database.table.empty') if $t('database.table.empty') else $t('No records found') }}</p>
-                <p class="text-xs text-zinc-500">Insert your first document using the form below.</p>
-              </div>
-            </td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-
-    {# Add document form + pagination #}
-    <div class="space-y-4 border-t border-zinc-200 bg-zinc-50/60 p-5">
-      <form method="post" class="rounded-xl border border-dashed border-zinc-300 bg-white p-4">
-        <input type="hidden" name="action" value="add" />
-        <div class="mb-3 flex items-center gap-2">
-          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
-            <i class="fa-solid fa-plus text-[11px]"></i>
-          </span>
-          <p class="text-xs font-semibold text-zinc-700">
-            {{ $t('database.table.button.add') }}
-            <span class="font-normal text-zinc-500">·</span>
-            <span class="font-normal text-zinc-500">New document</span>
-          </p>
-        </div>
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-start">
-          <div class="flex-1">
-            <label class="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
-              {{ $t('database.table.header.title') }}
-            </label>
-            <div class="relative">
-              <span class="pointer-events-none absolute inset-y-0 start-3 flex items-center text-zinc-400">
-                <i class="fa-solid fa-heading text-xs"></i>
-              </span>
-              <input
-                type="text"
-                name="title"
-                placeholder="{{ $t('database.table.input.placeholder.title') }}"
-                class="block h-10 w-full rounded-lg border border-zinc-200 bg-white ps-9 pe-3 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-              />
-            </div>
-          </div>
-          <div class="sm:pt-[22px]">
-            <button
-              type="submit"
-              class="wave inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 px-4 text-xs font-semibold text-white shadow-sm transition hover:from-emerald-700 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 sm:w-auto"
-            >
-              <i class="fa-solid fa-plus"></i>
-              <span>{{ $t('database.table.button.add') }}</span>
-            </button>
-          </div>
-        </div>
-      </form>
-
-      {% if pagination %}
-      <div class="flex items-center justify-center pt-1">
-        <div class="pagination-wrapper text-sm text-zinc-600">
-          {{ pagination }}
-        </div>
-      </div>
-      {% endif %}
-    </div>
-  </section>
-</div>
-{% endblock %}
-""",
-	r"example/form.j2.html": r"""{% extends 'template/template.j2.html' %}
-{% block title %}
-    {{ $t('sidebar.formExample') }}
-{% endblock %}
-
-{% block content %}
-{% set isLoggedIn = (loginResult == true or user != null) %}
-
-<div class="space-y-6">
-
-  {# ============== HERO ============== #}
-  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-rose-950 to-pink-950 p-6 sm:p-8 shadow-soft">
-    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-rose-500/20 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-pink-500/20 blur-3xl"></div>
-
-    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <div class="flex items-start gap-4">
-        <div class="relative">
-          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <i class="fa-solid fa-shield-halved text-2xl text-rose-300"></i>
-          </div>
-          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-pink-400 opacity-75"></span>
-            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-pink-400 ring-2 ring-zinc-900"></span>
-          </span>
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-rose-300 ring-1 ring-rose-400/30">
-              <i class="fa-solid fa-list-check text-[10px]"></i> Validation
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-pink-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-pink-300 ring-1 ring-pink-400/30">
-              <i class="fa-solid fa-shield text-[10px]"></i> Server-side
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
-              <i class="fa-solid fa-lock text-[10px]"></i> CSRF
-            </span>
-          </div>
-          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('form.validation.title') }}</h1>
-          <p class="mt-1 max-w-2xl text-sm text-zinc-300">A complete login flow built with Finch's <span class="text-rose-300 font-semibold">FormValidator</span> &mdash; type-safe rules, friendly errors and built-in CSRF protection.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 sm:gap-4">
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Status</div>
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold {{ 'text-emerald-300' if isLoggedIn else 'text-rose-300' }}">
-            <i class="fa-solid {{ 'fa-circle-check' if isLoggedIn else 'fa-circle-xmark' }}"></i>
-            {{ 'Signed in' if isLoggedIn else 'Signed out' }}
-          </div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Method</div>
-          <div class="mt-1 text-base sm:text-lg font-bold text-white">
-            <span class="font-mono">POST</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============== TEST CREDENTIALS ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 shadow-soft">
-    <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
-      <div class="flex items-start gap-3">
-        <div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-sm ring-1 ring-amber-300/50">
-          <i class="fa-solid fa-key text-base"></i>
-        </div>
-        <div>
-          <p class="text-sm font-bold text-zinc-900">{{ $t('Test Credentials') }}</p>
-          <p class="text-xs text-zinc-600">Use these to try the login form.</p>
-        </div>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-white px-3 py-1.5 shadow-sm">
-          <i class="fa-solid fa-envelope text-[11px] text-amber-600"></i>
-          <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">{{ $t('form.validation.credentials.email') }}</span>
-          <code class="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-mono text-amber-900">example@uproid.com</code>
-        </span>
-        <span class="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-white px-3 py-1.5 shadow-sm">
-          <i class="fa-solid fa-lock text-[11px] text-amber-600"></i>
-          <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">{{ $t('form.validation.credentials.password') }}</span>
-          <code class="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-mono text-amber-900">@Test123</code>
-        </span>
-      </div>
-    </div>
-  </section>
-
-  {% if not isLoggedIn %}
-  {# ============== LOGIN FORM ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-rose-50 to-pink-50 px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-sm ring-1 ring-rose-300/50">
-          <i class="fa-solid fa-right-to-bracket text-sm"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">{{ $t('Login Form') }}</h3>
-          <p class="text-xs text-zinc-500">{{ $t('Enter your credentials to continue') }}</p>
-        </div>
-      </div>
-      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-zinc-900 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-rose-300 ring-1 ring-rose-400/30">
-        <i class="fa-solid fa-shield-halved text-[9px]"></i> Validated
-      </span>
-    </div>
-    <div class="p-5 sm:p-6">
-      {% include form_login.widget | unscape %}
-    </div>
-  </section>
-  {% else %}
-  {# ============== SUCCESS CARD ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-green-50 shadow-soft">
-    <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-      <div class="flex items-center gap-4">
-        <div class="relative grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg ring-1 ring-emerald-300/50">
-          <i class="fa-solid fa-circle-check text-2xl"></i>
-          <span class="absolute -top-1 -right-1 inline-flex h-3 w-3">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white"></span>
-          </span>
-        </div>
-        <div>
-          <p class="text-base font-bold text-emerald-900">{{ $t('form.validation.loginSuccess') }}</p>
-          <p class="mt-0.5 text-sm text-emerald-700">{{ $t('Logged in as') }} <span class="rounded-md bg-emerald-100 px-2 py-0.5 font-mono text-xs font-semibold text-emerald-800">{{ user.name }}</span></p>
-        </div>
-      </div>
-      <a href="{{ $e.routeUrl('root.logout') }}" class="wave inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-rose-600 hover:to-pink-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-rose-500/30">
-        <i class="fa-solid fa-right-from-bracket text-sm"></i>
-        <span>{{ $t('form.validation.logout') }}</span>
-      </a>
-    </div>
-  </section>
-  {% endif %}
-
-  {# ============== FILE REFERENCES ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
-          <i class="fa-solid fa-folder-tree text-sm"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">{{ $t('File References') }}</h3>
-          <p class="text-xs text-zinc-500">{{ $t('Related files for this form example') }}</p>
-        </div>
-      </div>
-      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-600 ring-1 ring-zinc-200">
-        <i class="fa-solid fa-code text-[9px]"></i> Source
-      </span>
-    </div>
-    <ul class="divide-y divide-zinc-100">
-      <li class="group transition-colors duration-150 hover:bg-rose-50/50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-rose-100 text-rose-600 ring-1 ring-rose-200">
-              <i class="fa-regular fa-eye text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('form.validation.view') }}</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-rose-700 ring-1 ring-zinc-200 group-hover:bg-rose-100 group-hover:ring-rose-200">example/lib/widgets/example/form.j2.html</code>
-        </div>
-      </li>
-      <li class="group transition-colors duration-150 hover:bg-rose-50/50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-pink-100 text-pink-600 ring-1 ring-pink-200">
-              <i class="fa-solid fa-code text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('form.validation.controller') }}</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-pink-700 ring-1 ring-zinc-200 group-hover:bg-pink-100 group-hover:ring-pink-200">example/lib/controllers/home_controller.dart</code>
-        </div>
-      </li>
-    </ul>
-  </section>
-</div>
-{% endblock %}
-""",
-	r"example/dump.j2.html": r"""{% extends 'template/template.j2.html' %}
-
-{% block title %}
-    {{ $t('sidebar.dumpExample') }}
-{% endblock %}
-
-{% block content %}
-<div class="space-y-6">
-
-  {# ============== HERO ============== #}
-  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-950 via-slate-900 to-zinc-800 p-6 sm:p-8 shadow-soft">
-    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-lime-500/15 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-cyan-500/15 blur-3xl"></div>
-
-    {# subtle terminal grid #}
-    <div class="pointer-events-none absolute inset-0 opacity-[0.06]" style="background-image: linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px); background-size: 24px 24px;"></div>
-
-    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <div class="flex items-start gap-4">
-        <div class="relative">
-          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <i class="fa-solid fa-bug text-2xl text-lime-300"></i>
-          </div>
-          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime-400 opacity-75"></span>
-            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-lime-400 ring-2 ring-zinc-950"></span>
-          </span>
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-lime-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-lime-300 ring-1 ring-lime-400/30">
-              <i class="fa-solid fa-magnifying-glass text-[10px]"></i> Inspect
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-cyan-300 ring-1 ring-cyan-400/30">
-              <i class="fa-solid fa-diagram-project text-[10px]"></i> Nested
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-300 ring-1 ring-amber-400/30">
-              <i class="fa-solid fa-code text-[10px]"></i> dump()
-            </span>
-          </div>
-          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('Variable Dump') }}</h1>
-          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Pretty-print any Dart value — primitives, lists, maps, nested objects — straight from your Jinja template with <code class="rounded bg-white/10 px-1 text-[12px] text-lime-200">{{ '{{ dump(variable) }}' }}</code>.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 sm:gap-4">
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Helper</div>
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-lg font-bold text-white">
-            <i class="fa-solid fa-wand-magic-sparkles text-sm text-lime-300"></i>
-            <span class="font-mono">dump()</span>
-          </div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Mode</div>
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-base font-bold text-white">
-            <i class="fa-solid fa-circle text-[10px] text-amber-400 animate-pulse"></i>
-            <span>Debug</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============== RENDERED DUMP ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-slate-50 to-zinc-50 px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-slate-700 to-zinc-900 text-white shadow-sm ring-1 ring-slate-400/40">
-          <i class="fa-solid fa-eye text-sm"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">Rendered output</h3>
-          <p class="text-xs text-zinc-500">Interactive, expandable tree of your variable</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-lime-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime-800 ring-1 ring-lime-200">
-          <i class="fa-solid fa-circle text-[8px] text-lime-500 animate-pulse"></i> Live
-        </span>
-        <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-700 ring-1 ring-zinc-200">
-          <i class="fa-solid fa-cube text-[9px]"></i> Map
-        </span>
-      </div>
-    </div>
-    <div class="p-5">
-      <div class="rounded-xl border border-dashed border-slate-300 bg-gradient-to-br from-slate-50 to-zinc-50 p-4 overflow-x-auto">
-        {{ dump(variable) }}
-      </div>
-    </div>
-  </section>
-
-  {# ============== CODE SOURCE ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-zinc-900 to-slate-900 px-5 py-4 border-b border-zinc-700">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-          <i class="fa-solid fa-terminal text-sm text-lime-300"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-white">Source snippet</h3>
-          <p class="text-xs text-zinc-400">The exact Jinja call used above</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-1.5">
-        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-rose-500/80"></span>
-        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-amber-400/80"></span>
-        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-lime-400/80"></span>
-      </div>
-    </div>
-    <div class="bg-zinc-950 p-5">
-      <pre class="overflow-x-auto text-sm font-mono leading-relaxed text-lime-300"><code>{% raw %}{{ dump(variable) }}{% endraw %}</code></pre>
-    </div>
-  </section>
-
-  {# ============== TIPS ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm ring-1 ring-amber-300/50">
-        <i class="fa-solid fa-lightbulb text-sm"></i>
-      </span>
-      <div>
-        <h3 class="text-base font-bold text-zinc-900">Good to know</h3>
-        <p class="text-xs text-zinc-500">When and how to reach for <code class="rounded bg-zinc-100 px-1 text-amber-700">dump()</code></p>
-      </div>
-    </div>
-    <div class="grid gap-3 p-5 md:grid-cols-3">
-      <div class="rounded-xl border border-lime-200 bg-gradient-to-br from-white to-lime-50/40 p-4">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="grid h-7 w-7 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
-            <i class="fa-solid fa-bolt text-[11px]"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">Any type</p>
-        </div>
-        <p class="text-xs leading-relaxed text-zinc-600">Pass strings, numbers, booleans, lists, maps, even controller objects — <code class="rounded bg-zinc-100 px-1 text-lime-700">dump()</code> walks them recursively.</p>
-      </div>
-      <div class="rounded-xl border border-cyan-200 bg-gradient-to-br from-white to-cyan-50/40 p-4">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="grid h-7 w-7 place-items-center rounded-lg bg-cyan-100 text-cyan-700 ring-1 ring-cyan-200">
-            <i class="fa-solid fa-folder-tree text-[11px]"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">Collapsible tree</p>
-        </div>
-        <p class="text-xs leading-relaxed text-zinc-600">Click any node to expand/collapse — perfect for inspecting deeply nested API responses and session payloads.</p>
-      </div>
-      <div class="rounded-xl border border-rose-200 bg-gradient-to-br from-white to-rose-50/40 p-4">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="grid h-7 w-7 place-items-center rounded-lg bg-rose-100 text-rose-700 ring-1 ring-rose-200">
-            <i class="fa-solid fa-triangle-exclamation text-[11px]"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">Dev only</p>
-        </div>
-        <p class="text-xs leading-relaxed text-zinc-600">Strip <code class="rounded bg-zinc-100 px-1 text-rose-700">dump()</code> calls before going to production — they expose internal state to every visitor.</p>
-      </div>
-    </div>
-  </section>
-
-  {# ============== FILE REFERENCES ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
-        <i class="fa-solid fa-folder-tree text-sm"></i>
-      </span>
-      <div>
-        <h3 class="text-base font-bold text-zinc-900">File References</h3>
-        <p class="text-xs text-zinc-500">Where this example lives</p>
-      </div>
-    </div>
-    <ul class="divide-y divide-zinc-100">
-      <li class="group transition-colors duration-150 hover:bg-slate-50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-48">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-700 ring-1 ring-slate-200">
-              <i class="fa-regular fa-eye text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">View</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-slate-700 ring-1 ring-zinc-200 group-hover:bg-slate-100 group-hover:ring-slate-300">example/lib/widgets/example/dump.j2.html</code>
-        </div>
-      </li>
-      <li class="group transition-colors duration-150 hover:bg-slate-50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-48">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
-              <i class="fa-solid fa-code text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">Controller</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-lime-700 ring-1 ring-zinc-200 group-hover:bg-lime-100 group-hover:ring-lime-200">example/lib/controllers/home_controller.dart → exampleDump()</code>
-        </div>
-      </li>
-      <li class="group transition-colors duration-150 hover:bg-slate-50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-48">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-100 text-amber-700 ring-1 ring-amber-200">
-              <i class="fa-solid fa-route text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">Router</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-amber-800 ring-1 ring-zinc-200 group-hover:bg-amber-100 group-hover:ring-amber-200">example/lib/route/web_route.dart → key: 'root.dump'</code>
-        </div>
-      </li>
-    </ul>
-  </section>
-</div>
-{% endblock %}
-""",
-	r"example/auth.j2.html": r"""{% extends 'template/template.j2.html' %}
-{% block title %}
-{{ $t('sidebar.authExample') }}
-{% endblock %}
-{% block content %}
-<div class="space-y-6">
-
-  {# ============== HERO ============== #}
-  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-green-950 to-lime-950 p-6 sm:p-8 shadow-soft">
-    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-green-500/20 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-lime-500/20 blur-3xl"></div>
-
-    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <div class="flex items-start gap-4">
-        <div class="relative">
-          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <i class="fa-solid fa-user-shield text-2xl text-green-300"></i>
-          </div>
-          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime-400 opacity-75"></span>
-            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-lime-400 ring-2 ring-zinc-900"></span>
-          </span>
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-green-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-green-300 ring-1 ring-green-400/30">
-              <i class="fa-solid fa-circle-check text-[10px]"></i> Authenticated
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-lime-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-lime-300 ring-1 ring-lime-400/30">
-              <i class="fa-solid fa-shield-halved text-[10px]"></i> Session-based
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-300 ring-1 ring-amber-400/30">
-              <i class="fa-solid fa-key text-[10px]"></i> Permissions
-            </span>
-          </div>
-          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('auth.test') }}</h1>
-          <p class="mt-1 max-w-2xl text-sm text-zinc-300">A protected route guarded by Finch's <span class="font-semibold text-green-300">AuthController</span> &mdash; only signed-in users can see this page.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 gap-3 sm:gap-4">
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Access</div>
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-green-300">
-            <i class="fa-solid fa-lock-open text-sm"></i> Granted
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============== WELCOME CARD ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 via-white to-lime-50 shadow-soft">
-    <div class="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
-      <div class="flex items-center gap-4">
-        <div class="relative grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-green-500 to-lime-600 text-white shadow-lg ring-2 ring-white">
-          <i class="fa-solid fa-user-check text-2xl"></i>
-          <span class="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded-full bg-white ring-2 ring-green-200">
-            <i class="fa-solid fa-circle-check text-[14px] text-green-600"></i>
-          </span>
-        </div>
-        <div>
-          <p class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-green-700">
-            <i class="fa-solid fa-hand text-[11px]"></i>
-            {{ $t('auth.welcome') }}
-          </p>
-          <p class="mt-0.5 text-2xl font-bold text-zinc-900">{{ user.name }}</p>
-          <p class="mt-1 inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-0.5 text-[11px] font-semibold text-green-800 ring-1 ring-green-200">
-            <i class="fa-solid fa-circle text-[8px] animate-pulse"></i>
-            Signed in
-          </p>
-        </div>
-      </div>
-      <a href="/logout" class="wave group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-rose-600 hover:to-pink-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-rose-500/30">
-        <i class="fa-solid fa-right-from-bracket text-sm transition-transform duration-200 group-hover:translate-x-0.5"></i>
-        <span>{{ $t('auth.logout') }}</span>
-      </a>
-    </div>
-  </section>
-
-  {# ============== HOW IT WORKS ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-green-500 to-lime-600 text-white shadow-sm ring-1 ring-green-300/50">
-        <i class="fa-solid fa-diagram-project text-sm"></i>
-      </span>
-      <div>
-        <h3 class="text-base font-bold text-zinc-900">How it works</h3>
-        <p class="text-xs text-zinc-500">The auth flow at a glance</p>
-      </div>
-    </div>
-    <div class="grid gap-4 p-5 sm:grid-cols-3">
-      <div class="group rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-green-300 hover:shadow-sm">
-        <div class="mb-2 flex items-center gap-2">
-          <span class="grid h-8 w-8 place-items-center rounded-lg bg-green-100 text-green-700 ring-1 ring-green-200">
-            <i class="fa-solid fa-1 text-xs font-bold"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">Login</p>
-        </div>
-        <p class="text-xs text-zinc-600">Submit credentials; <code class="rounded bg-zinc-100 px-1 text-[11px] text-green-700">AuthController</code> validates them and stores a session.</p>
-      </div>
-      <div class="group rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-lime-300 hover:shadow-sm">
-        <div class="mb-2 flex items-center gap-2">
-          <span class="grid h-8 w-8 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
-            <i class="fa-solid fa-2 text-xs font-bold"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">Guarded route</p>
-        </div>
-        <p class="text-xs text-zinc-600">This route has <code class="rounded bg-zinc-100 px-1 text-[11px] text-lime-700">auth</code> attached, so unauthenticated requests are redirected.</p>
-      </div>
-      <div class="group rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-rose-300 hover:shadow-sm">
-        <div class="mb-2 flex items-center gap-2">
-          <span class="grid h-8 w-8 place-items-center rounded-lg bg-rose-100 text-rose-700 ring-1 ring-rose-200">
-            <i class="fa-solid fa-3 text-xs font-bold"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">Logout</p>
-        </div>
-        <p class="text-xs text-zinc-600">Hitting <code class="rounded bg-zinc-100 px-1 text-[11px] text-rose-700">/logout</code> destroys the session and revokes access.</p>
-      </div>
-    </div>
-  </section>
-
-  {# ============== FILE REFERENCES ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
-          <i class="fa-solid fa-folder-tree text-sm"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">{{ $t('File References') }}</h3>
-          <p class="text-xs text-zinc-500">{{ $t('Related files for this authentication example') }}</p>
-        </div>
-      </div>
-    </div>
-    <ul class="divide-y divide-zinc-100">
-      <li class="group transition-colors duration-150 hover:bg-green-50/50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-green-100 text-green-600 ring-1 ring-green-200">
-              <i class="fa-regular fa-eye text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.view') }}</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-green-700 ring-1 ring-zinc-200 group-hover:bg-green-100 group-hover:ring-green-200">example/lib/widgets/example/auth.j2.html</code>
-        </div>
-      </li>
-      <li class="group transition-colors duration-150 hover:bg-green-50/50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
-              <i class="fa-solid fa-code text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.controller') }}</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-lime-800 ring-1 ring-zinc-200 group-hover:bg-lime-100 group-hover:ring-lime-200">example/lib/controllers/home_controller.dart</code>
-        </div>
-      </li>
-      <li class="group transition-colors duration-150 hover:bg-green-50/50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200">
-              <i class="fa-solid fa-user-shield text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.authController') }}</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-emerald-700 ring-1 ring-zinc-200 group-hover:bg-emerald-100 group-hover:ring-emerald-200">example/lib/controllers/auth_controller.dart</code>
-        </div>
-      </li>
-      <li class="group transition-colors duration-150 hover:bg-green-50/50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-100 text-indigo-600 ring-1 ring-indigo-200">
-              <i class="fa-solid fa-route text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.router') }}</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-indigo-700 ring-1 ring-zinc-200 group-hover:bg-indigo-100 group-hover:ring-indigo-200">example/lib/route/web_route.dart</code>
-        </div>
-      </li>
-    </ul>
-  </section>
-</div>
-{% endblock %}
-""",
-	r"example/forms/form_person.j2.html": r"""<form method="POST" action="/example/person/{{ $n('data/_id') | oid ?? '' }}" class="space-y-6">
-  <input type="hidden" name="action" value="{{ $n('data/_id') ? 'EDIT' : 'ADD' }}" />
-  <input type="hidden" name="id" value="{{ $n('data/_id') | oid ?? '' }}" />
-
-  <!-- Row 1: Name / Email -->
-  <div class="grid gap-5 md:grid-cols-2">
-    <div>
-      <label for="name" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.name') }}</label>
-      <div class="relative">
-        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-          </svg>
-        </div>
-        <input
-          type="text"
-          id="name"
-          name="name"
-          value="{{ $n('form/name/value') }}"
-          placeholder="{{ $t('person.form.placeholder.name') }}"
-          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/name/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
-        />
-      </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/name/failed') ? '' : 'hidden' }}">{{ $t($n('form/name/errors/0')) }}</div>
-    </div>
-    <div>
-      <label for="email" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.email') }}</label>
-      <div class="relative">
-        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-          </svg>
-        </div>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          value="{{ $n('form/email/value') }}"
-          placeholder="{{ $t('person.form.placeholder.email') }}"
-          {{ $n('data/_id') ? 'readonly disabled' : '' }}
-          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/email/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
-        />
-      </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/email/failed') ? '' : 'hidden' }}">{{ $t($n('form/email/errors/0')) }}</div>
-    </div>
-  </div>
-
-  <!-- Row 2: Age / Birthday -->
-  <div class="grid gap-5 md:grid-cols-2">
-    <div>
-      <label for="age" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.age') }}</label>
-      <div class="relative">
-        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
-          </svg>
-        </div>
-        <input
-          type="number"
-          id="age"
-          name="age"
-          value="{{ $n('form/age/value') }}"
-          placeholder="{{ $t('person.form.placeholder.age') }}"
-          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/age/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
-        />
-      </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/age/failed') ? '' : 'hidden' }}">{{ $t($n('form/age/errors/0')) }}</div>
-    </div>
-    <div>
-      <label for="birthday" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.birthday') }}</label>
-      <div class="relative">
-        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-          </svg>
-        </div>
-        <input
-          type="datetime-local"
-          id="birthday"
-          name="birthday"
-          value="{{ $n('form/birthday/value') ? $n('form/birthday/value') | dateFormat('yyyy-MM-ddThh:mm') : '1977-01-01T00:00' }}"
-          {{ $n('data/_id') ? 'readonly disabled' : '' }}
-          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/birthday/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
-        />
-      </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/birthday/failed') ? '' : 'hidden' }}">{{ $t($n('form/birthday/errors/0')) }}</div>
-    </div>
-  </div>
-
-  <!-- Row 3: Height / Job Title -->
-  <div class="grid gap-5 md:grid-cols-2">
-    <div>
-      <label for="height" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.height') }}</label>
-      <input
-        type="number"
-        step="0.1"
-        id="height"
-        name="height"
-        value="{{ $n('form/height/value') }}"
-        placeholder="{{ $t('person.form.placeholder.height') }}"
-        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/height/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
-      />
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/height/failed') ? '' : 'hidden' }}">{{ $t($n('form/height/errors/0')) }}</div>
-    </div>
-    <div>
-      <label for="job_id" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.job_title') }}</label>
-      <select
-        id="job_id"
-        name="job_id"
-        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/job_id/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
-      >
-        <option value="">{{ $t('person.form.option.select_job') }}</option>
-        {% for job in jobs %}
-          <option {{ 'selected' if $n('form/job_id/value')|oid == job._id else '' }} value="{{ job._id }}">{{ job.title }}</option>
-        {% endfor %}
-      </select>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/job_id/failed') ? '' : 'hidden' }}">{{ $t($n('form/job_id/errors/0')) }}</div>
-    </div>
-  </div>
-
-  <!-- Row 4: Skills -->
-  <div>
-    <label class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.skills') }}</label>
-    {% set oids = $n('form/jobs/value') | oid %}
-    <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
-      {% for job in jobs %}
-      <label for="jobs_{{ job._id }}" class="flex items-center gap-3 rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-all duration-150 hover:border-teal-400 hover:bg-teal-50 cursor-pointer">
-        <input
-          type="checkbox"
-          id="jobs_{{ job._id }}"
-          name="jobs[]"
-          value="{{ job._id | oid }}"
-          class="h-5 w-5 rounded border-zinc-300 text-teal-600 transition-all duration-200 focus:ring-4 focus:ring-teal-500/20"
-          {{ 'checked' if ((job._id) in oids) else '' }}
-        />
-        <span class="truncate">{{ job.title }}</span>
-      </label>
-      {% endfor %}
-    </div>
-    <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/jobs/failed') ? '' : 'hidden' }}">{{ $t($n('form/jobs/errors/0')) }}</div>
-  </div>
-
-  <!-- Row 5: Password / Gender -->
-  <div class="grid gap-5 md:grid-cols-2">
-    <div>
-      <label for="password" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.password') }}</label>
-      <div class="relative">
-        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-          <svg class="h-5 w-5 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-          </svg>
-        </div>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          value="{{ $n('form/password/value') }}"
-          placeholder="{{ $t('person.form.placeholder.password') }}"
-          {{ $n('data/_id') ? 'readonly disabled' : '' }}
-          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/password/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
-        />
-      </div>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/password/failed') ? '' : 'hidden' }}">{{ $t($n('form/password/errors/0')) }}</div>
-    </div>
-    <div>
-      <label for="gender" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.gender') }}</label>
-      <select
-        id="gender"
-        name="gender"
-        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/gender/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
-      >
-        <option {{ $n('form/gender/value') == 'none' ? 'selected' : '' }} value="none">{{ $t('person.form.gender.dont_ask') }}</option>
-        <option {{ $n('form/gender/value') == 'male' ? 'selected' : '' }} value="male">{{ $t('person.form.gender.male') }}</option>
-        <option {{ $n('form/gender/value') == 'female' ? 'selected' : '' }} value="female">{{ $t('person.form.gender.female') }}</option>
-        <option {{ $n('form/gender/value') == 'other' ? 'selected' : '' }} value="other">{{ $t('person.form.gender.other') }}</option>
-      </select>
-      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/gender/failed') else 'hidden' }}">{{ $t($n('form/gender/errors/0')) }}</div>
-    </div>
-  </div>
-
-  <!-- Row 6: Married / Color -->
-  <div class="grid gap-6 md:grid-cols-2">
-    <div>
-      <label for="married" class="mb-1 block text-sm font-medium text-zinc-700">{{ $t('person.form.label.married') }}</label>
-      <input name="married" type="hidden" value="false" />
-      <label class="relative inline-flex cursor-pointer items-center">
-        <input name="married" id="married" type="checkbox" value="true" class="peer sr-only" {{ 'checked' if $n('form/married/value') else '' }} />
-        <div class="h-5 w-9 rounded-full bg-zinc-300 transition peer-checked:bg-primary-600"></div>
-        <div class="absolute left-0 top-0 h-5 w-5 translate-x-0 rounded-full bg-white shadow transition peer-checked:translate-x-4"></div>
-      </label>
-    </div>
-    <div>
-      <label for="color" class="mb-1 block text-sm font-medium text-zinc-700">{{ $t('person.form.label.color') }}</label>
-      <input type="color" id="color" name="color" value="{{ $n('form/color/value','#FF0055') }}" title="{{ $t('person.form.tooltip.color') }}" class="h-10 w-24 cursor-pointer rounded-md border border-zinc-300 bg-white p-1 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" />
-    </div>
-  </div>
-
-  <!-- Actions -->
-  <div class="flex flex-wrap gap-3 border-t border-zinc-200 pt-4">
-    <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.submit') }}</button>
-    {% if $n('data/_id') %}
-    <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.cancel') }}</a>
-    {% endif %}
-  </div>
-</form>""",
-	r"example/forms/form_login.j2.html": r"""<form action="{{ $e.routeUrl('root.form.post') }}" method="post">
-  <!-- CSRF Token -->
-  <input
-    type="hidden"
-    name="token"
-    value="{{ $n('form_login/token/value') }}"
-  />
-  {% if $n('form_login/token/failed') %}
-  <div class="mt-2 mb-4 flex items-start gap-2 text-sm text-rose-700">
-    <i class="fas fa-exclamation-circle"></i>
-    <span>{{ $t($n('form_login/token/errors/0')) }}</span>
-  </div>
-  {% endif %}
-  <!-- Email Field -->
-  <div>
-    <label for="email" class="mb-2 block text-sm font-semibold text-zinc-700"
-      >{{ $t('form.validation.email') }}</label
-    >
-    <div class="relative">
-      <div
-        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-      >
-        <i class="fas fa-envelope text-zinc-400"></i>
-      </div>
-      <input
-        value="{{ $n('form_login/email/value') }}"
-        type="email"
-        name="email"
-        id="email"
-        placeholder="{{ $t('form.validation.emailPlaceholder') }}"
-        class="block h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/email/failed') else 'border-zinc-300 bg-white text-zinc-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20' }}"
-      />
-    </div>
-    {% if $n('form_login/email/failed') %}
-    <div class="mt-2 mb-4 flex items-start gap-2 text-sm text-rose-700">
-      <i class="fas fa-exclamation-circle"></i>
-      <span>{{ $t($n('form_login/email/errors/0')) }}</span>
-    </div>
-    {% endif %}
-  </div>
-
-  <!-- Password Field -->
-  <div>
-    <label for="password" class="mb-2 block text-sm font-semibold text-zinc-700"
-      >{{ $t('form.validation.password') }}</label
-    >
-    <div class="relative">
-      <div
-        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-      >
-        <i class="fas fa-lock text-zinc-400"></i>
-      </div>
-      <input
-        value="{{ $n('form_login/password/value') }}"
-        type="password"
-        name="password"
-        id="password"
-        placeholder="{{ $t('form.validation.passwordPlaceholder') }}"
-        class="block mb-4  h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/password/failed') else 'border-zinc-300 bg-white text-zinc-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20' }}"
-      />
-    </div>
-    {% if $n('form_login/password/failed') %}
-    <div class="mb-4 flex items-start gap-2 text-sm text-rose-700">
-      <i class="fas fa-exclamation-circle"></i>
-      <span>{{ $t($n('form_login/password/errors/0')) }}</span>
-    </div>
-    {% endif %}
-  </div>
-
-  <!-- Submit Button -->
-  <button
-    type="submit"
-    class="wave group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-teal-600 to-cyan-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:from-teal-700 hover:to-cyan-800 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-teal-500/30"
-  >
-    <i class="fas fa-sign-in-alt text-white"></i>
-    <span>{{ $t('form.validation.login') }}</span>
-  </button>
-
-  {% if errorLogin %}
-  <div
-    class="mt-4 flex items-start gap-3 rounded-lg border border-rose-300 bg-rose-50 p-4 shadow-sm"
-  >
-    <i class="fas fa-exclamation-circle text-rose-600"></i>
-    <span class="text-sm font-medium text-rose-800">{{ errorLogin }}</span>
-  </div>
-  {% endif %}
-</form>
-""",
 	r"example/i18n.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
     {{ $t('sidebar.languageExample') }}
@@ -1781,227 +492,994 @@ var mapTemplates = {
 </div>
 {% endblock %}
 """,
-	r"example/cookie.j2.html": r"""{% extends 'template/template.j2.html' %}
+	r"example/forms/form_person.j2.html": r"""<form method="POST" action="/example/person/{{ $n('data/_id') | oid ?? '' }}" class="space-y-6">
+  <input type="hidden" name="action" value="{{ $n('data/_id') ? 'EDIT' : 'ADD' }}" />
+  <input type="hidden" name="id" value="{{ $n('data/_id') | oid ?? '' }}" />
+
+  <!-- Row 1: Name / Email -->
+  <div class="grid gap-5 md:grid-cols-2">
+    <div>
+      <label for="name" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.name') }}</label>
+      <div class="relative">
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <i class="fas fa-user text-zinc-400 text-sm"></i>
+        </div>
+        <input
+          type="text"
+          id="name"
+          name="name"
+          value="{{ $n('form/name/value') }}"
+          placeholder="{{ $t('person.form.placeholder.name') }}"
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/name/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+        />
+      </div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/name/failed') ? '' : 'hidden' }}">{{ $t($n('form/name/errors/0')) }}</div>
+    </div>
+    <div>
+      <label for="email" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.email') }}</label>
+      <div class="relative">
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <i class="fas fa-envelope text-zinc-400 text-sm"></i>
+        </div>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          value="{{ $n('form/email/value') }}"
+          placeholder="{{ $t('person.form.placeholder.email') }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/email/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+        />
+      </div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/email/failed') ? '' : 'hidden' }}">{{ $t($n('form/email/errors/0')) }}</div>
+    </div>
+  </div>
+
+  <!-- Row 2: Age / Birthday -->
+  <div class="grid gap-5 md:grid-cols-2">
+    <div>
+      <label for="age" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.age') }}</label>
+      <div class="relative">
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <i class="fas fa-calendar-alt text-zinc-400 text-sm"></i>
+        </div>
+        <input
+          type="number"
+          id="age"
+          name="age"
+          value="{{ $n('form/age/value') }}"
+          placeholder="{{ $t('person.form.placeholder.age') }}"
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/age/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+        />
+      </div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/age/failed') ? '' : 'hidden' }}">{{ $t($n('form/age/errors/0')) }}</div>
+    </div>
+    <div>
+      <label for="birthday" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.birthday') }}</label>
+      <div class="relative">
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <i class="fas fa-calendar-alt text-zinc-400 text-sm"></i>
+        </div>
+        <input
+          type="datetime-local"
+          id="birthday"
+          name="birthday"
+          value="{{ $n('form/birthday/value') ? $n('form/birthday/value') | dateFormat('yyyy-MM-ddThh:mm') : '1977-01-01T00:00' }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/birthday/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+        />
+      </div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/birthday/failed') ? '' : 'hidden' }}">{{ $t($n('form/birthday/errors/0')) }}</div>
+    </div>
+  </div>
+
+  <!-- Row 3: Height / Job Title -->
+  <div class="grid gap-5 md:grid-cols-2">
+    <div>
+      <label for="height" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.height') }}</label>
+      <input
+        type="number"
+        step="0.1"
+        id="height"
+        name="height"
+        value="{{ $n('form/height/value') }}"
+        placeholder="{{ $t('person.form.placeholder.height') }}"
+        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/height/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+      />
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/height/failed') ? '' : 'hidden' }}">{{ $t($n('form/height/errors/0')) }}</div>
+    </div>
+    <div>
+      <label for="job_id" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.job_title') }}</label>
+      <select
+        id="job_id"
+        name="job_id"
+        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/job_id/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+      >
+        <option value="">{{ $t('person.form.option.select_job') }}</option>
+        {% for job in jobs %}
+          <option {{ 'selected' if $n('form/job_id/value')|oid == job._id else '' }} value="{{ job._id }}">{{ job.title }}</option>
+        {% endfor %}
+      </select>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/job_id/failed') ? '' : 'hidden' }}">{{ $t($n('form/job_id/errors/0')) }}</div>
+    </div>
+  </div>
+
+  <!-- Row 4: Skills -->
+  <div>
+    <label class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.skills') }}</label>
+    {% set oids = $n('form/jobs/value') | oid %}
+    <div class="grid gap-3 sm:grid-cols-2 md:grid-cols-3">
+      {% for job in jobs %}
+      <label for="jobs_{{ job._id }}" class="flex items-center gap-3 rounded-lg border border-zinc-300 bg-white px-4 py-3 text-sm font-medium text-zinc-700 shadow-sm transition-all duration-150 hover:border-teal-400 hover:bg-teal-50 cursor-pointer">
+        <input
+          type="checkbox"
+          id="jobs_{{ job._id }}"
+          name="jobs[]"
+          value="{{ job._id | oid }}"
+          class="h-5 w-5 rounded border-zinc-300 text-teal-600 transition-all duration-200 focus:ring-4 focus:ring-teal-500/20"
+          {{ 'checked' if ((job._id) in oids) else '' }}
+        />
+        <span class="truncate">{{ job.title }}</span>
+      </label>
+      {% endfor %}
+    </div>
+    <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/jobs/failed') ? '' : 'hidden' }}">{{ $t($n('form/jobs/errors/0')) }}</div>
+  </div>
+
+  <!-- Row 5: Password / Gender -->
+  <div class="grid gap-5 md:grid-cols-2">
+    <div>
+      <label for="password" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.password') }}</label>
+      <div class="relative">
+        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+          <i class="fas fa-lock text-zinc-400 text-sm"></i>
+        </div>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          value="{{ $n('form/password/value') }}"
+          placeholder="{{ $t('person.form.placeholder.password') }}"
+          {{ $n('data/_id') ? 'readonly disabled' : '' }}
+          class="h-12 w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('data/_id') ? 'opacity-60 cursor-not-allowed' : '' }} {{ $n('form/password/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+        />
+      </div>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ $n('form/password/failed') ? '' : 'hidden' }}">{{ $t($n('form/password/errors/0')) }}</div>
+    </div>
+    <div>
+      <label for="gender" class="mb-2 block text-sm font-semibold text-zinc-700">{{ $t('person.form.label.gender') }}</label>
+      <select
+        id="gender"
+        name="gender"
+        class="h-12 w-full rounded-lg border border-zinc-300 bg-white px-4 text-sm shadow-sm transition-all duration-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20 {{ $n('form/gender/failed') ? 'border-rose-500 ring-4 ring-rose-500/20 focus:border-rose-500 focus:ring-rose-500/20' : '' }}"
+      >
+        <option {{ $n('form/gender/value') == 'none' ? 'selected' : '' }} value="none">{{ $t('person.form.gender.dont_ask') }}</option>
+        <option {{ $n('form/gender/value') == 'male' ? 'selected' : '' }} value="male">{{ $t('person.form.gender.male') }}</option>
+        <option {{ $n('form/gender/value') == 'female' ? 'selected' : '' }} value="female">{{ $t('person.form.gender.female') }}</option>
+        <option {{ $n('form/gender/value') == 'other' ? 'selected' : '' }} value="other">{{ $t('person.form.gender.other') }}</option>
+      </select>
+      <div class="mt-1.5 flex items-center gap-1.5 text-xs text-rose-700 {{ '' if $n('form/gender/failed') else 'hidden' }}">{{ $t($n('form/gender/errors/0')) }}</div>
+    </div>
+  </div>
+
+  <!-- Row 6: Married / Color -->
+  <div class="grid gap-6 md:grid-cols-2">
+    <div>
+      <label for="married" class="mb-1 block text-sm font-medium text-zinc-700">{{ $t('person.form.label.married') }}</label>
+      <input name="married" type="hidden" value="false" />
+      <label class="relative inline-flex cursor-pointer items-center">
+        <input name="married" id="married" type="checkbox" value="true" class="peer sr-only" {{ 'checked' if $n('form/married/value') else '' }} />
+        <div class="h-5 w-9 rounded-full bg-zinc-300 transition peer-checked:bg-primary-600"></div>
+        <div class="absolute left-0 top-0 h-5 w-5 translate-x-0 rounded-full bg-white shadow transition peer-checked:translate-x-4"></div>
+      </label>
+    </div>
+    <div>
+      <label for="color" class="mb-1 block text-sm font-medium text-zinc-700">{{ $t('person.form.label.color') }}</label>
+      <input type="color" id="color" name="color" value="{{ $n('form/color/value','#FF0055') }}" title="{{ $t('person.form.tooltip.color') }}" class="h-10 w-24 cursor-pointer rounded-md border border-zinc-300 bg-white p-1 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" />
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-wrap gap-3 border-t border-zinc-200 pt-4">
+    <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.submit') }}</button>
+    {% if $n('data/_id') %}
+    <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.cancel') }}</a>
+    {% endif %}
+  </div>
+</form>""",
+	r"example/forms/form_login.j2.html": r"""<form action="{{ $e.routeUrl('root.form.post') }}" method="post">
+  <!-- CSRF Token -->
+  <input
+    type="hidden"
+    name="token"
+    value="{{ $n('form_login/token/value') }}"
+  />
+  {% if $n('form_login/token/failed') %}
+  <div class="mt-2 mb-4 flex items-start gap-2 text-sm text-rose-700">
+    <i class="fas fa-exclamation-circle"></i>
+    <span>{{ $t($n('form_login/token/errors/0')) }}</span>
+  </div>
+  {% endif %}
+  <!-- Email Field -->
+  <div>
+    <label for="email" class="mb-2 block text-sm font-semibold text-zinc-700"
+      >{{ $t('form.validation.email') }}</label
+    >
+    <div class="relative">
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+      >
+        <i class="fas fa-envelope text-zinc-400"></i>
+      </div>
+      <input
+        value="{{ $n('form_login/email/value') }}"
+        type="email"
+        name="email"
+        id="email"
+        placeholder="{{ $t('form.validation.emailPlaceholder') }}"
+        class="block h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/email/failed') else 'border-zinc-300 bg-white text-zinc-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20' }}"
+      />
+    </div>
+    {% if $n('form_login/email/failed') %}
+    <div class="mt-2 mb-4 flex items-start gap-2 text-sm text-rose-700">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ $t($n('form_login/email/errors/0')) }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Password Field -->
+  <div>
+    <label for="password" class="mb-2 block text-sm font-semibold text-zinc-700"
+      >{{ $t('form.validation.password') }}</label
+    >
+    <div class="relative">
+      <div
+        class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+      >
+        <i class="fas fa-lock text-zinc-400"></i>
+      </div>
+      <input
+        value="{{ $n('form_login/password/value') }}"
+        type="password"
+        name="password"
+        id="password"
+        placeholder="{{ $t('form.validation.passwordPlaceholder') }}"
+        class="block mb-4  h-12 w-full rounded-lg border pl-10 pr-3 text-sm shadow-sm transition-all duration-200 {{ 'border-rose-500 bg-rose-50 text-rose-900 placeholder-rose-400 focus:border-rose-600 focus:ring-4 focus:ring-rose-500/30' if $n('form_login/password/failed') else 'border-zinc-300 bg-white text-zinc-900 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/20' }}"
+      />
+    </div>
+    {% if $n('form_login/password/failed') %}
+    <div class="mb-4 flex items-start gap-2 text-sm text-rose-700">
+      <i class="fas fa-exclamation-circle"></i>
+      <span>{{ $t($n('form_login/password/errors/0')) }}</span>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Submit Button -->
+  <button
+    type="submit"
+    class="wave group inline-flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-teal-600 to-cyan-700 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:from-teal-700 hover:to-cyan-800 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-teal-500/30"
+  >
+    <i class="fas fa-sign-in-alt text-white"></i>
+    <span>{{ $t('form.validation.login') }}</span>
+  </button>
+
+  {% if errorLogin %}
+  <div
+    class="mt-4 flex items-start gap-3 rounded-lg border border-rose-300 bg-rose-50 p-4 shadow-sm"
+  >
+    <i class="fas fa-exclamation-circle text-rose-600"></i>
+    <span class="text-sm font-medium text-rose-800">{{ errorLogin }}</span>
+  </div>
+  {% endif %}
+</form>
+""",
+	r"example/database.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
-    {{ $t('sidebar.cookieExample') }}
+  {{ $t('sidebar.mongo') }}
 {% endblock %}
 
 {% block content %}
 <div class="space-y-6">
 
   {# ============== HERO ============== #}
-  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-amber-950 to-yellow-950 p-6 sm:p-8 shadow-soft">
-    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-amber-500/20 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-yellow-500/20 blur-3xl"></div>
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-emerald-950 to-green-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-emerald-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-green-500/20 blur-3xl"></div>
 
     <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
       <div class="flex items-start gap-4">
         <div class="relative">
           <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <i class="fa-solid fa-cookie-bite text-2xl text-amber-300"></i>
+            <i class="fa-solid fa-leaf text-2xl text-emerald-300"></i>
           </div>
           <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
-            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-yellow-400 ring-2 ring-zinc-900"></span>
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-green-400 ring-2 ring-zinc-900"></span>
           </span>
         </div>
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-300 ring-1 ring-amber-400/30">
-              <i class="fa-solid fa-cookie text-[10px]"></i> Browser storage
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-yellow-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-yellow-300 ring-1 ring-yellow-400/30">
-              <i class="fa-solid fa-shield-halved text-[10px]"></i> Safe / Signed
-            </span>
             <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
-              <i class="fa-solid fa-bolt text-[10px]"></i> Session-aware
+              <i class="fa-solid fa-bolt"></i>
+              MongoDB
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 ring-1 ring-white/10">
+              <i class="fa-solid fa-cubes text-green-300"></i>
+              Document
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 ring-1 ring-white/10">
+              <i class="fa-solid fa-code text-cyan-300"></i>
+              NoSQL
             </span>
           </div>
-          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('cookies.test') }}</h1>
-          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Manage the current request's cookies &mdash; add a name/value pair, optionally sign it as <span class="font-semibold text-amber-300">safe</span>, and remove entries one at a time.</p>
+          <h1 class="mt-2 text-2xl font-bold text-white sm:text-3xl">{{ $t('database.test.title') }}</h1>
+          <p class="mt-1 max-w-xl text-sm text-zinc-300">
+            MongoDB example with CRUD operations — flexible, schemaless documents with title and auto-generated slug.
+          </p>
+        </div>
+      </div>
+
+      {# Quick stats #}
+      <div class="grid grid-cols-2 gap-3 sm:flex sm:items-stretch">
+        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Records</div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span class="text-2xl font-bold text-white">{{ (allRecords | default([])) | length }}</span>
+            <span class="text-[11px] text-zinc-400">/ page</span>
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur">
+          <div class="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Page</div>
+          <div class="mt-1 flex items-baseline gap-1.5">
+            <span class="text-2xl font-bold text-white">{{ data.page if data.page else 1 }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== RECORDS CARD ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    {# Header band #}
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 bg-gradient-to-r from-zinc-50 to-white px-5 py-4">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
+          <i class="fa-solid fa-database"></i>
+        </span>
+        <div>
+          <p class="text-sm font-semibold text-zinc-800 leading-tight">Documents</p>
+          <p class="text-[11px] text-zinc-500">Collection · title and slug</p>
+        </div>
+      </div>
+      <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-200">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+        Live
+      </span>
+    </div>
+
+    {# Table #}
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-zinc-200 text-xs md:text-sm">
+        <thead class="bg-zinc-50">
+          <tr class="text-left">
+            <th class="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.title') }}</th>
+            <th class="px-5 py-3 text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.slug') }}</th>
+            <th class="px-5 py-3 text-end text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('database.table.header.action') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-100 bg-white">
+          {% for record in allRecords %}
+          <tr class="group transition hover:bg-emerald-50/40">
+            <td class="px-5 py-3 align-middle">
+              <div class="flex items-center gap-2.5">
+                <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
+                  <i class="fa-solid fa-file-lines text-[11px]"></i>
+                </span>
+                <span class="font-semibold text-zinc-800">{{ record.title }}</span>
+              </div>
+            </td>
+            <td class="px-5 py-3">
+              <code class="inline-flex items-center gap-1.5 rounded-md bg-zinc-100 px-2 py-1 font-mono text-[11px] text-zinc-700 ring-1 ring-zinc-200">
+                <i class="fa-solid fa-link text-[9px] text-zinc-400"></i>
+                {{ record.slug }}
+              </code>
+            </td>
+            <td class="px-5 py-3 text-end">
+              <a
+                href="/example/database?page={{ data.page if data.page else 1 }}&action=delete&id={{ record.id }}"
+                class="wave inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 bg-white text-rose-600 transition hover:border-rose-300 hover:bg-rose-50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                title="{{ $t('database.table.header.action') }}">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="3" class="px-5 py-16 text-center">
+              <div class="mx-auto flex max-w-sm flex-col items-center gap-3">
+                <div class="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-100 text-zinc-400">
+                  <i class="fa-solid fa-folder-open text-2xl"></i>
+                </div>
+                <p class="text-sm font-semibold text-zinc-700">{{ $t('database.table.empty') if $t('database.table.empty') else $t('No records found') }}</p>
+                <p class="text-xs text-zinc-500">Insert your first document using the form below.</p>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    {# Add document form + pagination #}
+    <div class="space-y-4 border-t border-zinc-200 bg-zinc-50/60 p-5">
+      <form method="post" class="rounded-xl border border-dashed border-zinc-300 bg-white p-4">
+        <input type="hidden" name="action" value="add" />
+        <div class="mb-3 flex items-center gap-2">
+          <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-sm">
+            <i class="fa-solid fa-plus text-[11px]"></i>
+          </span>
+          <p class="text-xs font-semibold text-zinc-700">
+            {{ $t('database.table.button.add') }}
+            <span class="font-normal text-zinc-500">·</span>
+            <span class="font-normal text-zinc-500">New document</span>
+          </p>
+        </div>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-start">
+          <div class="flex-1">
+            <label class="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              {{ $t('database.table.header.title') }}
+            </label>
+            <div class="relative">
+              <span class="pointer-events-none absolute inset-y-0 start-3 flex items-center text-zinc-400">
+                <i class="fa-solid fa-heading text-xs"></i>
+              </span>
+              <input
+                type="text"
+                name="title"
+                placeholder="{{ $t('database.table.input.placeholder.title') }}"
+                class="block h-10 w-full rounded-lg border border-zinc-200 bg-white ps-9 pe-3 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+              />
+            </div>
+          </div>
+          <div class="sm:pt-[22px]">
+            <button
+              type="submit"
+              class="wave inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 px-4 text-xs font-semibold text-white shadow-sm transition hover:from-emerald-700 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 sm:w-auto"
+            >
+              <i class="fa-solid fa-plus"></i>
+              <span>{{ $t('database.table.button.add') }}</span>
+            </button>
+          </div>
+        </div>
+      </form>
+
+      {% if pagination %}
+      <div class="flex items-center justify-center pt-1">
+        <div class="pagination-wrapper text-sm text-zinc-600">
+          {{ pagination }}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+</div>
+{% endblock %}
+""",
+	r"example/socket.j2.html": r"""{% extends 'template/template.j2.html' %}
+
+{% block title %}
+    {{ $t('sidebar.socketExample') }}
+{% endblock %}
+
+{% block content %}
+
+{# Reusable button templates used by websocket.js (do NOT remove) #}
+<template id="btn-template-client">
+  <button data-id="{id}"
+          class="wave socket-client-send group inline-flex w-full items-center justify-between gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2.5 text-sm font-medium text-zinc-700 transition hover:-translate-y-0.5 hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700 hover:shadow-sm disable-wave">
+    <span class="inline-flex items-center gap-2 truncate">
+      <span class="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 text-white text-[11px] font-semibold shadow-sm">
+        <i class="fa-solid fa-user"></i>
+      </span>
+      <span class="truncate">{text}</span>
+    </span>
+    <i class="fa-solid fa-paper-plane text-xs text-zinc-400 transition group-hover:text-teal-600 group-hover:translate-x-0.5"></i>
+  </button>
+</template>
+
+{# ============== HERO ============== #}
+<section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-teal-950 to-cyan-950 p-6 sm:p-8 shadow-soft">
+  <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-teal-500/20 blur-3xl"></div>
+  <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl"></div>
+
+  <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <div class="flex items-start gap-4">
+      <div class="relative">
+        <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+          <i class="fa-solid fa-tower-broadcast text-2xl text-teal-300"></i>
+        </div>
+        <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-emerald-400 ring-2 ring-zinc-900"></span>
+        </span>
+      </div>
+      <div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            Realtime
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-white/5 px-2.5 py-1 text-[11px] font-medium text-zinc-300 ring-1 ring-white/10">
+            <i class="fa-solid fa-bolt text-amber-300"></i>
+            Bi-directional
+          </span>
+        </div>
+        <h1 class="mt-2 text-2xl font-bold text-white sm:text-3xl">
+          {{ $t('testWebSocket.title') }}
+        </h1>
+        <p class="mt-1 max-w-xl text-sm text-zinc-300">
+          Send and receive messages over a persistent WebSocket connection — broadcast time, random text, list peers, or stream live video.
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 sm:flex-row lg:flex-col lg:items-end">
+      <div class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs text-zinc-200 backdrop-blur">
+        <i class="fa-solid fa-link text-teal-300"></i>
+        <span class="text-zinc-400">endpoint</span>
+        <span class="text-white">/ws</span>
+      </div>
+      <div class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 backdrop-blur">
+        <i class="fa-solid fa-shield-halved text-cyan-300"></i>
+        Protocol&nbsp;<span class="font-semibold text-white">ws / wss</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ============== MAIN GRID ============== #}
+<section class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+
+  {# ---------- CONSOLE (left, 2 cols) ---------- #}
+  <div class="lg:col-span-2 reveal-up">
+    <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+      {# Console header #}
+      <div class="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-4 py-3">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1.5">
+            <span class="h-2.5 w-2.5 rounded-full bg-rose-400"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-amber-400"></span>
+            <span class="h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+          </div>
+          <div class="hidden items-center gap-2 sm:flex">
+            <i class="fa-solid fa-terminal text-xs text-zinc-500"></i>
+            <span class="text-sm font-semibold text-zinc-700">
+              {{ $t('testWebSocket.output') }}
+            </span>
+          </div>
+        </div>
+        <button
+          onclick="document.getElementById('socket-output').value='';document.getElementById('socket-output').innerHTML='';document.getElementById('client-list').innerHTML=''"
+          class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/30 disable-wave">
+          <i class="fa-solid fa-broom"></i>
+          {{ $t('testWebSocket.clear') }}
+        </button>
+      </div>
+
+      {# Console body — dark terminal #}
+      <div class="relative bg-zinc-950">
+        <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(20,184,166,0.08),transparent_60%)]"></div>
+        <label for="socket-output" class="sr-only">{{ $t('testWebSocket.output') }}</label>
+        <textarea id="socket-output" readonly
+                  class="relative block h-[420px] w-full resize-none border-0 bg-transparent p-5 font-mono text-[13px] leading-relaxed text-emerald-300 placeholder:text-zinc-600 focus:outline-none focus:ring-0"
+                  placeholder="// Waiting for messages from /ws ...
+// Click an action below to send a frame."></textarea>
+      </div>
+
+      {# Action bar #}
+      <div class="flex flex-wrap items-center gap-2 border-t border-zinc-200 bg-zinc-50 px-4 py-3">
+        <button id="btn-socket-time"
+                class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30 disable-wave">
+          <i class="fa-regular fa-clock text-teal-600"></i>
+          {{ $t('testWebSocket.getTime') }}
+        </button>
+        <button id="btn-socket-fa"
+                class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-500/30 disable-wave">
+          <i class="fa-solid fa-shuffle text-cyan-600"></i>
+          {{ $t('testWebSocket.randomMessage') }}
+        </button>
+        <button id="btn-socket-clients"
+                class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-700 transition hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500/30 disable-wave">
+          <i class="fa-solid fa-users text-violet-600"></i>
+          {{ $t('testWebSocket.clientLists') }}
+        </button>
+        <div class="ms-auto">
+          <button id="btn-socket-stream"
+                  class="wave inline-flex items-center gap-2 rounded-lg bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:from-emerald-700 hover:to-teal-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/40 disable-wave">
+            <i class="fa-solid fa-video"></i>
+            {{ $t('testWebSocket.stream') }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {# ---------- CLIENTS (right) ---------- #}
+  <aside class="reveal-up">
+    <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+      <div class="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-4 py-3">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 text-white shadow-sm">
+            <i class="fa-solid fa-network-wired text-xs"></i>
+          </span>
+          <div>
+            <p class="text-sm font-semibold text-zinc-800 leading-tight">Connected clients</p>
+            <p class="text-[11px] text-zinc-500">Click a peer to send a hello</p>
+          </div>
+        </div>
+        <button id="btn-refresh-clients" type="button"
+                onclick="document.getElementById('btn-socket-clients')?.click()"
+                class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 bg-white text-zinc-500 transition hover:border-teal-300 hover:text-teal-600 focus:outline-none focus:ring-2 focus:ring-teal-500/30"
+                title="Refresh">
+          <i class="fa-solid fa-arrows-rotate text-xs"></i>
+        </button>
+      </div>
+
+      <div class="p-4">
+        <div id="client-list" class="flex flex-col gap-2 min-h-[200px]">
+          {# Empty-state placeholder is overwritten by JS once clients arrive #}
+          <div class="flex h-[280px] flex-col items-center justify-center rounded-xl border border-dashed border-zinc-200 bg-zinc-50/60 px-4 text-center">
+            <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-zinc-400 shadow-sm ring-1 ring-zinc-200">
+              <i class="fa-solid fa-user-slash"></i>
+            </div>
+            <p class="mt-3 text-sm font-medium text-zinc-700">No peers yet</p>
+            <p class="mt-1 text-xs text-zinc-500">
+              Press <span class="rounded bg-white px-1.5 py-0.5 font-mono text-[11px] text-zinc-700 ring-1 ring-zinc-200">{{ $t('testWebSocket.clientLists') }}</span>
+              to query.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {# Info card #}
+    <div class="mt-4 rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+      <div class="flex items-start gap-3">
+        <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+          <i class="fa-solid fa-lightbulb"></i>
+        </div>
+        <div class="text-xs leading-relaxed text-amber-900">
+          Open this page in two browser tabs, list the clients, then click any peer to deliver a direct message to that socket.
+        </div>
+      </div>
+    </div>
+  </aside>
+</section>
+
+{# ============== VIDEO STREAM (hidden by default, toggled by JS) ============== #}
+<section id="videoStream" class="reveal-up mt-6 hidden">
+  <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 bg-gradient-to-r from-emerald-50 to-teal-50 px-5 py-3">
+      <div class="flex items-center gap-3">
+        <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-sm">
+          <i class="fa-solid fa-video"></i>
+        </span>
+        <div>
+          <p class="text-sm font-semibold text-zinc-800 leading-tight">Live video stream</p>
+          <p class="text-[11px] text-zinc-500">Local camera ⇄ Server playback</p>
+        </div>
+        <span class="ms-2 inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-rose-600 ring-1 ring-rose-300">
+          <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-rose-500"></span>
+          LIVE
+        </span>
+      </div>
+      <button id="btn-stop-stream"
+              class="wave inline-flex items-center gap-2 rounded-lg bg-rose-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/40 disable-wave">
+        <i class="fa-solid fa-stop"></i>
+        {{ $t('testWebSocket.stopStream') }}
+      </button>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 p-5 md:grid-cols-2">
+      <div class="relative overflow-hidden rounded-xl border border-zinc-200 bg-zinc-950">
+        <div class="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
+          <i class="fa-solid fa-camera"></i> Local
+        </div>
+        <video id="localVideo" class="block aspect-video w-full bg-black" autoplay muted></video>
+      </div>
+      <div class="relative overflow-hidden rounded-xl border border-zinc-200 bg-zinc-950">
+        <div class="absolute left-3 top-3 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
+          <i class="fa-solid fa-server"></i> Server
+        </div>
+        <video id="serverVideo" class="block aspect-video w-full bg-black" controls></video>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+""",
+	r"example/dump.j2.html": r"""{% extends 'template/template.j2.html' %}
+
+{% block title %}
+    {{ $t('sidebar.dumpExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-950 via-slate-900 to-zinc-800 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-lime-500/15 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-cyan-500/15 blur-3xl"></div>
+
+    {# subtle terminal grid #}
+    <div class="pointer-events-none absolute inset-0 opacity-[0.06]" style="background-image: linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px); background-size: 24px 24px;"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-bug text-2xl text-lime-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-lime-400 ring-2 ring-zinc-950"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-lime-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-lime-300 ring-1 ring-lime-400/30">
+              <i class="fa-solid fa-magnifying-glass text-[10px]"></i> Inspect
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-cyan-300 ring-1 ring-cyan-400/30">
+              <i class="fa-solid fa-diagram-project text-[10px]"></i> Nested
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-300 ring-1 ring-amber-400/30">
+              <i class="fa-solid fa-code text-[10px]"></i> dump()
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('Variable Dump') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Pretty-print any Dart value — primitives, lists, maps, nested objects — straight from your Jinja template with <code class="rounded bg-white/10 px-1 text-[12px] text-lime-200">{{ '{{ dump(variable) }}' }}</code>.</p>
         </div>
       </div>
 
       <div class="grid grid-cols-2 gap-3 sm:gap-4">
         <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Cookies</div>
-          <div class="mt-1 text-2xl font-bold text-white">{{ session.cookies | length }}</div>
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Helper</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-lg font-bold text-white">
+            <i class="fa-solid fa-wand-magic-sparkles text-sm text-lime-300"></i>
+            <span class="font-mono">dump()</span>
+          </div>
         </div>
         <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Scope</div>
-          <div class="mt-1 text-base sm:text-lg font-bold text-white">
-            <i class="fa-solid fa-globe text-amber-300"></i> Request
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Mode</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base font-bold text-white">
+            <i class="fa-solid fa-circle text-[10px] text-amber-400 animate-pulse"></i>
+            <span>Debug</span>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  {# ============== COOKIES CARD ============== #}
+  {# ============== RENDERED DUMP ============== #}
   <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-slate-50 to-zinc-50 px-5 py-4 border-b border-zinc-200">
       <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 text-white shadow-sm ring-1 ring-amber-300/50">
-          <i class="fa-solid fa-cookie-bite text-sm"></i>
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-slate-700 to-zinc-900 text-white shadow-sm ring-1 ring-slate-400/40">
+          <i class="fa-solid fa-eye text-sm"></i>
         </span>
         <div>
-          <h3 class="text-base font-bold text-zinc-900">Cookies</h3>
-          <p class="text-xs text-zinc-500">{{ session.cookies | length }} {{ 'cookie' if session.cookies | length == 1 else 'cookies' }} on this request</p>
+          <h3 class="text-base font-bold text-zinc-900">Rendered output</h3>
+          <p class="text-xs text-zinc-500">Interactive, expandable tree of your variable</p>
         </div>
       </div>
-      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-amber-800 ring-1 ring-amber-200">
-        <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Live
-      </span>
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-lime-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-lime-800 ring-1 ring-lime-200">
+          <i class="fa-solid fa-circle text-[8px] text-lime-500 animate-pulse"></i> Live
+        </span>
+        <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-700 ring-1 ring-zinc-200">
+          <i class="fa-solid fa-cube text-[9px]"></i> Map
+        </span>
+      </div>
     </div>
+    <div class="p-5">
+      <div class="rounded-xl border border-dashed border-slate-300 bg-gradient-to-br from-slate-50 to-zinc-50 p-4 overflow-x-auto">
+        {{ dump(variable) }}
+      </div>
+    </div>
+  </section>
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-zinc-200">
-        <thead class="bg-zinc-50">
-          <tr>
-            <th class="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('cookies.key') }}</th>
-            <th class="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('cookies.value') }}</th>
-            <th class="px-5 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('cookies.action') }}</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-zinc-100 bg-white">
-          {% for cookie in session.cookies %}
-          <tr class="group transition-colors duration-150 hover:bg-amber-50/60">
-            <td class="px-5 py-3.5 align-middle">
-              <div class="flex items-center gap-2.5">
-                <span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-100 text-amber-700 ring-1 ring-amber-200">
-                  <i class="fa-solid fa-key text-[11px]"></i>
-                </span>
-                <span class="font-semibold text-zinc-900">{{ cookie.name }}</span>
-              </div>
-            </td>
-            <td class="px-5 py-3.5 align-middle">
-              <code class="inline-block max-w-md break-all rounded-md bg-zinc-100 px-2 py-1 text-xs font-mono text-zinc-800 ring-1 ring-zinc-200">{{ cookie.value }}</code>
-            </td>
-            <td class="px-5 py-3.5 text-center">
-              <form method="post" class="inline">
-                <input type="hidden" name="name" value="{{ cookie.name }}" />
-                <input type="hidden" name="action" value="delete" />
-                <button type="submit" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-rose-200 bg-white text-rose-600 transition-all duration-150 hover:bg-rose-50 hover:border-rose-300 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30" aria-label="{{ $t('cookies.remove') }}" title="{{ $t('cookies.remove') }}">
-                  <i class="fa-solid fa-trash-can text-sm"></i>
-                </button>
-              </form>
-            </td>
-          </tr>
-          {% endfor %}
-          {% if session.cookies | length == 0 %}
-          <tr>
-            <td colspan="3" class="px-5 py-10 text-center">
-              <div class="mx-auto flex max-w-sm flex-col items-center gap-2">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-amber-50 text-amber-400 ring-1 ring-amber-100">
-                  <i class="fa-solid fa-cookie text-2xl"></i>
-                </span>
-                <p class="text-sm font-semibold text-zinc-700">No cookies yet</p>
-                <p class="text-xs text-zinc-500">Use the form below to add your first cookie.</p>
-              </div>
-            </td>
-          </tr>
-          {% endif %}
-        </tbody>
-        <tfoot class="border-t border-zinc-200 bg-gradient-to-r from-amber-50/50 to-yellow-50/50">
-          <tr>
-            <td colspan="3" class="px-5 py-5">
-              <form method="post" class="rounded-xl border border-dashed border-amber-300 bg-white/70 p-4">
-                <div class="mb-3 flex items-center gap-2">
-                  <span class="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 text-white shadow-sm">
-                    <i class="fa-solid fa-plus text-[11px]"></i>
-                  </span>
-                  <p class="text-sm font-semibold text-zinc-800">{{ $t('cookies.addCookie') }}</p>
-                </div>
-                <div class="flex flex-col gap-3 lg:flex-row lg:items-stretch">
-                  <div class="relative w-full lg:max-w-xs">
-                    <i class="fa-solid fa-tag pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-amber-500"></i>
-                    <input placeholder="{{ $t('cookies.placeholder.name') }}" class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" type="text" name="name" value="" />
-                  </div>
-                  <div class="relative w-full flex-1">
-                    <i class="fa-solid fa-quote-right pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-amber-500"></i>
-                    <input type="text" name="value" class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" placeholder="{{ $t('cookies.placeholder.value') }}">
-                  </div>
-                  <label class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-amber-400 hover:bg-amber-50">
-                    <input class="h-4 w-4 rounded border-zinc-300 text-amber-600 focus:ring-2 focus:ring-amber-500/30" name="safe" type="checkbox" value="1">
-                    <i class="fa-solid fa-shield-halved text-xs text-amber-600"></i>
-                    <span>{{ $t('cookies.safe') }}</span>
-                  </label>
-                  <button class="wave group inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 px-5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-amber-600 hover:to-yellow-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-amber-500/30" type="submit">
-                    <i class="fa-solid fa-plus text-xs transition-transform duration-200 group-hover:scale-110"></i>
-                    <span>{{ $t('cookies.add') }}</span>
-                  </button>
-                </div>
-                <input type="hidden" name="action" value="add" />
-              </form>
-            </td>
-          </tr>
-        </tfoot>
-      </table>
+  {# ============== CODE SOURCE ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-zinc-900 to-slate-900 px-5 py-4 border-b border-zinc-700">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+          <i class="fa-solid fa-terminal text-sm text-lime-300"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-white">Source snippet</h3>
+          <p class="text-xs text-zinc-400">The exact Jinja call used above</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-rose-500/80"></span>
+        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-amber-400/80"></span>
+        <span class="inline-flex h-2.5 w-2.5 rounded-full bg-lime-400/80"></span>
+      </div>
+    </div>
+    <div class="bg-zinc-950 p-5">
+      <pre class="overflow-x-auto text-sm font-mono leading-relaxed text-lime-300"><code>{% raw %}{{ dump(variable) }}{% endraw %}</code></pre>
+    </div>
+  </section>
+
+  {# ============== TIPS ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-sm ring-1 ring-amber-300/50">
+        <i class="fa-solid fa-lightbulb text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">Good to know</h3>
+        <p class="text-xs text-zinc-500">When and how to reach for <code class="rounded bg-zinc-100 px-1 text-amber-700">dump()</code></p>
+      </div>
+    </div>
+    <div class="grid gap-3 p-5 md:grid-cols-3">
+      <div class="rounded-xl border border-lime-200 bg-gradient-to-br from-white to-lime-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
+            <i class="fa-solid fa-bolt text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Any type</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Pass strings, numbers, booleans, lists, maps, even controller objects — <code class="rounded bg-zinc-100 px-1 text-lime-700">dump()</code> walks them recursively.</p>
+      </div>
+      <div class="rounded-xl border border-cyan-200 bg-gradient-to-br from-white to-cyan-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-cyan-100 text-cyan-700 ring-1 ring-cyan-200">
+            <i class="fa-solid fa-folder-tree text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Collapsible tree</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Click any node to expand/collapse — perfect for inspecting deeply nested API responses and session payloads.</p>
+      </div>
+      <div class="rounded-xl border border-rose-200 bg-gradient-to-br from-white to-rose-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-rose-100 text-rose-700 ring-1 ring-rose-200">
+            <i class="fa-solid fa-triangle-exclamation text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Dev only</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Strip <code class="rounded bg-zinc-100 px-1 text-rose-700">dump()</code> calls before going to production — they expose internal state to every visitor.</p>
+      </div>
     </div>
   </section>
 
   {# ============== FILE REFERENCES ============== #}
   <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
-          <i class="fa-solid fa-folder-tree text-sm"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">File References</h3>
-          <p class="text-xs text-zinc-500">Related files powering this example</p>
-        </div>
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+        <i class="fa-solid fa-folder-tree text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">File References</h3>
+        <p class="text-xs text-zinc-500">Where this example lives</p>
       </div>
     </div>
     <ul class="divide-y divide-zinc-100">
-      <li class="group transition-colors duration-150 hover:bg-amber-50/50">
+      <li class="group transition-colors duration-150 hover:bg-slate-50">
         <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-100 text-amber-600 ring-1 ring-amber-200">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-slate-100 text-slate-700 ring-1 ring-slate-200">
               <i class="fa-regular fa-eye text-xs"></i>
             </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.view') }}</span>
+            <span class="text-sm font-semibold text-zinc-700">View</span>
           </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-amber-700 ring-1 ring-zinc-200 group-hover:bg-amber-100 group-hover:ring-amber-200">example/lib/widgets/example/cookie.j2.html</code>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-slate-700 ring-1 ring-zinc-200 group-hover:bg-slate-100 group-hover:ring-slate-300">example/lib/widgets/example/dump.j2.html</code>
         </div>
       </li>
-      <li class="group transition-colors duration-150 hover:bg-amber-50/50">
+      <li class="group transition-colors duration-150 hover:bg-slate-50">
         <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-yellow-100 text-yellow-700 ring-1 ring-yellow-200">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
               <i class="fa-solid fa-code text-xs"></i>
             </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.controller') }}</span>
+            <span class="text-sm font-semibold text-zinc-700">Controller</span>
           </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-yellow-800 ring-1 ring-zinc-200 group-hover:bg-yellow-100 group-hover:ring-yellow-200">example/lib/controllers/home_controller.dart</code>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-lime-700 ring-1 ring-zinc-200 group-hover:bg-lime-100 group-hover:ring-lime-200">example/lib/controllers/home_controller.dart → exampleDump()</code>
         </div>
       </li>
-      <li class="group transition-colors duration-150 hover:bg-amber-50/50">
+      <li class="group transition-colors duration-150 hover:bg-slate-50">
         <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-rose-100 text-rose-600 ring-1 ring-rose-200">
-              <i class="fa-solid fa-user-shield text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.authController') }}</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-rose-700 ring-1 ring-zinc-200 group-hover:bg-rose-100 group-hover:ring-rose-200">example/lib/controllers/auth_controller.dart</code>
-        </div>
-      </li>
-      <li class="group transition-colors duration-150 hover:bg-amber-50/50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-100 text-indigo-600 ring-1 ring-indigo-200">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-100 text-amber-700 ring-1 ring-amber-200">
               <i class="fa-solid fa-route text-xs"></i>
             </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.router') }}</span>
+            <span class="text-sm font-semibold text-zinc-700">Router</span>
           </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-indigo-700 ring-1 ring-zinc-200 group-hover:bg-indigo-100 group-hover:ring-indigo-200">example/lib/route/web_route.dart</code>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-amber-800 ring-1 ring-zinc-200 group-hover:bg-amber-100 group-hover:ring-amber-200">example/lib/route/web_route.dart → key: 'root.dump'</code>
         </div>
       </li>
     </ul>
   </section>
 </div>
 {% endblock %}
+""",
+	r"example/sqlite/_filtering.j2.html": r"""<form method="get" class="contents">
+    <th class="p-1.5 align-top">
+        <input
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_b.id/value') else 'border-zinc-200' }}"
+            type="number"
+            name="filter_b.id"
+            placeholder="{{ $t('mysql.placeholder.id') }}"
+            value="{{ $n('filter_books/filter_b.id/value') }}"
+        />
+    </th>
+    <th class="p-1.5 align-top">
+        <input
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_title/value') else 'border-zinc-200' }}"
+            type="text"
+            name="filter_title"
+            placeholder="{{ $t('mysql.placeholder.title') }}"
+            value="{{ $n('filter_books/filter_title/value') }}"
+        />
+    </th>
+    <th class="p-1.5 align-top">
+        <input
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_author/value') else 'border-zinc-200' }}"
+            type="text"
+            name="filter_author"
+            placeholder="{{ $t('mysql.placeholder.author') }}"
+            value="{{ $n('filter_books/filter_author/value') }}"
+        />
+    </th>
+    <th class="p-1.5 align-top">
+        <input
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_published_date/value') else 'border-zinc-200' }}"
+            type="date"
+            name="filter_published_date"
+            placeholder="{{ $t('mysql.placeholder.publishedDate') }}"
+            value="{{ $n('filter_books/filter_published_date/value') }}"
+        />
+    </th>
+    <th class="p-1.5 align-top">
+        <select
+            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_category_id/value') else 'border-zinc-200' }}"
+            name="filter_category_id"
+            aria-label="Filter Category ID"
+        >
+            {% set selected = $n('filter_books/filter_category_id/value')  %}
+            <option value="">{{ $t('mysql.filter.allCategories') }}</option>
+            {% for category in categories %}
+                <option value="{{ category.id }}" {{ 'selected' if selected == category.id else '' }}>{{ category.title }}</option>
+            {% endfor %}
+        </select>
+    </th>
+    <th colspan="2" class="p-1.5 align-top text-end">
+        {% set filterIsDirty = $l.existUrlQuery(['filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) %}
+        <div class="flex items-center justify-end gap-1.5">
+            <a
+                href="{{ $l.removeUrlQuery(['page','filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) }}"
+                class="wave inline-flex h-9 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium shadow-sm transition {{ 'border-zinc-200 bg-white text-zinc-500 hover:bg-zinc-50' if not filterIsDirty else 'border-zinc-800 bg-zinc-900 text-white hover:bg-zinc-800' }}"
+                type="reset"
+                title="{{ $t('mysql.button.reset') }}"
+            >
+                <i class="fa-solid fa-rotate-left text-[11px]"></i>
+                <span class="hidden sm:inline">{{ $t('mysql.button.reset') }}</span>
+            </a>
+            <button
+                class="wave inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg bg-gradient-to-r from-teal-600 to-cyan-600 px-3.5 text-xs font-semibold text-white shadow-sm transition hover:from-teal-700 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-teal-500/40"
+                type="submit"
+            >
+                <i class="fa-solid fa-filter text-[11px]"></i>
+                <span>{{ $t('mysql.button.filter') }}</span>
+            </button>
+        </div>
+    </th>
+</form>
 """,
 	r"example/sqlite/_form_edit.j2.html": r"""<form method="post" action="{{ $e.uriString }}" class="contents">
     <input type="hidden" name="action" value="{{ 'update' if(action == 'edit' ?? action == 'update') else 'add' }}" />
@@ -2418,7 +1896,965 @@ var mapTemplates = {
 </div>
 {% endblock %}
 """,
-	r"example/sqlite/_filtering.j2.html": r"""<form method="get" class="contents">
+	r"example/email.j2.html": r"""{% extends 'template/template.j2.html' %}
+{% block title %}
+    {{ $t('sidebar.emailExample') }}
+{% endblock %}
+
+{% block content %}
+{% set hasSuccess = sendEmailSuccess %}
+{% set hasFailed = sendEmailFailed %}
+
+<div class="space-y-6">
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-sky-950 to-indigo-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-sky-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-paper-plane text-2xl text-sky-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-indigo-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-sky-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-sky-300 ring-1 ring-sky-400/30">
+              <i class="fa-solid fa-envelope-open-text text-[10px]"></i> SMTP
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
+              <i class="fa-solid fa-lock text-[10px]"></i> SSL / TLS
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+              <i class="fa-solid fa-list-check text-[10px]"></i> Validated
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('email.title') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Compose and dispatch a test email through any <span class="font-semibold text-sky-300">SMTP host</span> &mdash; with full per-field validation and inline error reporting.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Default port</div>
+          <div class="mt-1 text-2xl font-bold text-white font-mono">1025</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Status</div>
+          {% if hasSuccess %}
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-emerald-300">
+            <i class="fa-solid fa-circle-check"></i> Sent
+          </div>
+          {% elif hasFailed %}
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-rose-300">
+            <i class="fa-solid fa-circle-xmark"></i> Failed
+          </div>
+          {% else %}
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-zinc-200">
+            <i class="fa-solid fa-circle text-[10px] animate-pulse"></i> Idle
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== FLASH ALERTS ============== #}
+  {% if hasSuccess %}
+  <div class="reveal-up flex items-start gap-3 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 p-4 shadow-soft">
+    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-500 text-white shadow-sm">
+      <i class="fa-solid fa-circle-check text-lg"></i>
+    </span>
+    <div class="flex-1">
+      <p class="text-sm font-bold text-emerald-900">{{ $t('email.success') }}</p>
+      <p class="mt-0.5 text-xs text-emerald-700">Your message was accepted by the SMTP server.</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {% if hasFailed %}
+  <div class="reveal-up flex items-start gap-3 rounded-2xl border border-rose-200 bg-gradient-to-r from-rose-50 to-pink-50 p-4 shadow-soft">
+    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-rose-500 text-white shadow-sm">
+      <i class="fa-solid fa-triangle-exclamation text-lg"></i>
+    </span>
+    <div class="flex-1">
+      <p class="text-sm font-bold text-rose-900">{{ $t('email.failed') }}</p>
+      <p class="mt-0.5 text-xs text-rose-700">Please review the SMTP host, port and credentials and try again.</p>
+    </div>
+  </div>
+  {% endif %}
+
+  {# ============== EMAIL FORM ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-sky-50 to-indigo-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-sm ring-1 ring-sky-300/50">
+          <i class="fa-solid fa-paper-plane text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Compose email</h3>
+          <p class="text-xs text-zinc-500">Fill in the message and SMTP details to send</p>
+        </div>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-sky-800 ring-1 ring-sky-200">
+        <i class="fa-solid fa-shield-halved text-[9px]"></i> Validated
+      </span>
+    </div>
+
+    <form method="post" action="{{ $e.routeUrl('root.email.post') }}" class="space-y-6 p-5 sm:p-6">
+
+      {# ----- Sender section ----- #}
+      <fieldset>
+        <legend class="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-sky-700">
+          <span class="grid h-6 w-6 place-items-center rounded-md bg-sky-100 text-sky-600 ring-1 ring-sky-200">
+            <i class="fa-solid fa-user text-[10px]"></i>
+          </span>
+          Sender
+        </legend>
+        <div class="grid gap-4 md:grid-cols-2">
+          <div>
+            <label for="from" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.from') }}</label>
+            <div class="relative">
+              <i class="fa-solid fa-at pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+              <input
+                value="{{ $n('emailForm/from/value') }}"
+                type="text"
+                name="from"
+                id="from"
+                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/from/failed') else '' }}"
+              />
+            </div>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/from/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              {{ $t($n('emailForm/from/errors/0')) }}
+            </div>
+          </div>
+          <div>
+            <label for="fromName" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.fromName') }}</label>
+            <div class="relative">
+              <i class="fa-solid fa-id-badge pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+              <input
+                value="{{ $n('emailForm/fromName/value') }}"
+                type="text"
+                name="fromName"
+                id="fromName"
+                placeholder="{{ $t('email.placeholder.name') }}"
+                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/fromName/failed') else '' }}"
+              />
+            </div>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/fromName/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              {{ $t($n('emailForm/fromName/errors/0')) }}
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      {# ----- Message section ----- #}
+      <fieldset>
+        <legend class="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-indigo-700">
+          <span class="grid h-6 w-6 place-items-center rounded-md bg-indigo-100 text-indigo-600 ring-1 ring-indigo-200">
+            <i class="fa-solid fa-envelope text-[10px]"></i>
+          </span>
+          Message
+        </legend>
+        <div class="space-y-4">
+          <div>
+            <label for="email" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.to') }}</label>
+            <div class="relative">
+              <i class="fa-solid fa-envelope pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-indigo-500"></i>
+              <input
+                value="{{ $n('emailForm/email/value') }}"
+                type="email"
+                name="email"
+                id="email"
+                placeholder="{{ $t('email.placeholder.to') }}"
+                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/email/failed') else '' }}"
+              />
+            </div>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/email/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              {{ $t($n('emailForm/email/errors/0')) }}
+            </div>
+          </div>
+          <div>
+            <label for="subject" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.subject') }}</label>
+            <div class="relative">
+              <i class="fa-solid fa-heading pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-indigo-500"></i>
+              <input
+                value="{{ $n('emailForm/subject/value') }}"
+                type="text"
+                name="subject"
+                id="subject"
+                placeholder="{{ $t('email.placeholder.subject') }}"
+                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/subject/failed') else '' }}"
+              />
+            </div>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/subject/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              {{ $t($n('emailForm/subject/errors/0')) }}
+            </div>
+          </div>
+          <div>
+            <label for="message" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.message') }}</label>
+            <textarea
+              name="message"
+              id="message"
+              placeholder="{{ $t('email.placeholder.message') }}"
+              class="min-h-[140px] w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/message/failed') else '' }}"
+            >{{ $n('emailForm/message/value') }}</textarea>
+            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/message/failed') else 'hidden' }}">
+              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+              {{ $t($n('emailForm/message/errors/0')) }}
+            </div>
+          </div>
+        </div>
+      </fieldset>
+
+      {# ----- SMTP section ----- #}
+      <fieldset class="rounded-xl border border-dashed border-sky-300 bg-sky-50/40 p-4">
+        <legend class="ml-2 flex items-center gap-2 rounded-md bg-white px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-sky-700 ring-1 ring-sky-200">
+          <i class="fa-solid fa-server text-[10px]"></i>
+          SMTP server
+        </legend>
+        <div class="space-y-4">
+          <div class="grid gap-4 md:grid-cols-[1fr_140px]">
+            <div>
+              <label for="host" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.host') }}</label>
+              <div class="relative">
+                <i class="fa-solid fa-server pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+                <input
+                  value="{{ $n('emailForm/host/value') }}"
+                  type="text"
+                  name="host"
+                  id="host"
+                  placeholder="{{ $t('email.placeholder.host') }}"
+                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/host/failed') else '' }}"
+                />
+              </div>
+              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/host/failed') else 'hidden' }}">
+                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                {{ $t($n('emailForm/host/errors/0')) }}
+              </div>
+            </div>
+            <div>
+              <label for="port" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.port') }}</label>
+              <div class="relative">
+                <i class="fa-solid fa-plug pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+                <input
+                  value="{{ $n('emailForm/port/value') if $n('emailForm/port/value') else '1025' }}"
+                  type="number"
+                  name="port"
+                  id="port"
+                  placeholder="{{ $t('email.placeholder.port') }}"
+                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/port/failed') else '' }}"
+                />
+              </div>
+              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/port/failed') else 'hidden' }}">
+                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                {{ $t($n('emailForm/port/errors/0')) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="grid gap-4 md:grid-cols-2">
+            <div>
+              <label for="username" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.username') }}</label>
+              <div class="relative">
+                <i class="fa-solid fa-user pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+                <input
+                  value="{{ $n('emailForm/username/value') }}"
+                  type="text"
+                  name="username"
+                  id="username"
+                  placeholder="{{ $t('email.placeholder.username') }}"
+                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/username/failed') else '' }}"
+                />
+              </div>
+              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/username/failed') else 'hidden' }}">
+                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                {{ $t($n('emailForm/username/errors/0')) }}
+              </div>
+            </div>
+            <div>
+              <label for="password" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.password') }}</label>
+              <div class="relative">
+                <i class="fa-solid fa-lock pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
+                <input
+                  value="{{ $n('emailForm/password/value') }}"
+                  type="password"
+                  name="password"
+                  id="password"
+                  placeholder="{{ $t('email.placeholder.password') }}"
+                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/password/failed') else '' }}"
+                />
+              </div>
+              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/password/failed') else 'hidden' }}">
+                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
+                {{ $t($n('emailForm/password/errors/0')) }}
+              </div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3 pt-1">
+            <label for="allowInsecure" class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-sky-400 hover:bg-sky-50">
+              <input
+                value="true"
+                {{ $n('emailForm/allowInsecure/value') ? 'checked' : '' }}
+                type="checkbox"
+                name="allowInsecure"
+                id="allowInsecure"
+                class="h-4 w-4 rounded border-zinc-300 text-sky-600 focus:ring-2 focus:ring-sky-500/30"
+              />
+              <i class="fa-solid fa-shield text-xs text-amber-600"></i>
+              <span>{{ $t('email.allowInsecure') }}</span>
+            </label>
+            <label for="ssl" class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-sky-400 hover:bg-sky-50">
+              <input
+                value="true"
+                {{ $n('emailForm/ssl/value') ? 'checked' : '' }}
+                type="checkbox"
+                name="ssl"
+                id="ssl"
+                class="h-4 w-4 rounded border-zinc-300 text-sky-600 focus:ring-2 focus:ring-sky-500/30"
+              />
+              <i class="fa-solid fa-lock text-xs text-emerald-600"></i>
+              <span>{{ $t('email.ssl') }}</span>
+            </label>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="flex flex-col-reverse gap-3 border-t border-zinc-200 pt-5 sm:flex-row sm:items-center sm:justify-end">
+        <button type="submit" class="wave group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-sky-600 hover:to-indigo-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-sky-500/30">
+          <i class="fa-solid fa-paper-plane text-sm transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
+          <span>{{ $t('email.send') }}</span>
+        </button>
+      </div>
+    </form>
+  </section>
+</div>
+{% endblock %}
+""",
+	r"example/form.j2.html": r"""{% extends 'template/template.j2.html' %}
+{% block title %}
+    {{ $t('sidebar.formExample') }}
+{% endblock %}
+
+{% block content %}
+{% set isLoggedIn = (loginResult == true or user != null) %}
+
+<div class="space-y-6">
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-rose-950 to-pink-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-rose-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-pink-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-shield-halved text-2xl text-rose-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-pink-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-pink-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-rose-300 ring-1 ring-rose-400/30">
+              <i class="fa-solid fa-list-check text-[10px]"></i> Validation
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-pink-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-pink-300 ring-1 ring-pink-400/30">
+              <i class="fa-solid fa-shield text-[10px]"></i> Server-side
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+              <i class="fa-solid fa-lock text-[10px]"></i> CSRF
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('form.validation.title') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">A complete login flow built with Finch's <span class="text-rose-300 font-semibold">FormValidator</span> &mdash; type-safe rules, friendly errors and built-in CSRF protection.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Status</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold {{ 'text-emerald-300' if isLoggedIn else 'text-rose-300' }}">
+            <i class="fa-solid {{ 'fa-circle-check' if isLoggedIn else 'fa-circle-xmark' }}"></i>
+            {{ 'Signed in' if isLoggedIn else 'Signed out' }}
+          </div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Method</div>
+          <div class="mt-1 text-base sm:text-lg font-bold text-white">
+            <span class="font-mono">POST</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== TEST CREDENTIALS ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-amber-200 bg-gradient-to-br from-amber-50 to-orange-50 shadow-soft">
+    <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between">
+      <div class="flex items-start gap-3">
+        <div class="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-sm ring-1 ring-amber-300/50">
+          <i class="fa-solid fa-key text-base"></i>
+        </div>
+        <div>
+          <p class="text-sm font-bold text-zinc-900">{{ $t('Test Credentials') }}</p>
+          <p class="text-xs text-zinc-600">Use these to try the login form.</p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-white px-3 py-1.5 shadow-sm">
+          <i class="fa-solid fa-envelope text-[11px] text-amber-600"></i>
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">{{ $t('form.validation.credentials.email') }}</span>
+          <code class="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-mono text-amber-900">example@uproid.com</code>
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-white px-3 py-1.5 shadow-sm">
+          <i class="fa-solid fa-lock text-[11px] text-amber-600"></i>
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">{{ $t('form.validation.credentials.password') }}</span>
+          <code class="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-mono text-amber-900">@Test123</code>
+        </span>
+      </div>
+    </div>
+  </section>
+
+  {% if not isLoggedIn %}
+  {# ============== LOGIN FORM ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-rose-50 to-pink-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-sm ring-1 ring-rose-300/50">
+          <i class="fa-solid fa-right-to-bracket text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">{{ $t('Login Form') }}</h3>
+          <p class="text-xs text-zinc-500">{{ $t('Enter your credentials to continue') }}</p>
+        </div>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-zinc-900 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-rose-300 ring-1 ring-rose-400/30">
+        <i class="fa-solid fa-shield-halved text-[9px]"></i> Validated
+      </span>
+    </div>
+    <div class="p-5 sm:p-6">
+      {% include form_login.widget | unscape %}
+    </div>
+  </section>
+  {% else %}
+  {# ============== SUCCESS CARD ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-emerald-200 bg-gradient-to-br from-emerald-50 via-white to-green-50 shadow-soft">
+    <div class="flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div class="flex items-center gap-4">
+        <div class="relative grid h-14 w-14 place-items-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-lg ring-1 ring-emerald-300/50">
+          <i class="fa-solid fa-circle-check text-2xl"></i>
+          <span class="absolute -top-1 -right-1 inline-flex h-3 w-3">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-white"></span>
+          </span>
+        </div>
+        <div>
+          <p class="text-base font-bold text-emerald-900">{{ $t('form.validation.loginSuccess') }}</p>
+          <p class="mt-0.5 text-sm text-emerald-700">{{ $t('Logged in as') }} <span class="rounded-md bg-emerald-100 px-2 py-0.5 font-mono text-xs font-semibold text-emerald-800">{{ user.name }}</span></p>
+        </div>
+      </div>
+      <a href="{{ $e.routeUrl('root.logout') }}" class="wave inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 px-4 py-2.5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-rose-600 hover:to-pink-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-rose-500/30">
+        <i class="fa-solid fa-right-from-bracket text-sm"></i>
+        <span>{{ $t('form.validation.logout') }}</span>
+      </a>
+    </div>
+  </section>
+  {% endif %}
+
+  {# ============== FILE REFERENCES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+          <i class="fa-solid fa-folder-tree text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">{{ $t('File References') }}</h3>
+          <p class="text-xs text-zinc-500">{{ $t('Related files for this form example') }}</p>
+        </div>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-600 ring-1 ring-zinc-200">
+        <i class="fa-solid fa-code text-[9px]"></i> Source
+      </span>
+    </div>
+    <ul class="divide-y divide-zinc-100">
+      <li class="group transition-colors duration-150 hover:bg-rose-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-rose-100 text-rose-600 ring-1 ring-rose-200">
+              <i class="fa-regular fa-eye text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('form.validation.view') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-rose-700 ring-1 ring-zinc-200 group-hover:bg-rose-100 group-hover:ring-rose-200">example/lib/widgets/example/form.j2.html</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-rose-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-pink-100 text-pink-600 ring-1 ring-pink-200">
+              <i class="fa-solid fa-code text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('form.validation.controller') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-pink-700 ring-1 ring-zinc-200 group-hover:bg-pink-100 group-hover:ring-pink-200">example/lib/controllers/home_controller.dart</code>
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>
+{% endblock %}
+""",
+	r"example/route.j2.html": r"""{% extends 'template/template.j2.html' %}
+
+{% block title %}
+    {{ $t('sidebar.routeExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-blue-950 to-indigo-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-route text-2xl text-blue-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-indigo-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-blue-300 ring-1 ring-blue-400/30">
+              <i class="fa-solid fa-sitemap text-[10px]"></i> Router map
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
+              <i class="fa-solid fa-shield text-[10px]"></i> Middleware
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+              <i class="fa-solid fa-lock text-[10px]"></i> Auth-aware
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('webRouteExample.title') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">A live registry of every <span class="font-semibold text-blue-300">FinchRoute</span> &mdash; methods, paths, permissions, auth requirements and the controllers that handle them.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Routes</div>
+          <div class="mt-1 text-2xl font-bold text-white">{{ routes | length }}</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Status</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-emerald-300">
+            <i class="fa-solid fa-circle text-[10px] animate-pulse"></i>
+            Active
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== ROUTES TABLE ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm ring-1 ring-blue-300/50">
+          <i class="fa-solid fa-sitemap text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Registered routes</h3>
+          <p class="text-xs text-zinc-500">{{ routes | length }} {{ 'route' if routes | length == 1 else 'routes' }} discovered</p>
+        </div>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-800 ring-1 ring-blue-200">
+        <i class="fa-solid fa-bolt text-[9px]"></i> Runtime
+      </span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-zinc-200">
+        <thead class="bg-zinc-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">#</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.path') }}</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.type') }}</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.permissions') }}</th>
+            <th class="px-4 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.auth') }}</th>
+            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.controller') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-100 bg-white">
+          {% for route in routes %}
+          <tr class="group transition-colors duration-150 hover:bg-blue-50/50">
+            <td class="px-4 py-3 align-middle">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-zinc-100 text-[11px] font-bold text-zinc-600 ring-1 ring-zinc-200">{{ loop.index }}</span>
+            </td>
+            <td class="px-4 py-3 align-middle text-sm">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">{{ route.method }}</span>
+                <a class="inline-flex items-center gap-1.5 font-mono text-sm font-semibold text-blue-700 transition-colors duration-150 hover:text-blue-900 hover:underline" href="{{ route.fullPath }}">
+                  <span>{{ route.fullPath }}</span>
+                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-0 transition-opacity duration-150 group-hover:opacity-100"></i>
+                </a>
+              </div>
+              {% if route.key %}
+              <div class="mt-1 inline-flex items-center gap-1 text-[11px] font-mono text-zinc-500">
+                <i class="fa-solid fa-key text-[9px] text-zinc-400"></i>
+                {{ route.key }}
+              </div>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 align-middle">
+              <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-2.5 py-1 text-[11px] font-semibold text-indigo-800 ring-1 ring-indigo-200">
+                <i class="fa-solid fa-tag text-[9px]"></i>
+                {{ route.type }}
+              </span>
+            </td>
+            <td class="px-4 py-3 align-middle text-sm text-zinc-700">
+              {% if route.permissions %}
+              <span class="inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800 ring-1 ring-amber-200">
+                <i class="fa-solid fa-shield-halved text-[10px]"></i>
+                {{ route.permissions }}
+              </span>
+              {% else %}
+              <span class="text-xs text-zinc-400">&mdash;</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 align-middle text-center">
+              {% if route.hasAuth %}
+              <span class="inline-flex h-7 items-center gap-1 rounded-full bg-emerald-100 px-2.5 text-[11px] font-bold text-emerald-700 ring-1 ring-emerald-200">
+                <i class="fa-solid fa-lock text-[10px]"></i> Yes
+              </span>
+              {% else %}
+              <span class="inline-flex h-7 items-center gap-1 rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-zinc-500 ring-1 ring-zinc-200">
+                <i class="fa-solid fa-lock-open text-[10px]"></i> No
+              </span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 align-middle text-sm">
+              {% if route.middlewares %}
+              <div class="mb-1 flex flex-wrap gap-1">
+                {% for mw in route.middlewares %}
+                <span class="inline-flex items-center gap-1 rounded-md bg-violet-50 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-violet-700 ring-1 ring-violet-200">
+                  <i class="fa-solid fa-layer-group text-[8px]"></i>{{ mw }}
+                </span>
+                {% endfor %}
+              </div>
+              {% endif %}
+              <div class="font-mono text-xs text-zinc-700">{{ route.controller }}{{ route.index }}</div>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if routes | length == 0 %}
+          <tr>
+            <td colspan="6" class="px-5 py-10 text-center">
+              <div class="mx-auto flex max-w-sm flex-col items-center gap-2">
+                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-blue-50 text-blue-400 ring-1 ring-blue-100">
+                  <i class="fa-solid fa-route text-2xl"></i>
+                </span>
+                <p class="text-sm font-semibold text-zinc-700">No routes registered</p>
+              </div>
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  {# ============== FILE REFERENCES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+          <i class="fa-solid fa-folder-tree text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">File References</h3>
+          <p class="text-xs text-zinc-500">Where the router lives</p>
+        </div>
+      </div>
+    </div>
+    <ul class="divide-y divide-zinc-100">
+      <li class="group transition-colors duration-150 hover:bg-blue-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-100 text-blue-600 ring-1 ring-blue-200">
+              <i class="fa-solid fa-route text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('webRouteExample.router') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-blue-700 ring-1 ring-zinc-200 group-hover:bg-blue-100 group-hover:ring-blue-200">example/lib/route/web_route.dart</code>
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>
+{% endblock %}
+""",
+	r"example/pagination.j2.html": r"""{% extends 'template/template.j2.html' %}
+
+{% block title %}
+    {{ $t('sidebar.paginationExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-cyan-950 to-blue-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-bars-staggered text-2xl text-cyan-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-blue-400 ring-2 ring-zinc-900"></span>
+          </span>
+        </div>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-cyan-300 ring-1 ring-cyan-400/30">
+              <i class="fa-solid fa-table-list text-[10px]"></i> UIPaging
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-blue-300 ring-1 ring-blue-400/30">
+              <i class="fa-solid fa-arrows-left-right text-[10px]"></i> Multi-instance
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
+              <i class="fa-solid fa-link text-[10px]"></i> Query-preserving
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('sidebar.paginationExample') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Render multiple <span class="font-semibold text-cyan-300">UIPaging</span> widgets on the same page with independent <code class="rounded bg-white/10 px-1 text-[12px] text-cyan-200">prefix</code> and <code class="rounded bg-white/10 px-1 text-[12px] text-cyan-200">otherQuery</code> so each pager preserves the others' state.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Pagers</div>
+          <div class="mt-1 text-2xl font-bold text-white">3</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Records</div>
+          <div class="mt-1 text-2xl font-bold text-white">2,500</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Styles</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-white">
+            <i class="fa-solid fa-palette text-[12px] text-cyan-300"></i>
+            <span>3</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== PAGER A — DEFAULT ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-cyan-50 to-blue-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-sm ring-1 ring-cyan-300/50">
+          <i class="fa-solid fa-1 text-sm font-bold"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Pager A — default width</h3>
+          <p class="text-xs text-zinc-500">1,000 records · 10 per page · prefix <code class="rounded bg-cyan-100 px-1 text-cyan-800">page_a</code></p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-700 ring-1 ring-cyan-200">
+          <i class="fa-solid fa-database text-[9px]"></i> total 1000
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-700 ring-1 ring-blue-200">
+          <i class="fa-solid fa-layer-group text-[9px]"></i> page-size 10
+        </span>
+      </div>
+    </div>
+    <div class="p-5">
+      <div class="rounded-xl border border-dashed border-cyan-200 bg-gradient-to-br from-cyan-50/40 to-blue-50/40 p-4">
+        {{ paginationA }}
+      </div>
+    </div>
+  </section>
+
+  {# ============== PAGER B — WIDE SIDE ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm ring-1 ring-blue-300/50">
+          <i class="fa-solid fa-2 text-sm font-bold"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Pager B — wide side</h3>
+          <p class="text-xs text-zinc-500">500 records · 10 per page · <code class="rounded bg-blue-100 px-1 text-blue-800">widthSide: 5</code> · prefix <code class="rounded bg-blue-100 px-1 text-blue-800">page_b</code></p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-700 ring-1 ring-blue-200">
+          <i class="fa-solid fa-database text-[9px]"></i> total 500
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-indigo-700 ring-1 ring-indigo-200">
+          <i class="fa-solid fa-arrows-left-right-to-line text-[9px]"></i> side 5
+        </span>
+      </div>
+    </div>
+    <div class="p-5">
+      <div class="rounded-xl border border-dashed border-blue-200 bg-gradient-to-br from-blue-50/40 to-indigo-50/40 p-4">
+        {{ paginationB }}
+      </div>
+    </div>
+  </section>
+
+  {# ============== PAGER C — LARGE PAGE SIZE ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 to-cyan-50 px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 text-white shadow-sm ring-1 ring-indigo-300/50">
+          <i class="fa-solid fa-3 text-sm font-bold"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Pager C — large page size</h3>
+          <p class="text-xs text-zinc-500">1,000 records · 100 per page · prefix <code class="rounded bg-indigo-100 px-1 text-indigo-800">page_c</code></p>
+        </div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-indigo-700 ring-1 ring-indigo-200">
+          <i class="fa-solid fa-database text-[9px]"></i> total 1000
+        </span>
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-700 ring-1 ring-cyan-200">
+          <i class="fa-solid fa-layer-group text-[9px]"></i> page-size 100
+        </span>
+      </div>
+    </div>
+    <div class="p-5">
+      <div class="rounded-xl border border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50/40 to-cyan-50/40 p-4">
+        {{ paginationC }}
+      </div>
+    </div>
+  </section>
+
+  {# ============== USAGE / TIPS ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-sm ring-1 ring-cyan-300/50">
+        <i class="fa-solid fa-lightbulb text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">How it works</h3>
+        <p class="text-xs text-zinc-500">Each pager owns its own query parameter prefix</p>
+      </div>
+    </div>
+    <div class="grid gap-3 p-5 md:grid-cols-3">
+      <div class="rounded-xl border border-cyan-200 bg-gradient-to-br from-white to-cyan-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-cyan-100 text-cyan-700 ring-1 ring-cyan-200">
+            <i class="fa-solid fa-hashtag text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">prefix</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Sets the query key — e.g. <code class="rounded bg-zinc-100 px-1 text-cyan-700">?page_a=2</code>. Lets several pagers coexist independently.</p>
+      </div>
+      <div class="rounded-xl border border-blue-200 bg-gradient-to-br from-white to-blue-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-blue-100 text-blue-700 ring-1 ring-blue-200">
+            <i class="fa-solid fa-shuffle text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">otherQuery</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Forward the other pagers' current page so clicking one pager doesn't reset the others.</p>
+      </div>
+      <div class="rounded-xl border border-indigo-200 bg-gradient-to-br from-white to-indigo-50/40 p-4">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="grid h-7 w-7 place-items-center rounded-lg bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200">
+            <i class="fa-solid fa-arrows-left-right-to-line text-[11px]"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">widthSide</p>
+        </div>
+        <p class="text-xs leading-relaxed text-zinc-600">Number of page links on each side of the current page. Larger values produce wider button strips.</p>
+      </div>
+    </div>
+  </section>
+
+  {# ============== FILE REFERENCES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+        <i class="fa-solid fa-folder-tree text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">File References</h3>
+        <p class="text-xs text-zinc-500">Where this example lives</p>
+      </div>
+    </div>
+    <ul class="divide-y divide-zinc-100">
+      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-cyan-100 text-cyan-600 ring-1 ring-cyan-200">
+              <i class="fa-regular fa-eye text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">View</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-cyan-700 ring-1 ring-zinc-200 group-hover:bg-cyan-100 group-hover:ring-cyan-200">example/lib/widgets/example/pagination.j2.html</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-100 text-blue-700 ring-1 ring-blue-200">
+              <i class="fa-solid fa-code text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">Controller</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-blue-700 ring-1 ring-zinc-200 group-hover:bg-blue-100 group-hover:ring-blue-200">example/lib/controllers/home_controller.dart → paginationExample()</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-48">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200">
+              <i class="fa-solid fa-puzzle-piece text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">Paging widget</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-indigo-700 ring-1 ring-zinc-200 group-hover:bg-indigo-100 group-hover:ring-indigo-200">example/lib/widgets/template/paging.j2.html</code>
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>
+{% endblock %}
+""",
+	r"example/mysql/_filtering.j2.html": r"""<form method="get" class="contents">
     <th class="p-1.5 align-top">
         <input
             class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_b.id/value') else 'border-zinc-200' }}"
@@ -2906,78 +3342,227 @@ var mapTemplates = {
 </div>
 {% endblock %}
 """,
-	r"example/mysql/_filtering.j2.html": r"""<form method="get" class="contents">
-    <th class="p-1.5 align-top">
-        <input
-            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_b.id/value') else 'border-zinc-200' }}"
-            type="number"
-            name="filter_b.id"
-            placeholder="{{ $t('mysql.placeholder.id') }}"
-            value="{{ $n('filter_books/filter_b.id/value') }}"
-        />
-    </th>
-    <th class="p-1.5 align-top">
-        <input
-            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_title/value') else 'border-zinc-200' }}"
-            type="text"
-            name="filter_title"
-            placeholder="{{ $t('mysql.placeholder.title') }}"
-            value="{{ $n('filter_books/filter_title/value') }}"
-        />
-    </th>
-    <th class="p-1.5 align-top">
-        <input
-            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_author/value') else 'border-zinc-200' }}"
-            type="text"
-            name="filter_author"
-            placeholder="{{ $t('mysql.placeholder.author') }}"
-            value="{{ $n('filter_books/filter_author/value') }}"
-        />
-    </th>
-    <th class="p-1.5 align-top">
-        <input
-            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_published_date/value') else 'border-zinc-200' }}"
-            type="date"
-            name="filter_published_date"
-            placeholder="{{ $t('mysql.placeholder.publishedDate') }}"
-            value="{{ $n('filter_books/filter_published_date/value') }}"
-        />
-    </th>
-    <th class="p-1.5 align-top">
-        <select
-            class="h-9 w-full rounded-lg border bg-white px-2.5 text-xs shadow-sm transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 {{ 'border-emerald-400 ring-2 ring-emerald-200' if $n('filter_books/filter_category_id/value') else 'border-zinc-200' }}"
-            name="filter_category_id"
-            aria-label="Filter Category ID"
-        >
-            {% set selected = $n('filter_books/filter_category_id/value')  %}
-            <option value="">{{ $t('mysql.filter.allCategories') }}</option>
-            {% for category in categories %}
-                <option value="{{ category.id }}" {{ 'selected' if selected == category.id else '' }}>{{ category.title }}</option>
-            {% endfor %}
-        </select>
-    </th>
-    <th colspan="2" class="p-1.5 align-top text-end">
-        {% set filterIsDirty = $l.existUrlQuery(['filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) %}
-        <div class="flex items-center justify-end gap-1.5">
-            <a
-                href="{{ $l.removeUrlQuery(['page','filter_b.id','filter_title', 'filter_author', 'filter_published_date', 'filter_category_id']) }}"
-                class="wave inline-flex h-9 items-center gap-1.5 rounded-lg border px-3 text-xs font-medium shadow-sm transition {{ 'border-zinc-200 bg-white text-zinc-500 hover:bg-zinc-50' if not filterIsDirty else 'border-zinc-800 bg-zinc-900 text-white hover:bg-zinc-800' }}"
-                type="reset"
-                title="{{ $t('mysql.button.reset') }}"
-            >
-                <i class="fa-solid fa-rotate-left text-[11px]"></i>
-                <span class="hidden sm:inline">{{ $t('mysql.button.reset') }}</span>
-            </a>
-            <button
-                class="wave inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg bg-gradient-to-r from-teal-600 to-cyan-600 px-3.5 text-xs font-semibold text-white shadow-sm transition hover:from-teal-700 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-teal-500/40"
-                type="submit"
-            >
-                <i class="fa-solid fa-filter text-[11px]"></i>
-                <span>{{ $t('mysql.button.filter') }}</span>
-            </button>
+	r"example/cookie.j2.html": r"""{% extends 'template/template.j2.html' %}
+{% block title %}
+    {{ $t('sidebar.cookieExample') }}
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+
+  {# ============== HERO ============== #}
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-amber-950 to-yellow-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-amber-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-yellow-500/20 blur-3xl"></div>
+
+    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+      <div class="flex items-start gap-4">
+        <div class="relative">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+            <i class="fa-solid fa-cookie-bite text-2xl text-amber-300"></i>
+          </div>
+          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-yellow-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-yellow-400 ring-2 ring-zinc-900"></span>
+          </span>
         </div>
-    </th>
-</form>
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-300 ring-1 ring-amber-400/30">
+              <i class="fa-solid fa-cookie text-[10px]"></i> Browser storage
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-yellow-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-yellow-300 ring-1 ring-yellow-400/30">
+              <i class="fa-solid fa-shield-halved text-[10px]"></i> Safe / Signed
+            </span>
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+              <i class="fa-solid fa-bolt text-[10px]"></i> Session-aware
+            </span>
+          </div>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('cookies.test') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Manage the current request's cookies &mdash; add a name/value pair, optionally sign it as <span class="font-semibold text-amber-300">safe</span>, and remove entries one at a time.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Cookies</div>
+          <div class="mt-1 text-2xl font-bold text-white">{{ session.cookies | length }}</div>
+        </div>
+        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Scope</div>
+          <div class="mt-1 text-base sm:text-lg font-bold text-white">
+            <i class="fa-solid fa-globe text-amber-300"></i> Request
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# ============== COOKIES CARD ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-amber-500 to-yellow-600 text-white shadow-sm ring-1 ring-amber-300/50">
+          <i class="fa-solid fa-cookie-bite text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">Cookies</h3>
+          <p class="text-xs text-zinc-500">{{ session.cookies | length }} {{ 'cookie' if session.cookies | length == 1 else 'cookies' }} on this request</p>
+        </div>
+      </div>
+      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-amber-800 ring-1 ring-amber-200">
+        <i class="fa-solid fa-circle text-[8px] animate-pulse"></i> Live
+      </span>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-zinc-200">
+        <thead class="bg-zinc-50">
+          <tr>
+            <th class="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('cookies.key') }}</th>
+            <th class="px-5 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('cookies.value') }}</th>
+            <th class="px-5 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('cookies.action') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-zinc-100 bg-white">
+          {% for cookie in session.cookies %}
+          <tr class="group transition-colors duration-150 hover:bg-amber-50/60">
+            <td class="px-5 py-3.5 align-middle">
+              <div class="flex items-center gap-2.5">
+                <span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-100 text-amber-700 ring-1 ring-amber-200">
+                  <i class="fa-solid fa-key text-[11px]"></i>
+                </span>
+                <span class="font-semibold text-zinc-900">{{ cookie.name }}</span>
+              </div>
+            </td>
+            <td class="px-5 py-3.5 align-middle">
+              <code class="inline-block max-w-md break-all rounded-md bg-zinc-100 px-2 py-1 text-xs font-mono text-zinc-800 ring-1 ring-zinc-200">{{ cookie.value }}</code>
+            </td>
+            <td class="px-5 py-3.5 text-center">
+              <form method="post" class="inline">
+                <input type="hidden" name="name" value="{{ cookie.name }}" />
+                <input type="hidden" name="action" value="delete" />
+                <button type="submit" class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-rose-200 bg-white text-rose-600 transition-all duration-150 hover:bg-rose-50 hover:border-rose-300 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-rose-500/30" aria-label="{{ $t('cookies.remove') }}" title="{{ $t('cookies.remove') }}">
+                  <i class="fa-solid fa-trash-can text-sm"></i>
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+          {% if session.cookies | length == 0 %}
+          <tr>
+            <td colspan="3" class="px-5 py-10 text-center">
+              <div class="mx-auto flex max-w-sm flex-col items-center gap-2">
+                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-amber-50 text-amber-400 ring-1 ring-amber-100">
+                  <i class="fa-solid fa-cookie text-2xl"></i>
+                </span>
+                <p class="text-sm font-semibold text-zinc-700">No cookies yet</p>
+                <p class="text-xs text-zinc-500">Use the form below to add your first cookie.</p>
+              </div>
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+        <tfoot class="border-t border-zinc-200 bg-gradient-to-r from-amber-50/50 to-yellow-50/50">
+          <tr>
+            <td colspan="3" class="px-5 py-5">
+              <form method="post" class="rounded-xl border border-dashed border-amber-300 bg-white/70 p-4">
+                <div class="mb-3 flex items-center gap-2">
+                  <span class="grid h-7 w-7 place-items-center rounded-lg bg-gradient-to-br from-amber-500 to-yellow-600 text-white shadow-sm">
+                    <i class="fa-solid fa-plus text-[11px]"></i>
+                  </span>
+                  <p class="text-sm font-semibold text-zinc-800">{{ $t('cookies.addCookie') }}</p>
+                </div>
+                <div class="flex flex-col gap-3 lg:flex-row lg:items-stretch">
+                  <div class="relative w-full lg:max-w-xs">
+                    <i class="fa-solid fa-tag pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-amber-500"></i>
+                    <input placeholder="{{ $t('cookies.placeholder.name') }}" class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" type="text" name="name" value="" />
+                  </div>
+                  <div class="relative w-full flex-1">
+                    <i class="fa-solid fa-quote-right pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-amber-500"></i>
+                    <input type="text" name="value" class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20" placeholder="{{ $t('cookies.placeholder.value') }}">
+                  </div>
+                  <label class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-amber-400 hover:bg-amber-50">
+                    <input class="h-4 w-4 rounded border-zinc-300 text-amber-600 focus:ring-2 focus:ring-amber-500/30" name="safe" type="checkbox" value="1">
+                    <i class="fa-solid fa-shield-halved text-xs text-amber-600"></i>
+                    <span>{{ $t('cookies.safe') }}</span>
+                  </label>
+                  <button class="wave group inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-amber-500 to-yellow-600 px-5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-amber-600 hover:to-yellow-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-amber-500/30" type="submit">
+                    <i class="fa-solid fa-plus text-xs transition-transform duration-200 group-hover:scale-110"></i>
+                    <span>{{ $t('cookies.add') }}</span>
+                  </button>
+                </div>
+                <input type="hidden" name="action" value="add" />
+              </form>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </section>
+
+  {# ============== FILE REFERENCES ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <div class="flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
+          <i class="fa-solid fa-folder-tree text-sm"></i>
+        </span>
+        <div>
+          <h3 class="text-base font-bold text-zinc-900">File References</h3>
+          <p class="text-xs text-zinc-500">Related files powering this example</p>
+        </div>
+      </div>
+    </div>
+    <ul class="divide-y divide-zinc-100">
+      <li class="group transition-colors duration-150 hover:bg-amber-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-amber-100 text-amber-600 ring-1 ring-amber-200">
+              <i class="fa-regular fa-eye text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.view') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-amber-700 ring-1 ring-zinc-200 group-hover:bg-amber-100 group-hover:ring-amber-200">example/lib/widgets/example/cookie.j2.html</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-amber-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-yellow-100 text-yellow-700 ring-1 ring-yellow-200">
+              <i class="fa-solid fa-code text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.controller') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-yellow-800 ring-1 ring-zinc-200 group-hover:bg-yellow-100 group-hover:ring-yellow-200">example/lib/controllers/home_controller.dart</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-amber-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-rose-100 text-rose-600 ring-1 ring-rose-200">
+              <i class="fa-solid fa-user-shield text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.authController') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-rose-700 ring-1 ring-zinc-200 group-hover:bg-rose-100 group-hover:ring-rose-200">example/lib/controllers/auth_controller.dart</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-amber-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-100 text-indigo-600 ring-1 ring-indigo-200">
+              <i class="fa-solid fa-route text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.router') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-indigo-700 ring-1 ring-zinc-200 group-hover:bg-indigo-100 group-hover:ring-indigo-200">example/lib/route/web_route.dart</code>
+        </div>
+      </li>
+    </ul>
+  </section>
+</div>
+{% endblock %}
 """,
 	r"example/info.j2.html": r"""{% extends 'template/template.j2.html' %} {% block title %} {{
 $t('sidebar.info') }}
@@ -3187,169 +3772,125 @@ $t('sidebar.info') }}
   </body>
 </html>
 """,
-	r"example/route.j2.html": r"""{% extends 'template/template.j2.html' %}
-
+	r"example/auth.j2.html": r"""{% extends 'template/template.j2.html' %}
 {% block title %}
-    {{ $t('sidebar.routeExample') }}
+{{ $t('sidebar.authExample') }}
 {% endblock %}
-
 {% block content %}
 <div class="space-y-6">
 
   {# ============== HERO ============== #}
-  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-blue-950 to-indigo-950 p-6 sm:p-8 shadow-soft">
-    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
+  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-green-950 to-lime-950 p-6 sm:p-8 shadow-soft">
+    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-green-500/20 blur-3xl"></div>
+    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-lime-500/20 blur-3xl"></div>
 
     <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
       <div class="flex items-start gap-4">
         <div class="relative">
           <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <i class="fa-solid fa-route text-2xl text-blue-300"></i>
+            <i class="fa-solid fa-user-shield text-2xl text-green-300"></i>
           </div>
           <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
-            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-indigo-400 ring-2 ring-zinc-900"></span>
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime-400 opacity-75"></span>
+            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-lime-400 ring-2 ring-zinc-900"></span>
           </span>
         </div>
         <div>
           <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-blue-300 ring-1 ring-blue-400/30">
-              <i class="fa-solid fa-sitemap text-[10px]"></i> Router map
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-green-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-green-300 ring-1 ring-green-400/30">
+              <i class="fa-solid fa-circle-check text-[10px]"></i> Authenticated
             </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
-              <i class="fa-solid fa-shield text-[10px]"></i> Middleware
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-lime-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-lime-300 ring-1 ring-lime-400/30">
+              <i class="fa-solid fa-shield-halved text-[10px]"></i> Session-based
             </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
-              <i class="fa-solid fa-lock text-[10px]"></i> Auth-aware
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-300 ring-1 ring-amber-400/30">
+              <i class="fa-solid fa-key text-[10px]"></i> Permissions
             </span>
           </div>
-          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('webRouteExample.title') }}</h1>
-          <p class="mt-1 max-w-2xl text-sm text-zinc-300">A live registry of every <span class="font-semibold text-blue-300">FinchRoute</span> &mdash; methods, paths, permissions, auth requirements and the controllers that handle them.</p>
+          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('auth.test') }}</h1>
+          <p class="mt-1 max-w-2xl text-sm text-zinc-300">A protected route guarded by Finch's <span class="font-semibold text-green-300">AuthController</span> &mdash; only signed-in users can see this page.</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-3 sm:gap-4">
+      <div class="grid grid-cols-1 gap-3 sm:gap-4">
         <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Routes</div>
-          <div class="mt-1 text-2xl font-bold text-white">{{ routes | length }}</div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Status</div>
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-emerald-300">
-            <i class="fa-solid fa-circle text-[10px] animate-pulse"></i>
-            Active
+          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Access</div>
+          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-green-300">
+            <i class="fa-solid fa-lock-open text-sm"></i> Granted
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  {# ============== ROUTES TABLE ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm ring-1 ring-blue-300/50">
-          <i class="fa-solid fa-sitemap text-sm"></i>
-        </span>
+  {# ============== WELCOME CARD ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-green-200 bg-gradient-to-br from-green-50 via-white to-lime-50 shadow-soft">
+    <div class="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div class="flex items-center gap-4">
+        <div class="relative grid h-16 w-16 place-items-center rounded-2xl bg-gradient-to-br from-green-500 to-lime-600 text-white shadow-lg ring-2 ring-white">
+          <i class="fa-solid fa-user-check text-2xl"></i>
+          <span class="absolute -bottom-1 -right-1 grid h-6 w-6 place-items-center rounded-full bg-white ring-2 ring-green-200">
+            <i class="fa-solid fa-circle-check text-[14px] text-green-600"></i>
+          </span>
+        </div>
         <div>
-          <h3 class="text-base font-bold text-zinc-900">Registered routes</h3>
-          <p class="text-xs text-zinc-500">{{ routes | length }} {{ 'route' if routes | length == 1 else 'routes' }} discovered</p>
+          <p class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-green-700">
+            <i class="fa-solid fa-hand text-[11px]"></i>
+            {{ $t('auth.welcome') }}
+          </p>
+          <p class="mt-0.5 text-2xl font-bold text-zinc-900">{{ user.name }}</p>
+          <p class="mt-1 inline-flex items-center gap-1.5 rounded-full bg-green-100 px-2.5 py-0.5 text-[11px] font-semibold text-green-800 ring-1 ring-green-200">
+            <i class="fa-solid fa-circle text-[8px] animate-pulse"></i>
+            Signed in
+          </p>
         </div>
       </div>
-      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-800 ring-1 ring-blue-200">
-        <i class="fa-solid fa-bolt text-[9px]"></i> Runtime
-      </span>
+      <a href="/logout" class="wave group inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-rose-600 hover:to-pink-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-rose-500/30">
+        <i class="fa-solid fa-right-from-bracket text-sm transition-transform duration-200 group-hover:translate-x-0.5"></i>
+        <span>{{ $t('auth.logout') }}</span>
+      </a>
     </div>
+  </section>
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-zinc-200">
-        <thead class="bg-zinc-50">
-          <tr>
-            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">#</th>
-            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.path') }}</th>
-            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.type') }}</th>
-            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.permissions') }}</th>
-            <th class="px-4 py-3 text-center text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.auth') }}</th>
-            <th class="px-4 py-3 text-left text-[11px] font-bold uppercase tracking-wider text-zinc-600">{{ $t('webRouteExample.controller') }}</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-zinc-100 bg-white">
-          {% for route in routes %}
-          <tr class="group transition-colors duration-150 hover:bg-blue-50/50">
-            <td class="px-4 py-3 align-middle">
-              <span class="inline-flex h-7 w-7 items-center justify-center rounded-md bg-zinc-100 text-[11px] font-bold text-zinc-600 ring-1 ring-zinc-200">{{ loop.index }}</span>
-            </td>
-            <td class="px-4 py-3 align-middle text-sm">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="inline-flex items-center rounded-md bg-gradient-to-r from-blue-600 to-indigo-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">{{ route.method }}</span>
-                <a class="inline-flex items-center gap-1.5 font-mono text-sm font-semibold text-blue-700 transition-colors duration-150 hover:text-blue-900 hover:underline" href="{{ route.fullPath }}">
-                  <span>{{ route.fullPath }}</span>
-                  <i class="fa-solid fa-arrow-up-right-from-square text-[10px] opacity-0 transition-opacity duration-150 group-hover:opacity-100"></i>
-                </a>
-              </div>
-              {% if route.key %}
-              <div class="mt-1 inline-flex items-center gap-1 text-[11px] font-mono text-zinc-500">
-                <i class="fa-solid fa-key text-[9px] text-zinc-400"></i>
-                {{ route.key }}
-              </div>
-              {% endif %}
-            </td>
-            <td class="px-4 py-3 align-middle">
-              <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-2.5 py-1 text-[11px] font-semibold text-indigo-800 ring-1 ring-indigo-200">
-                <i class="fa-solid fa-tag text-[9px]"></i>
-                {{ route.type }}
-              </span>
-            </td>
-            <td class="px-4 py-3 align-middle text-sm text-zinc-700">
-              {% if route.permissions %}
-              <span class="inline-flex items-center gap-1.5 rounded-md bg-amber-50 px-2 py-1 text-xs font-medium text-amber-800 ring-1 ring-amber-200">
-                <i class="fa-solid fa-shield-halved text-[10px]"></i>
-                {{ route.permissions }}
-              </span>
-              {% else %}
-              <span class="text-xs text-zinc-400">&mdash;</span>
-              {% endif %}
-            </td>
-            <td class="px-4 py-3 align-middle text-center">
-              {% if route.hasAuth %}
-              <span class="inline-flex h-7 items-center gap-1 rounded-full bg-emerald-100 px-2.5 text-[11px] font-bold text-emerald-700 ring-1 ring-emerald-200">
-                <i class="fa-solid fa-lock text-[10px]"></i> Yes
-              </span>
-              {% else %}
-              <span class="inline-flex h-7 items-center gap-1 rounded-full bg-zinc-100 px-2.5 text-[11px] font-semibold text-zinc-500 ring-1 ring-zinc-200">
-                <i class="fa-solid fa-lock-open text-[10px]"></i> No
-              </span>
-              {% endif %}
-            </td>
-            <td class="px-4 py-3 align-middle text-sm">
-              {% if route.middlewares %}
-              <div class="mb-1 flex flex-wrap gap-1">
-                {% for mw in route.middlewares %}
-                <span class="inline-flex items-center gap-1 rounded-md bg-violet-50 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-violet-700 ring-1 ring-violet-200">
-                  <i class="fa-solid fa-layer-group text-[8px]"></i>{{ mw }}
-                </span>
-                {% endfor %}
-              </div>
-              {% endif %}
-              <div class="font-mono text-xs text-zinc-700">{{ route.controller }}{{ route.index }}</div>
-            </td>
-          </tr>
-          {% endfor %}
-          {% if routes | length == 0 %}
-          <tr>
-            <td colspan="6" class="px-5 py-10 text-center">
-              <div class="mx-auto flex max-w-sm flex-col items-center gap-2">
-                <span class="grid h-14 w-14 place-items-center rounded-2xl bg-blue-50 text-blue-400 ring-1 ring-blue-100">
-                  <i class="fa-solid fa-route text-2xl"></i>
-                </span>
-                <p class="text-sm font-semibold text-zinc-700">No routes registered</p>
-              </div>
-            </td>
-          </tr>
-          {% endif %}
-        </tbody>
-      </table>
+  {# ============== HOW IT WORKS ============== #}
+  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
+      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-green-500 to-lime-600 text-white shadow-sm ring-1 ring-green-300/50">
+        <i class="fa-solid fa-diagram-project text-sm"></i>
+      </span>
+      <div>
+        <h3 class="text-base font-bold text-zinc-900">How it works</h3>
+        <p class="text-xs text-zinc-500">The auth flow at a glance</p>
+      </div>
+    </div>
+    <div class="grid gap-4 p-5 sm:grid-cols-3">
+      <div class="group rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-green-300 hover:shadow-sm">
+        <div class="mb-2 flex items-center gap-2">
+          <span class="grid h-8 w-8 place-items-center rounded-lg bg-green-100 text-green-700 ring-1 ring-green-200">
+            <i class="fa-solid fa-1 text-xs font-bold"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Login</p>
+        </div>
+        <p class="text-xs text-zinc-600">Submit credentials; <code class="rounded bg-zinc-100 px-1 text-[11px] text-green-700">AuthController</code> validates them and stores a session.</p>
+      </div>
+      <div class="group rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-lime-300 hover:shadow-sm">
+        <div class="mb-2 flex items-center gap-2">
+          <span class="grid h-8 w-8 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
+            <i class="fa-solid fa-2 text-xs font-bold"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Guarded route</p>
+        </div>
+        <p class="text-xs text-zinc-600">This route has <code class="rounded bg-zinc-100 px-1 text-[11px] text-lime-700">auth</code> attached, so unauthenticated requests are redirected.</p>
+      </div>
+      <div class="group rounded-xl border border-zinc-200 bg-white p-4 transition hover:border-rose-300 hover:shadow-sm">
+        <div class="mb-2 flex items-center gap-2">
+          <span class="grid h-8 w-8 place-items-center rounded-lg bg-rose-100 text-rose-700 ring-1 ring-rose-200">
+            <i class="fa-solid fa-3 text-xs font-bold"></i>
+          </span>
+          <p class="text-sm font-bold text-zinc-900">Logout</p>
+        </div>
+        <p class="text-xs text-zinc-600">Hitting <code class="rounded bg-zinc-100 px-1 text-[11px] text-rose-700">/logout</code> destroys the session and revokes access.</p>
+      </div>
     </div>
   </section>
 
@@ -3361,605 +3902,54 @@ $t('sidebar.info') }}
           <i class="fa-solid fa-folder-tree text-sm"></i>
         </span>
         <div>
-          <h3 class="text-base font-bold text-zinc-900">File References</h3>
-          <p class="text-xs text-zinc-500">Where the router lives</p>
+          <h3 class="text-base font-bold text-zinc-900">{{ $t('File References') }}</h3>
+          <p class="text-xs text-zinc-500">{{ $t('Related files for this authentication example') }}</p>
         </div>
       </div>
     </div>
     <ul class="divide-y divide-zinc-100">
-      <li class="group transition-colors duration-150 hover:bg-blue-50/50">
+      <li class="group transition-colors duration-150 hover:bg-green-50/50">
         <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
           <div class="flex items-center gap-2.5 md:w-56">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-100 text-blue-600 ring-1 ring-blue-200">
-              <i class="fa-solid fa-route text-xs"></i>
-            </span>
-            <span class="text-sm font-semibold text-zinc-700">{{ $t('webRouteExample.router') }}</span>
-          </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-blue-700 ring-1 ring-zinc-200 group-hover:bg-blue-100 group-hover:ring-blue-200">example/lib/route/web_route.dart</code>
-        </div>
-      </li>
-    </ul>
-  </section>
-</div>
-{% endblock %}
-""",
-	r"example/email.j2.html": r"""{% extends 'template/template.j2.html' %}
-{% block title %}
-    {{ $t('sidebar.emailExample') }}
-{% endblock %}
-
-{% block content %}
-{% set hasSuccess = sendEmailSuccess %}
-{% set hasFailed = sendEmailFailed %}
-
-<div class="space-y-6">
-
-  {# ============== HERO ============== #}
-  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-sky-950 to-indigo-950 p-6 sm:p-8 shadow-soft">
-    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-sky-500/20 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-3xl"></div>
-
-    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <div class="flex items-start gap-4">
-        <div class="relative">
-          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <i class="fa-solid fa-paper-plane text-2xl text-sky-300"></i>
-          </div>
-          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75"></span>
-            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-indigo-400 ring-2 ring-zinc-900"></span>
-          </span>
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-sky-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-sky-300 ring-1 ring-sky-400/30">
-              <i class="fa-solid fa-envelope-open-text text-[10px]"></i> SMTP
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
-              <i class="fa-solid fa-lock text-[10px]"></i> SSL / TLS
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
-              <i class="fa-solid fa-list-check text-[10px]"></i> Validated
-            </span>
-          </div>
-          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('email.title') }}</h1>
-          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Compose and dispatch a test email through any <span class="font-semibold text-sky-300">SMTP host</span> &mdash; with full per-field validation and inline error reporting.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-3 sm:gap-4">
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Default port</div>
-          <div class="mt-1 text-2xl font-bold text-white font-mono">1025</div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Status</div>
-          {% if hasSuccess %}
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-emerald-300">
-            <i class="fa-solid fa-circle-check"></i> Sent
-          </div>
-          {% elif hasFailed %}
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-rose-300">
-            <i class="fa-solid fa-circle-xmark"></i> Failed
-          </div>
-          {% else %}
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-zinc-200">
-            <i class="fa-solid fa-circle text-[10px] animate-pulse"></i> Idle
-          </div>
-          {% endif %}
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============== FLASH ALERTS ============== #}
-  {% if hasSuccess %}
-  <div class="reveal-up flex items-start gap-3 rounded-2xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-green-50 p-4 shadow-soft">
-    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-emerald-500 text-white shadow-sm">
-      <i class="fa-solid fa-circle-check text-lg"></i>
-    </span>
-    <div class="flex-1">
-      <p class="text-sm font-bold text-emerald-900">{{ $t('email.success') }}</p>
-      <p class="mt-0.5 text-xs text-emerald-700">Your message was accepted by the SMTP server.</p>
-    </div>
-  </div>
-  {% endif %}
-
-  {% if hasFailed %}
-  <div class="reveal-up flex items-start gap-3 rounded-2xl border border-rose-200 bg-gradient-to-r from-rose-50 to-pink-50 p-4 shadow-soft">
-    <span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-rose-500 text-white shadow-sm">
-      <i class="fa-solid fa-triangle-exclamation text-lg"></i>
-    </span>
-    <div class="flex-1">
-      <p class="text-sm font-bold text-rose-900">{{ $t('email.failed') }}</p>
-      <p class="mt-0.5 text-xs text-rose-700">Please review the SMTP host, port and credentials and try again.</p>
-    </div>
-  </div>
-  {% endif %}
-
-  {# ============== EMAIL FORM ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center justify-between gap-3 bg-gradient-to-r from-sky-50 to-indigo-50 px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-sky-500 to-indigo-600 text-white shadow-sm ring-1 ring-sky-300/50">
-          <i class="fa-solid fa-paper-plane text-sm"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">Compose email</h3>
-          <p class="text-xs text-zinc-500">Fill in the message and SMTP details to send</p>
-        </div>
-      </div>
-      <span class="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-sky-800 ring-1 ring-sky-200">
-        <i class="fa-solid fa-shield-halved text-[9px]"></i> Validated
-      </span>
-    </div>
-
-    <form method="post" action="{{ $e.routeUrl('root.email.post') }}" class="space-y-6 p-5 sm:p-6">
-
-      {# ----- Sender section ----- #}
-      <fieldset>
-        <legend class="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-sky-700">
-          <span class="grid h-6 w-6 place-items-center rounded-md bg-sky-100 text-sky-600 ring-1 ring-sky-200">
-            <i class="fa-solid fa-user text-[10px]"></i>
-          </span>
-          Sender
-        </legend>
-        <div class="grid gap-4 md:grid-cols-2">
-          <div>
-            <label for="from" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.from') }}</label>
-            <div class="relative">
-              <i class="fa-solid fa-at pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
-              <input
-                value="{{ $n('emailForm/from/value') }}"
-                type="text"
-                name="from"
-                id="from"
-                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/from/failed') else '' }}"
-              />
-            </div>
-            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/from/failed') else 'hidden' }}">
-              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-              {{ $t($n('emailForm/from/errors/0')) }}
-            </div>
-          </div>
-          <div>
-            <label for="fromName" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.fromName') }}</label>
-            <div class="relative">
-              <i class="fa-solid fa-id-badge pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
-              <input
-                value="{{ $n('emailForm/fromName/value') }}"
-                type="text"
-                name="fromName"
-                id="fromName"
-                placeholder="{{ $t('email.placeholder.name') }}"
-                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/fromName/failed') else '' }}"
-              />
-            </div>
-            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/fromName/failed') else 'hidden' }}">
-              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-              {{ $t($n('emailForm/fromName/errors/0')) }}
-            </div>
-          </div>
-        </div>
-      </fieldset>
-
-      {# ----- Message section ----- #}
-      <fieldset>
-        <legend class="mb-3 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-indigo-700">
-          <span class="grid h-6 w-6 place-items-center rounded-md bg-indigo-100 text-indigo-600 ring-1 ring-indigo-200">
-            <i class="fa-solid fa-envelope text-[10px]"></i>
-          </span>
-          Message
-        </legend>
-        <div class="space-y-4">
-          <div>
-            <label for="email" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.to') }}</label>
-            <div class="relative">
-              <i class="fa-solid fa-envelope pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-indigo-500"></i>
-              <input
-                value="{{ $n('emailForm/email/value') }}"
-                type="email"
-                name="email"
-                id="email"
-                placeholder="{{ $t('email.placeholder.to') }}"
-                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/email/failed') else '' }}"
-              />
-            </div>
-            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/email/failed') else 'hidden' }}">
-              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-              {{ $t($n('emailForm/email/errors/0')) }}
-            </div>
-          </div>
-          <div>
-            <label for="subject" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.subject') }}</label>
-            <div class="relative">
-              <i class="fa-solid fa-heading pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-indigo-500"></i>
-              <input
-                value="{{ $n('emailForm/subject/value') }}"
-                type="text"
-                name="subject"
-                id="subject"
-                placeholder="{{ $t('email.placeholder.subject') }}"
-                class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/subject/failed') else '' }}"
-              />
-            </div>
-            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/subject/failed') else 'hidden' }}">
-              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-              {{ $t($n('emailForm/subject/errors/0')) }}
-            </div>
-          </div>
-          <div>
-            <label for="message" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.message') }}</label>
-            <textarea
-              name="message"
-              id="message"
-              placeholder="{{ $t('email.placeholder.message') }}"
-              class="min-h-[140px] w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/message/failed') else '' }}"
-            >{{ $n('emailForm/message/value') }}</textarea>
-            <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/message/failed') else 'hidden' }}">
-              <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-              {{ $t($n('emailForm/message/errors/0')) }}
-            </div>
-          </div>
-        </div>
-      </fieldset>
-
-      {# ----- SMTP section ----- #}
-      <fieldset class="rounded-xl border border-dashed border-sky-300 bg-sky-50/40 p-4">
-        <legend class="ml-2 flex items-center gap-2 rounded-md bg-white px-2 py-1 text-[11px] font-bold uppercase tracking-wider text-sky-700 ring-1 ring-sky-200">
-          <i class="fa-solid fa-server text-[10px]"></i>
-          SMTP server
-        </legend>
-        <div class="space-y-4">
-          <div class="grid gap-4 md:grid-cols-[1fr_140px]">
-            <div>
-              <label for="host" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.host') }}</label>
-              <div class="relative">
-                <i class="fa-solid fa-server pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
-                <input
-                  value="{{ $n('emailForm/host/value') }}"
-                  type="text"
-                  name="host"
-                  id="host"
-                  placeholder="{{ $t('email.placeholder.host') }}"
-                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/host/failed') else '' }}"
-                />
-              </div>
-              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/host/failed') else 'hidden' }}">
-                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-                {{ $t($n('emailForm/host/errors/0')) }}
-              </div>
-            </div>
-            <div>
-              <label for="port" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.port') }}</label>
-              <div class="relative">
-                <i class="fa-solid fa-plug pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
-                <input
-                  value="{{ $n('emailForm/port/value') if $n('emailForm/port/value') else '1025' }}"
-                  type="number"
-                  name="port"
-                  id="port"
-                  placeholder="{{ $t('email.placeholder.port') }}"
-                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/port/failed') else '' }}"
-                />
-              </div>
-              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/port/failed') else 'hidden' }}">
-                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-                {{ $t($n('emailForm/port/errors/0')) }}
-              </div>
-            </div>
-          </div>
-
-          <div class="grid gap-4 md:grid-cols-2">
-            <div>
-              <label for="username" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.username') }}</label>
-              <div class="relative">
-                <i class="fa-solid fa-user pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
-                <input
-                  value="{{ $n('emailForm/username/value') }}"
-                  type="text"
-                  name="username"
-                  id="username"
-                  placeholder="{{ $t('email.placeholder.username') }}"
-                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/username/failed') else '' }}"
-                />
-              </div>
-              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/username/failed') else 'hidden' }}">
-                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-                {{ $t($n('emailForm/username/errors/0')) }}
-              </div>
-            </div>
-            <div>
-              <label for="password" class="mb-1 block text-[11px] font-semibold uppercase tracking-wider text-zinc-600">{{ $t('email.password') }}</label>
-              <div class="relative">
-                <i class="fa-solid fa-lock pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-xs text-sky-500"></i>
-                <input
-                  value="{{ $n('emailForm/password/value') }}"
-                  type="password"
-                  name="password"
-                  id="password"
-                  placeholder="{{ $t('email.placeholder.password') }}"
-                  class="h-10 w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-3 text-sm shadow-sm transition-all duration-200 focus:border-sky-500 focus:ring-2 focus:ring-sky-500/20 {{ 'border-rose-400 ring-2 ring-rose-200 focus:border-rose-500 focus:ring-rose-300' if $n('emailForm/password/failed') else '' }}"
-                />
-              </div>
-              <div class="mt-1 flex items-center gap-1 text-xs text-rose-600 {{ '' if $n('emailForm/password/failed') else 'hidden' }}">
-                <i class="fa-solid fa-circle-exclamation text-[10px]"></i>
-                {{ $t($n('emailForm/password/errors/0')) }}
-              </div>
-            </div>
-          </div>
-
-          <div class="flex flex-wrap gap-3 pt-1">
-            <label for="allowInsecure" class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-sky-400 hover:bg-sky-50">
-              <input
-                value="true"
-                {{ $n('emailForm/allowInsecure/value') ? 'checked' : '' }}
-                type="checkbox"
-                name="allowInsecure"
-                id="allowInsecure"
-                class="h-4 w-4 rounded border-zinc-300 text-sky-600 focus:ring-2 focus:ring-sky-500/30"
-              />
-              <i class="fa-solid fa-shield text-xs text-amber-600"></i>
-              <span>{{ $t('email.allowInsecure') }}</span>
-            </label>
-            <label for="ssl" class="inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-300 bg-white px-3 text-sm font-medium text-zinc-700 transition-all duration-200 hover:border-sky-400 hover:bg-sky-50">
-              <input
-                value="true"
-                {{ $n('emailForm/ssl/value') ? 'checked' : '' }}
-                type="checkbox"
-                name="ssl"
-                id="ssl"
-                class="h-4 w-4 rounded border-zinc-300 text-sky-600 focus:ring-2 focus:ring-sky-500/30"
-              />
-              <i class="fa-solid fa-lock text-xs text-emerald-600"></i>
-              <span>{{ $t('email.ssl') }}</span>
-            </label>
-          </div>
-        </div>
-      </fieldset>
-
-      <div class="flex flex-col-reverse gap-3 border-t border-zinc-200 pt-5 sm:flex-row sm:items-center sm:justify-end">
-        <button type="submit" class="wave group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-soft transition-all duration-200 hover:from-sky-600 hover:to-indigo-700 hover:shadow-soft-lg focus:outline-none focus:ring-4 focus:ring-sky-500/30">
-          <i class="fa-solid fa-paper-plane text-sm transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"></i>
-          <span>{{ $t('email.send') }}</span>
-        </button>
-      </div>
-    </form>
-  </section>
-</div>
-{% endblock %}
-""",
-	r"example/pagination.j2.html": r"""{% extends 'template/template.j2.html' %}
-
-{% block title %}
-    {{ $t('sidebar.paginationExample') }}
-{% endblock %}
-
-{% block content %}
-<div class="space-y-6">
-
-  {# ============== HERO ============== #}
-  <section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-cyan-950 to-blue-950 p-6 sm:p-8 shadow-soft">
-    <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-cyan-500/20 blur-3xl"></div>
-    <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl"></div>
-
-    <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-      <div class="flex items-start gap-4">
-        <div class="relative">
-          <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
-            <i class="fa-solid fa-bars-staggered text-2xl text-cyan-300"></i>
-          </div>
-          <span class="absolute -top-1 -end-1 inline-flex h-3.5 w-3.5">
-            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-blue-400 opacity-75"></span>
-            <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-blue-400 ring-2 ring-zinc-900"></span>
-          </span>
-        </div>
-        <div>
-          <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-cyan-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-cyan-300 ring-1 ring-cyan-400/30">
-              <i class="fa-solid fa-table-list text-[10px]"></i> UIPaging
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-blue-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-blue-300 ring-1 ring-blue-400/30">
-              <i class="fa-solid fa-arrows-left-right text-[10px]"></i> Multi-instance
-            </span>
-            <span class="inline-flex items-center gap-1.5 rounded-full bg-indigo-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-indigo-300 ring-1 ring-indigo-400/30">
-              <i class="fa-solid fa-link text-[10px]"></i> Query-preserving
-            </span>
-          </div>
-          <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-white">{{ $t('sidebar.paginationExample') }}</h1>
-          <p class="mt-1 max-w-2xl text-sm text-zinc-300">Render multiple <span class="font-semibold text-cyan-300">UIPaging</span> widgets on the same page with independent <code class="rounded bg-white/10 px-1 text-[12px] text-cyan-200">prefix</code> and <code class="rounded bg-white/10 px-1 text-[12px] text-cyan-200">otherQuery</code> so each pager preserves the others' state.</p>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-3 gap-3 sm:gap-4">
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Pagers</div>
-          <div class="mt-1 text-2xl font-bold text-white">3</div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Records</div>
-          <div class="mt-1 text-2xl font-bold text-white">2,500</div>
-        </div>
-        <div class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 text-center backdrop-blur">
-          <div class="text-[10px] uppercase tracking-wider text-zinc-400">Styles</div>
-          <div class="mt-1 flex items-center justify-center gap-1.5 text-base sm:text-lg font-bold text-white">
-            <i class="fa-solid fa-palette text-[12px] text-cyan-300"></i>
-            <span>3</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {# ============== PAGER A — DEFAULT ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-cyan-50 to-blue-50 px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-sm ring-1 ring-cyan-300/50">
-          <i class="fa-solid fa-1 text-sm font-bold"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">Pager A — default width</h3>
-          <p class="text-xs text-zinc-500">1,000 records · 10 per page · prefix <code class="rounded bg-cyan-100 px-1 text-cyan-800">page_a</code></p>
-        </div>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-700 ring-1 ring-cyan-200">
-          <i class="fa-solid fa-database text-[9px]"></i> total 1000
-        </span>
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-700 ring-1 ring-blue-200">
-          <i class="fa-solid fa-layer-group text-[9px]"></i> page-size 10
-        </span>
-      </div>
-    </div>
-    <div class="p-5">
-      <div class="rounded-xl border border-dashed border-cyan-200 bg-gradient-to-br from-cyan-50/40 to-blue-50/40 p-4">
-        {{ paginationA }}
-      </div>
-    </div>
-  </section>
-
-  {# ============== PAGER B — WIDE SIDE ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-blue-50 to-indigo-50 px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-sm ring-1 ring-blue-300/50">
-          <i class="fa-solid fa-2 text-sm font-bold"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">Pager B — wide side</h3>
-          <p class="text-xs text-zinc-500">500 records · 10 per page · <code class="rounded bg-blue-100 px-1 text-blue-800">widthSide: 5</code> · prefix <code class="rounded bg-blue-100 px-1 text-blue-800">page_b</code></p>
-        </div>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-blue-700 ring-1 ring-blue-200">
-          <i class="fa-solid fa-database text-[9px]"></i> total 500
-        </span>
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-indigo-700 ring-1 ring-indigo-200">
-          <i class="fa-solid fa-arrows-left-right-to-line text-[9px]"></i> side 5
-        </span>
-      </div>
-    </div>
-    <div class="p-5">
-      <div class="rounded-xl border border-dashed border-blue-200 bg-gradient-to-br from-blue-50/40 to-indigo-50/40 p-4">
-        {{ paginationB }}
-      </div>
-    </div>
-  </section>
-
-  {# ============== PAGER C — LARGE PAGE SIZE ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex flex-wrap items-center justify-between gap-3 bg-gradient-to-r from-indigo-50 to-cyan-50 px-5 py-4 border-b border-zinc-200">
-      <div class="flex items-center gap-3">
-        <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-indigo-500 to-cyan-500 text-white shadow-sm ring-1 ring-indigo-300/50">
-          <i class="fa-solid fa-3 text-sm font-bold"></i>
-        </span>
-        <div>
-          <h3 class="text-base font-bold text-zinc-900">Pager C — large page size</h3>
-          <p class="text-xs text-zinc-500">1,000 records · 100 per page · prefix <code class="rounded bg-indigo-100 px-1 text-indigo-800">page_c</code></p>
-        </div>
-      </div>
-      <div class="flex flex-wrap items-center gap-2">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-indigo-700 ring-1 ring-indigo-200">
-          <i class="fa-solid fa-database text-[9px]"></i> total 1000
-        </span>
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-white px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-cyan-700 ring-1 ring-cyan-200">
-          <i class="fa-solid fa-layer-group text-[9px]"></i> page-size 100
-        </span>
-      </div>
-    </div>
-    <div class="p-5">
-      <div class="rounded-xl border border-dashed border-indigo-200 bg-gradient-to-br from-indigo-50/40 to-cyan-50/40 p-4">
-        {{ paginationC }}
-      </div>
-    </div>
-  </section>
-
-  {# ============== USAGE / TIPS ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 text-white shadow-sm ring-1 ring-cyan-300/50">
-        <i class="fa-solid fa-lightbulb text-sm"></i>
-      </span>
-      <div>
-        <h3 class="text-base font-bold text-zinc-900">How it works</h3>
-        <p class="text-xs text-zinc-500">Each pager owns its own query parameter prefix</p>
-      </div>
-    </div>
-    <div class="grid gap-3 p-5 md:grid-cols-3">
-      <div class="rounded-xl border border-cyan-200 bg-gradient-to-br from-white to-cyan-50/40 p-4">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="grid h-7 w-7 place-items-center rounded-lg bg-cyan-100 text-cyan-700 ring-1 ring-cyan-200">
-            <i class="fa-solid fa-hashtag text-[11px]"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">prefix</p>
-        </div>
-        <p class="text-xs leading-relaxed text-zinc-600">Sets the query key — e.g. <code class="rounded bg-zinc-100 px-1 text-cyan-700">?page_a=2</code>. Lets several pagers coexist independently.</p>
-      </div>
-      <div class="rounded-xl border border-blue-200 bg-gradient-to-br from-white to-blue-50/40 p-4">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="grid h-7 w-7 place-items-center rounded-lg bg-blue-100 text-blue-700 ring-1 ring-blue-200">
-            <i class="fa-solid fa-shuffle text-[11px]"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">otherQuery</p>
-        </div>
-        <p class="text-xs leading-relaxed text-zinc-600">Forward the other pagers' current page so clicking one pager doesn't reset the others.</p>
-      </div>
-      <div class="rounded-xl border border-indigo-200 bg-gradient-to-br from-white to-indigo-50/40 p-4">
-        <div class="flex items-center gap-2 mb-2">
-          <span class="grid h-7 w-7 place-items-center rounded-lg bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200">
-            <i class="fa-solid fa-arrows-left-right-to-line text-[11px]"></i>
-          </span>
-          <p class="text-sm font-bold text-zinc-900">widthSide</p>
-        </div>
-        <p class="text-xs leading-relaxed text-zinc-600">Number of page links on each side of the current page. Larger values produce wider button strips.</p>
-      </div>
-    </div>
-  </section>
-
-  {# ============== FILE REFERENCES ============== #}
-  <section class="reveal-up overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
-    <div class="flex items-center gap-3 bg-gradient-to-r from-zinc-50 to-white px-5 py-4 border-b border-zinc-200">
-      <span class="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-zinc-700 to-zinc-900 text-white shadow-sm ring-1 ring-zinc-300/50">
-        <i class="fa-solid fa-folder-tree text-sm"></i>
-      </span>
-      <div>
-        <h3 class="text-base font-bold text-zinc-900">File References</h3>
-        <p class="text-xs text-zinc-500">Where this example lives</p>
-      </div>
-    </div>
-    <ul class="divide-y divide-zinc-100">
-      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
-        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-48">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-cyan-100 text-cyan-600 ring-1 ring-cyan-200">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-green-100 text-green-600 ring-1 ring-green-200">
               <i class="fa-regular fa-eye text-xs"></i>
             </span>
-            <span class="text-sm font-semibold text-zinc-700">View</span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.view') }}</span>
           </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-cyan-700 ring-1 ring-zinc-200 group-hover:bg-cyan-100 group-hover:ring-cyan-200">example/lib/widgets/example/pagination.j2.html</code>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-green-700 ring-1 ring-zinc-200 group-hover:bg-green-100 group-hover:ring-green-200">example/lib/widgets/example/auth.j2.html</code>
         </div>
       </li>
-      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
+      <li class="group transition-colors duration-150 hover:bg-green-50/50">
         <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-48">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-blue-100 text-blue-700 ring-1 ring-blue-200">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-lime-100 text-lime-700 ring-1 ring-lime-200">
               <i class="fa-solid fa-code text-xs"></i>
             </span>
-            <span class="text-sm font-semibold text-zinc-700">Controller</span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.controller') }}</span>
           </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-blue-700 ring-1 ring-zinc-200 group-hover:bg-blue-100 group-hover:ring-blue-200">example/lib/controllers/home_controller.dart → paginationExample()</code>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-lime-800 ring-1 ring-zinc-200 group-hover:bg-lime-100 group-hover:ring-lime-200">example/lib/controllers/home_controller.dart</code>
         </div>
       </li>
-      <li class="group transition-colors duration-150 hover:bg-cyan-50/50">
+      <li class="group transition-colors duration-150 hover:bg-green-50/50">
         <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
-          <div class="flex items-center gap-2.5 md:w-48">
-            <span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200">
-              <i class="fa-solid fa-puzzle-piece text-xs"></i>
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200">
+              <i class="fa-solid fa-user-shield text-xs"></i>
             </span>
-            <span class="text-sm font-semibold text-zinc-700">Paging widget</span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.authController') }}</span>
           </div>
-          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-indigo-700 ring-1 ring-zinc-200 group-hover:bg-indigo-100 group-hover:ring-indigo-200">example/lib/widgets/template/paging.j2.html</code>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-emerald-700 ring-1 ring-zinc-200 group-hover:bg-emerald-100 group-hover:ring-emerald-200">example/lib/controllers/auth_controller.dart</code>
+        </div>
+      </li>
+      <li class="group transition-colors duration-150 hover:bg-green-50/50">
+        <div class="flex flex-col gap-3 px-5 py-3.5 md:flex-row md:items-center md:gap-4">
+          <div class="flex items-center gap-2.5 md:w-56">
+            <span class="grid h-8 w-8 place-items-center rounded-lg bg-indigo-100 text-indigo-600 ring-1 ring-indigo-200">
+              <i class="fa-solid fa-route text-xs"></i>
+            </span>
+            <span class="text-sm font-semibold text-zinc-700">{{ $t('auth.router') }}</span>
+          </div>
+          <code class="break-all rounded-md bg-zinc-100 px-3 py-1.5 text-xs font-mono text-indigo-700 ring-1 ring-zinc-200 group-hover:bg-indigo-100 group-hover:ring-indigo-200">example/lib/route/web_route.dart</code>
         </div>
       </li>
     </ul>
@@ -3967,138 +3957,24 @@ $t('sidebar.info') }}
 </div>
 {% endblock %}
 """,
-	r"template/navbar.j2.html": r"""<nav id="navbar"
-     class="fixed inset-x-0 top-0 z-50 h-16 border-b border-zinc-200 bg-white">
-  <div class="flex h-full w-full items-center">
-
-    <!-- ============ BRAND ZONE (aligned with sidebar width on lg) ============ -->
-    <div class="flex h-full w-[280px] shrink-0 items-center gap-2 border-zinc-200 px-4 lg:border-e">
-      <!-- Mobile-only sidebar toggle -->
-      <button
-        type="button"
-        class="wave button-sidebar inline-flex h-10 w-10 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-500/40 lg:hidden"
-        aria-label="{{ $t('navbar.toggleSidebar') }}"
-        aria-controls="sidebar"
-        aria-expanded="false"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-          <path d="M4 6h16M4 12h16M4 18h16"/>
-        </svg>
-      </button>
-
-      <!-- Logo -->
-      <a class="wave inline-flex items-center gap-2.5 rounded-lg px-1.5 py-1 hover:bg-zinc-50"
-         href="{{ $e.routeUrl('root.home') }}">
-        <img src="{{ $e.url('logo.svg') }}" alt="{{ $t('logo.title') }}" class="h-9 w-9 shrink-0" />
-        <span class="flex items-baseline gap-1.5">
-          <span class="text-lg font-extrabold tracking-tight text-zinc-900">{{ $t('logo.title') }}</span>
-          <span class="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-zinc-500 ring-1 ring-inset ring-zinc-200">{{ version }}</span>
-        </span>
-      </a>
-    </div>
-
-    <!-- ============ RIGHT ZONE ============ -->
-    <div class="flex h-full flex-1 items-center justify-end gap-2 px-4 sm:px-6">
-
-      {% if middleware %}
-        <span class="hidden md:inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2 py-1 text-[11px] font-semibold text-teal-700 ring-1 ring-inset ring-teal-200">
-          <i class="fa-solid fa-shield-halved text-[10px]"></i>{{ middleware }}
-        </span>
-      {% endif %}
-
-      <!-- GitHub -->
-      <a href="https://github.com/uproid/finch"
-         class="wave inline-flex h-10 w-10 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400/40"
-         aria-label="GitHub" target="_blank" rel="noopener">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 512 499.36" role="img">
-          <title>GitHub</title>
-          <path fill="currentColor" fill-rule="evenodd" d="M256 0C114.64 0 0 114.61 0 256c0 113.09 73.34 209 175.08 242.9 12.8 2.35 17.47-5.56 17.47-12.34 0-6.08-.22-22.18-.35-43.54-71.2 15.49-86.2-34.34-86.2-34.34-11.64-29.57-28.42-37.45-28.42-37.45-23.27-15.84 1.73-15.55 1.73-15.55 25.69 1.81 39.21 26.38 39.21 26.38 22.84 39.12 59.92 27.82 74.5 21.27 2.33-16.54 8.94-27.82 16.25-34.22-56.84-6.43-116.6-28.43-116.6-126.49 0-27.95 10-50.8 26.35-68.69-2.63-6.48-11.42-32.5 2.51-67.75 0 0 21.49-6.88 70.4 26.24a242.65 242.65 0 0 1 128.18 0c48.87-33.13 70.33-26.24 70.33-26.24 14 35.25 5.18 61.27 2.55 67.75 16.41 17.9 26.31 40.75 26.31 68.69 0 98.35-59.85 120-116.88 126.32 9.19 7.9 17.38 23.53 17.38 47.41 0 34.22-.31 61.83-.31 70.23 0 6.85 4.61 14.81 17.6 12.31C438.72 464.97 512 369.08 512 256.02 512 114.62 397.37 0 256 0z"/>
-        </svg>
-      </a>
-
-      {% if user %}
-      <!-- User menu -->
-      <details class="group relative">
-        <summary class="list-none inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-teal-500/40">
-          <span class="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-teal-500 to-cyan-500 text-white">
-            <i class="fas fa-user text-[11px]"></i>
-          </span>
-          <span class="hidden md:block max-w-[120px] truncate">{{ user.name }}</span>
-          <svg class="h-3.5 w-3.5 text-zinc-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-          </svg>
-        </summary>
-        <ul class="absolute end-0 mt-2 w-60 overflow-hidden rounded-xl border border-zinc-200 bg-white py-1.5 shadow-soft-lg">
-          <li class="px-3 pb-2 pt-1 mb-1 border-b border-zinc-100">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Account</div>
-            <div class="mt-0.5 truncate text-sm font-semibold text-zinc-900">{{ user.name }}</div>
-          </li>
-          <li>
-            <a class="wave flex items-center gap-3 mx-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50"
-               href="{{ $e.routeUrl('root.logout') }}">
-              <span class="flex h-7 w-7 items-center justify-center rounded-md bg-rose-100 text-rose-600">
-                <i class="fas fa-sign-out-alt text-xs"></i>
-              </span>
-              <span>{{ $t('auth.logout') }}</span>
-            </a>
-          </li>
-        </ul>
-      </details>
-      {% endif %}
-
-      <!-- Language switcher -->
-      <details class="group relative">
-        <summary class="list-none inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-teal-500/40">
-          <svg class="h-4.5 w-4.5 text-teal-600" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            <path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8M12 3a14.5 14.5 0 010 18M12 3a14.5 14.5 0 000 18"/>
-          </svg>
-          <span>{{ $e.ln | upper }}</span>
-          <svg class="h-3.5 w-3.5 text-zinc-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
-          </svg>
-        </summary>
-        <ul class="absolute end-0 mt-2 w-56 max-h-80 overflow-y-auto rounded-xl border border-zinc-200 bg-white py-1.5 shadow-soft-lg">
-          <li class="px-3 pb-2 pt-1 mb-1 border-b border-zinc-100">
-            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Language</div>
-          </li>
-          {% for key, language in languages %}
-          <li>
-            <a class="wave flex items-center gap-3 mx-1.5 rounded-lg px-2.5 py-2 text-sm transition-colors {{ 'bg-teal-50 font-semibold text-teal-700' if $e.ln == key else 'text-zinc-700 hover:bg-zinc-50' }}"
-               href="{{ $e.urlToLanguage(key) }}">
-              <img src="{{ language.flag }}" class="h-5 w-6 rounded-sm object-cover ring-1 ring-zinc-200" alt=""/>
-              <span class="flex-1">{{ language.name }}</span>
-              {% if $e.ln == key %}
-              <svg class="h-4 w-4 text-teal-600" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-              </svg>
-              {% endif %}
-            </a>
-          </li>
-          {% endfor %}
-        </ul>
-      </details>
-    </div>
-  </div>
-</nav>
-""",
-	r"template/footer.j2.html": r"""<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
-<script
-  src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-  integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-  crossorigin="anonymous"
-></script>
-<script
-  crossorigin="anonymous"
-></script>
-<script src="/assets/app.js"></script>
-<script src="/assets/effects/wave/wave.js"></script>
-<script src="/assets/websocket.js"></script>
-{{ assets.dataJs() }}
-{{ assets.js() }}
-""",
-	r"template/sidebar.j2.html": r"""<!-- Sidebar -->
-{% set dir = $t('dir') %}
+	r"template/ui/sorting.j2.html": r"""{% set asc = ((data.order == 'asc') and (data.sort == sortby)) %}
+<a
+    href="{{ $l.updateUrlQuery( {'sort': sortby, 'order': 'desc' if asc else 'asc'}) }}"
+    class="wave inline-flex items-center gap-1 font-medium rounded text-slate-600 hover:text-slate-900 focus:outline-none no-underline group"
+    title="{{ $t(title) }}"
+>
+    <span>{{ $t(title) }}</span>
+    {% if data.sort == sortby %}
+        {% if data.order != 'asc' %}
+            <i class="fas fa-sort-up ml-1 text-primary-600 group-hover:text-primary-700"></i>
+        {% else %}
+            <i class="fas fa-sort-down ml-1 text-primary-600 group-hover:text-primary-700"></i>
+        {% endif %}
+    {% else %}
+        <i class="fas fa-sort ml-1 text-slate-400 group-hover:text-slate-500"></i>
+    {% endif %}
+</a>""",
+	r"template/sidebar.j2.html": r"""{% set dir = $t('dir') %}
 <aside
   id="sidebar"
   class="fixed inset-y-0 start-0 z-40 w-[280px] overflow-y-auto border-e border-zinc-200 bg-white transform transition-transform duration-300 ease-out  {{ 'translate-x-full lg:translate-x-0' if dir=='rtl' else '-translate-x-full lg:translate-x-0' }}"
@@ -4122,8 +3998,8 @@ $t('sidebar.info') }}
               <i class="fa-solid fa-bolt-lightning"></i>
             </span>
             <div class="min-w-0 flex-1">
-              <div class="truncate text-[10px] font-bold uppercase tracking-[0.18em] text-teal-300">Finch</div>
-              <div class="truncate text-sm font-bold">All systems normal</div>
+              <div class="truncate text-xs font-bold text-white">Finch Framework</div>
+              <div class="truncate text-[10px] font-medium text-white">{{ version }} · made with ❤</div>
             </div>
           </div>
         </div>
@@ -4144,9 +4020,7 @@ $t('sidebar.info') }}
         >
           {% if $e.isKey('root.home') %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if $e.isKey('root.home') else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-            </svg>
+            <i class="fa-solid fa-house text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.home') }}</span>
         </a>
@@ -4157,9 +4031,7 @@ $t('sidebar.info') }}
         >
           {% if $e.isKey('root.info') %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if $e.isKey('root.info') else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
+            <i class="fa-solid fa-circle-info text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.info') }}</span>
         </a>
@@ -4177,7 +4049,7 @@ $t('sidebar.info') }}
         <a href="{{ $e.routeUrl('root.form') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isFormActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isFormActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isFormActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            <i class="fa-solid fa-pen-to-square text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.formExample') }}</span>
         </a>
@@ -4195,7 +4067,7 @@ $t('sidebar.info') }}
         <a href="{{ $e.routeUrl('root.route') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isRouteActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isRouteActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isRouteActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+            <i class="fa-solid fa-route text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.routeExample') }}</span>
         </a>
@@ -4204,7 +4076,7 @@ $t('sidebar.info') }}
         <a href="{{ $e.routeUrl('root.socket') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isSocketActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isSocketActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-yellow-400 to-amber-500 text-white shadow-md shadow-yellow-500/30' if isSocketActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-amber-100 group-hover:text-amber-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <i class="fa-solid fa-bolt text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.socketExample') }}</span>
         </a>
@@ -4213,7 +4085,7 @@ $t('sidebar.info') }}
         <a href="{{ $e.routeUrl('root.email') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isEmailActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isEmailActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-sky-500 to-cyan-500 text-white shadow-md shadow-sky-500/30' if isEmailActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-sky-100 group-hover:text-sky-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            <i class="fa-solid fa-envelope text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.emailExample') }}</span>
         </a>
@@ -4222,7 +4094,7 @@ $t('sidebar.info') }}
         <a href="{{ $e.routeUrl('root.panel') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isAuthActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isAuthActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30' if isAuthActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <i class="fa-solid fa-shield-alt text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.authExample') }}</span>
         </a>
@@ -4231,7 +4103,7 @@ $t('sidebar.info') }}
         <a href="{{ $e.routeUrl('root.language') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isLangActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isLangActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-rose-500 text-white shadow-md shadow-emerald-500/30' if isLangActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+            <i class="fa-solid fa-language text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.languageExample') }}</span>
         </a>
@@ -4268,7 +4140,7 @@ $t('sidebar.info') }}
         <a href="{{ $e.routeUrl('root.persons') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isPersonsActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isPersonsActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isPersonsActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <i class="fa-solid fa-users text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.freeModelDbExample') }}</span>
         </a>
@@ -4308,7 +4180,7 @@ $t('sidebar.info') }}
         <a href="{{ $e.routeUrl('root.pagination') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isPagActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isPagActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
           <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isPagActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+            <i class="fa-solid fa-route text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.paginationExample') }}</span>
         </a>
@@ -4359,86 +4231,124 @@ $t('sidebar.info') }}
         </a>
       </div>
     </nav>
-
-    <!-- Sidebar Footer -->
-    <div class="border-t border-zinc-200/70 px-4 py-4">
-      <div class="flex items-center gap-3 rounded-xl bg-gradient-to-br from-teal-50 via-cyan-50 to-emerald-50 p-3 ring-1 ring-teal-100">
-        <span class="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 via-cyan-500 to-emerald-500 text-white shadow-md shadow-teal-500/30">
-          <i class="fa-solid fa-feather text-sm"></i>
-        </span>
-        <div class="min-w-0 flex-1">
-          <div class="truncate text-xs font-bold text-zinc-800">Finch Framework</div>
-          <div class="truncate text-[10px] font-medium text-zinc-500">{{ version }} · made with ❤</div>
-        </div>
-      </div>
-    </div>
   </div>
 </aside>
 """,
-	r"template/paging.j2.html": r"""<div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-xs md:text-sm">
-  <div class="hidden md:flex items-center gap-2 text-zinc-500 font-medium">
-    <span class="inline-flex h-7 items-center gap-1.5 rounded-lg bg-zinc-100 px-2.5 ring-1 ring-inset ring-zinc-200/70">
-      <svg class="h-3.5 w-3.5 text-zinc-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
-      <span>
-        <span class="font-bold text-zinc-900">{{ (($v.page-1) * $v.pageSize)+1 if $v.total > 0 else 0 }}</span>
-        <span class="text-zinc-400">–</span>
-        <span class="font-bold text-zinc-900">{{ $v.toEnd }}</span>
-      </span>
-    </span>
-    <span>{{ $t('pagination.of') }}</span>
-    <span class="font-bold text-zinc-900">{{ $v.total }}</span>
-    <span>{{ $t('pagination.entries') }}</span>
-  </div>
+	r"template/footer.j2.html": r"""<script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+  integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+  crossorigin="anonymous"
+></script>
+<script
+  crossorigin="anonymous"
+></script>
+<script src="/assets/app.js"></script>
+<script src="/assets/effects/wave/wave.js"></script>
+<script src="/assets/websocket.js"></script>
+{{ assets.dataJs() }}
+{{ assets.js() }}
+""",
+	r"template/navbar.j2.html": r"""<nav id="navbar"
+     class="fixed inset-x-0 top-0 z-50 h-16 border-b border-zinc-200 bg-white">
+  <div class="flex h-full w-full items-center">
 
-  {% if($v.count > 1) %}
-  <nav aria-label="Pagination" class="{{ 'md:mr-auto' if $t('dir')=='rtl' else 'md:ml-auto' }}">
-    <ul class="inline-flex items-center gap-1 rounded-2xl border border-zinc-200/70 bg-white p-1 shadow-soft">
+    <!-- ============ BRAND ZONE (aligned with sidebar width on lg) ============ -->
+    <div class="flex h-full w-[240px] shrink-0 items-center gap-2 border-zinc-200 px-4 lg:border-e">
+      <!-- Mobile-only sidebar toggle -->
+      <button
+        type="button"
+        class="wave button-sidebar inline-flex h-10 w-10 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-500/40 lg:hidden"
+        aria-label="{{ $t('navbar.toggleSidebar') }}"
+        aria-controls="sidebar"
+        aria-expanded="false"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
 
-      <li>
-        <a aria-label="First" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableFirst else '' }} inline-flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition-all duration-150 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30" href="?{{ $v.prefix }}={{ 1 }}{{ $v.other }}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate({{ '180' if $t('dir')=='rtl' else '0' }}deg)">
-            <path fill-rule="evenodd" d="M8.354 1.646a.5.5 0 0 1 0 .708L2.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-            <path fill-rule="evenodd" d="M12.354 1.646a.5.5 0 0 1 0 .708L6.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-          </svg>
-        </a>
-      </li>
-      <li>
-        <a aria-label="Previous" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableFirst else '' }} inline-flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition-all duration-150 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30" href="?{{ $v.prefix }}={{ $v.page - 1 }}{{ $v.other }}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate({{ '180' if $t('dir')=='rtl' else '0' }}deg)">
-            <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0"/>
-          </svg>
-        </a>
-      </li>
+      <!-- Logo -->
+      <a class="wave inline-flex items-center gap-2.5 rounded-lg px-1.5 py-1 hover:bg-zinc-50"
+         href="{{ $e.routeUrl('root.home') }}">
+        <img src="{{ $e.url('logo.svg') }}" alt="{{ $t('logo.title') }}" class="h-9 w-9 shrink-0" />
+        <span class="flex items-baseline gap-1.5">
+          <span class="text-lg font-extrabold tracking-tight text-zinc-900">{{ $t('logo.title') }}</span>
+          <span class="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-zinc-500 ring-1 ring-inset ring-zinc-200">{{ version }}</span>
+        </span>
+      </a>
+    </div>
 
-      {% for index in range($v.rangeFrom, $v.rangeTo + 1) %}
-      {% if index > 0 and index < $v.count+1 %}
-      <li>
-        <a href="?{{ $v.prefix }}={{ index }}{{ $v.other }}" aria-current="{{ 'page' if (index==$v.page) else 'false' }}" class="wave inline-flex h-9 min-w-9 items-center justify-center rounded-xl px-2.5 text-xs font-semibold transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 via-cyan-500 to-emerald-500 text-white shadow-md shadow-teal-500/40 ring-1 ring-white/40' if (index==$v.page) else 'text-zinc-600 hover:bg-teal-50 hover:text-teal-700' }} focus:outline-none focus:ring-2 focus:ring-teal-500/30">
-          {{ index }}
-        </a>
-      </li>
+    <!-- ============ RIGHT ZONE ============ -->
+    <div class="flex h-full flex-1 items-center justify-end gap-2 px-4 sm:px-6">
+
+      {% if middleware %}
+        <span class="hidden md:inline-flex items-center gap-1.5 rounded-md bg-teal-50 px-2 py-1 text-[11px] font-semibold text-teal-700 ring-1 ring-inset ring-teal-200">
+          <i class="fa-solid fa-shield-halved text-[10px]"></i>{{ middleware }}
+        </span>
       {% endif %}
-      {% endfor %}
 
-      <li>
-        <a aria-label="Next" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableLast else '' }} inline-flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition-all duration-150 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30" href="?{{ $v.prefix }}={{ $v.page + 1 }}{{ $v.other }}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate({{ '180' if $t('dir')=='rtl' else '0' }}deg)">
-            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708"/>
-          </svg>
-        </a>
-      </li>
-      <li>
-        <a aria-label="Last" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableLast else '' }} inline-flex h-9 w-9 items-center justify-center rounded-xl text-zinc-500 transition-all duration-150 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30" href="?{{ $v.prefix }}={{ $v.count }}{{ $v.other }}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="transform: rotate({{ '180' if $t('dir')=='rtl' else '0' }}deg)">
-            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708"/>
-            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708"/>
-          </svg>
-        </a>
-      </li>
-    </ul>
-  </nav>
-  {% endif %}
-</div>
+      <!-- GitHub -->
+      <a href="https://github.com/uproid/finch"
+         class="wave inline-flex h-10 w-10 items-center justify-center rounded-lg text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-400/40"
+         aria-label="GitHub" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+
+      {% if user %}
+      <!-- User menu -->
+      <details class="group relative">
+        <summary class="list-none inline-flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-teal-500/40">
+          <span class="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-teal-500 to-cyan-500 text-white">
+            <i class="fas fa-user text-[11px]"></i>
+          </span>
+          <span class="hidden md:block max-w-[120px] truncate">{{ user.name }}</span>
+          <i class="text-zinc-400 text-xs fas fa-chevron-down transition-transform duration-200 group-open:rotate-180"></i>
+        </summary>
+        <ul class="absolute end-0 mt-2 w-60 overflow-hidden rounded-xl border border-zinc-200 bg-white py-1.5 shadow-soft-lg">
+          <li class="px-3 pb-2 pt-1 mb-1 border-b border-zinc-100">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Account</div>
+            <div class="mt-0.5 truncate text-sm font-semibold text-zinc-900">{{ user.name }}</div>
+          </li>
+          <li>
+            <a class="wave flex items-center gap-3 mx-1.5 rounded-lg px-2.5 py-2 text-sm font-medium text-rose-600 hover:bg-rose-50"
+               href="{{ $e.routeUrl('root.logout') }}">
+              <span class="flex h-7 w-7 items-center justify-center rounded-md bg-rose-100 text-rose-600">
+                <i class="fas fa-sign-out-alt text-xs"></i>
+              </span>
+              <span>{{ $t('auth.logout') }}</span>
+            </a>
+          </li>
+        </ul>
+      </details>
+      {% endif %}
+
+      <!-- Language switcher -->
+      <details class="group relative">
+        <summary class="list-none inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 hover:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-teal-500/40">
+          <i class="text-teal-600 text-sm fas fa-globe text-[11px]"></i>
+          <span class="hidden md:block">{{ $e.ln | upper }}</span>
+          <i class="text-zinc-400 text-xs fas fa-chevron-down transition-transform duration-200 group-open:rotate-180"></i>
+        </summary>
+        <ul class="absolute end-0 mt-2 w-56 max-h-80 overflow-y-auto rounded-xl border border-zinc-200 bg-white py-1.5 shadow-soft-lg">
+          <li class="px-3 pb-2 pt-1 mb-1 border-b border-zinc-100">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Language</div>
+          </li>
+          {% for key, language in languages %}
+          <li>
+            <a class="wave flex items-center gap-3 mx-1.5 rounded-lg px-2.5 py-2 text-sm transition-colors {{ 'bg-teal-50 font-semibold text-teal-700' if $e.ln == key else 'text-zinc-700 hover:bg-zinc-50' }}"
+               href="{{ $e.urlToLanguage(key) }}">
+              <img src="{{ language.flag }}" class="h-5 w-6 rounded-sm object-cover ring-1 ring-zinc-200" alt=""/>
+              <span class="flex-1">{{ language.name }}</span>
+              {% if $e.ln == key %}
+              <i class="text-teal-600 text-xs fas fa-check"></i>
+              {% endif %}
+            </a>
+          </li>
+          {% endfor %}
+        </ul>
+      </details>
+    </div>
+  </div>
+</nav>
 """,
 	r"template/home.j2.html": r"""{% extends 'template/template.j2.html' %}
 
@@ -4501,7 +4411,7 @@ $t('sidebar.info') }}
         <div aria-hidden="true" class="pointer-events-none absolute -top-16 -right-16 h-48 w-48 rounded-full bg-gradient-to-br from-teal-300/40 to-cyan-300/40 blur-2xl transition-opacity duration-300 group-hover:opacity-100 opacity-60"></div>
         <div class="relative flex h-full flex-col">
           <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/40">
-            <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <i class="fas fa-broadcast-tower text-sm"></i>
           </div>
           <h3 class="mt-5 text-xl font-bold text-zinc-900">{{ $t('features.websocket') }}</h3>
           <p class="mt-2 text-sm leading-relaxed text-zinc-600">Real-time, bi-directional, low-latency communication out of the box.</p>
@@ -4522,7 +4432,7 @@ $t('sidebar.info') }}
       <!-- Feature: Cronjobs -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(8,145,178,.35)] hover:border-cyan-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-sky-500 text-white shadow-md shadow-cyan-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <i class="fas fa-clock text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.cronjobs') }}</h3>
       </article>
@@ -4530,7 +4440,7 @@ $t('sidebar.info') }}
       <!-- Feature: Routing -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(59,130,246,.35)] hover:border-blue-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-sky-500 text-white shadow-md shadow-blue-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
+          <i class="fas fa-route text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.routing') }}</h3>
       </article>
@@ -4538,7 +4448,7 @@ $t('sidebar.info') }}
       <!-- Feature: Form Validators -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(245,158,11,.35)] hover:border-amber-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <i class="fas fa-check-circle text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.formvalidators') }}</h3>
       </article>
@@ -4546,7 +4456,7 @@ $t('sidebar.info') }}
       <!-- Feature: HTML Tools -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(99,102,241,.35)] hover:border-teal-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-blue-500 text-white shadow-md shadow-teal-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+          <i class="fas fa-file-code text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.htmltools') }}</h3>
       </article>
@@ -4554,7 +4464,7 @@ $t('sidebar.info') }}
       <!-- Feature: DB Model -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(20,184,166,.35)] hover:border-teal-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7"/></svg>
+          <i class="fa-solid fa-database text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.dbmodel') }}</h3>
       </article>
@@ -4562,7 +4472,7 @@ $t('sidebar.info') }}
       <!-- Feature: Fast API -->
       <article class="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white p-5 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_45px_-15px_rgba(245,158,11,.35)] hover:border-amber-200">
         <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/40">
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <i class="fas fa-bolt text-sm"></i>
         </div>
         <h3 class="mt-4 text-base font-bold text-zinc-900">{{ $t('features.fastapi') }}</h3>
       </article>
@@ -4572,7 +4482,7 @@ $t('sidebar.info') }}
         <div aria-hidden="true" class="pointer-events-none absolute -top-12 -right-12 h-40 w-40 rounded-full bg-gradient-to-br from-teal-500/40 to-emerald-500/40 blur-2xl"></div>
         <div class="relative">
           <div class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-white ring-1 ring-white/20 backdrop-blur">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+            <i class="fas fa-cogs text-sm"></i>
           </div>
           <h3 class="mt-4 text-base font-bold">{{ $t('features.other') }}</h3>
           <p class="mt-1 text-xs text-zinc-300">And much more — explore the docs to discover all built-in capabilities.</p>
@@ -4590,19 +4500,19 @@ $t('sidebar.info') }}
         <p class="mt-1 text-sm text-zinc-600">Get started, contribute, or explore the package.</p>
         <div class="mt-6 flex flex-wrap gap-3" role="group" aria-label="Quick links">
           <a href="https://github.com/uproid/finch" class="wave group inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-zinc-900/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-zinc-800 hover:shadow-xl focus:outline-none focus:ring-4 focus:ring-zinc-700/30">
-            <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <i class="fab fa-github text-sm"></i>
             <span>{{ $t('project.github') }}</span>
           </a>
           <a href="https://github.com/uproid/finch/blob/master/CONTRIBUTING.md" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <i class="fas fa-users text-sm"></i>
             <span>{{ $t('project.contributing') }}</span>
           </a>
           <a href="https://github.com/uproid/finch/tree/master/doc" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+            <i class="fas fa-book text-sm"></i>
             <span>{{ $t('project.documentation') }}</span>
           </a>
           <a href="https://pub.dev/packages/finch" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
-            <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <i class="fas fa-box text-sm"></i>
             <span>{{ $t('project.pubdev') }}</span>
           </a>
         </div>
@@ -4617,7 +4527,7 @@ $t('sidebar.info') }}
     <div aria-hidden="true" class="pointer-events-none absolute -top-20 -right-20 h-56 w-56 rounded-full bg-emerald-300/40 blur-3xl"></div>
     <div class="relative flex items-start gap-5">
       <div class="relative flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-green-600 text-white shadow-xl shadow-emerald-500/40 ring-4 ring-white">
-        <svg class="h-7 w-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <i class="fas fa-check text-sm"></i>
       </div>
       <div class="flex-1">
         <h3 class="text-xl font-bold text-emerald-900">{{ $t('login.success') }}</h3>
@@ -4726,13 +4636,13 @@ $t('sidebar.info') }}
               {% if flash.type == 'danger' ?? flash.type == 'error' %} bg-rose-100 text-rose-700 {% endif %}
               {% if flash.type != 'success' and flash.type != 'info' and flash.type != 'warning' and flash.type != 'danger' and flash.type != 'error' %} bg-zinc-100 text-zinc-600 {% endif %}">
               {% if flash.type == 'success' %}
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <i class="text-lg fa-solid fa-check"></i>
               {% elif flash.type == 'info' %}
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <i class="text-lg fa-solid fa-info"></i>
               {% elif flash.type == 'warning' %}
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              <i class="text-lg fa-solid fa-exclamation-triangle"></i>
               {% else %}
-              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              <i class="text-lg fa-solid fa-circle-exclamation"></i>
               {% endif %}
             </span>
             <span class="flex-1 pt-1.5 font-medium leading-relaxed">{{ flash.text }}</span>
@@ -4812,21 +4722,59 @@ $t('sidebar.info') }}
 </body>
 </html>
 """,
-	r"template/ui/sorting.j2.html": r"""{% set asc = ((data.order == 'asc') and (data.sort == sortby)) %}
-<a
-    href="{{ $l.updateUrlQuery( {'sort': sortby, 'order': 'desc' if asc else 'asc'}) }}"
-    class="wave inline-flex items-center gap-1 font-medium rounded text-slate-600 hover:text-slate-900 focus:outline-none no-underline group"
-    title="{{ $t(title) }}"
->
-    <span>{{ $t(title) }}</span>
-    {% if data.sort == sortby %}
-        {% if data.order != 'asc' %}
-            <i class="fas fa-sort-up ml-1 text-primary-600 group-hover:text-primary-700"></i>
-        {% else %}
-            <i class="fas fa-sort-down ml-1 text-primary-600 group-hover:text-primary-700"></i>
-        {% endif %}
-    {% else %}
-        <i class="fas fa-sort ml-1 text-slate-400 group-hover:text-slate-500"></i>
-    {% endif %}
-</a>"""
+	r"template/paging.j2.html": r"""<div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between text-xs md:text-sm">
+  <div class="hidden md:flex items-center gap-2 text-zinc-500 font-medium">
+    <span class="inline-flex h-7 items-center gap-1.5 rounded-lg bg-zinc-100 px-2.5 ring-1 ring-inset ring-zinc-200/70">
+      <i class="fas fa-list text-[11px]"></i>
+      <span>
+        <span class="font-bold text-zinc-900">{{ (($v.page-1) * $v.pageSize)+1 if $v.total > 0 else 0 }}</span>
+        <span class="text-zinc-400">–</span>
+        <span class="font-bold text-zinc-900">{{ $v.toEnd }}</span>
+      </span>
+    </span>
+    <span>{{ $t('pagination.of') }}</span>
+    <span class="font-bold text-zinc-900">{{ $v.total }}</span>
+    <span>{{ $t('pagination.entries') }}</span>
+  </div>
+
+  {% if($v.count > 1) %}
+  <nav aria-label="Pagination" class="{{ 'md:mr-auto' if $t('dir')=='rtl' else 'md:ml-auto' }}">
+    <ul class="inline-flex items-center gap-1 rounded-2xl border border-zinc-200/70 bg-white p-1 shadow-soft">
+
+      <li>
+        <a aria-label="First" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableFirst else '' }} inline-flex h-6 w-6 items-center justify-center rounded-xl text-zinc-500 transition-all duration-150 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30" href="?{{ $v.prefix }}={{ 1 }}{{ $v.other }}">
+          <i class="fas fa-angle-double-{{ 'left' if $t('dir')=='ltr' else 'right' }} text-sm"></i>
+        </a>
+      </li>
+      <li>
+        <a aria-label="Previous" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableFirst else '' }} inline-flex h-6 w-6 items-center justify-center rounded-xl text-zinc-500 transition-all duration-150 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30" href="?{{ $v.prefix }}={{ $v.page - 1 }}{{ $v.other }}">
+          <i class="fas fa-angle-{{ 'left' if $t('dir')=='ltr' else 'right' }} text-sm"></i>
+        </a>
+      </li>
+
+      {% for index in range($v.rangeFrom, $v.rangeTo + 1) %}
+      {% if index > 0 and index < $v.count+1 %}
+      <li>
+        <a href="?{{ $v.prefix }}={{ index }}{{ $v.other }}" aria-current="{{ 'page' if (index==$v.page) else 'false' }}" class="wave inline-flex h-6 min-w-6 items-center justify-center rounded-xl px-2.5 text-xs font-semibold transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 via-cyan-500 to-emerald-500 text-white shadow-md shadow-teal-500/40 ring-1 ring-white/40' if (index==$v.page) else 'text-zinc-600 hover:bg-teal-50 hover:text-teal-700' }} focus:outline-none focus:ring-2 focus:ring-teal-500/30">
+          {{ index }}
+        </a>
+      </li>
+      {% endif %}
+      {% endfor %}
+
+      <li>
+        <a aria-label="Next" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableLast else '' }} inline-flex h-6 w-6 items-center justify-center rounded-xl text-zinc-500 transition-all duration-150 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30" href="?{{ $v.prefix }}={{ $v.page + 1 }}{{ $v.other }}">
+          <i class="fas fa-angle-{{ 'right' if $t('dir')=='ltr' else 'left' }} text-sm"></i>
+        </a>
+      </li>
+      <li>
+        <a aria-label="Last" class="wave group {{ 'pointer-events-none opacity-40' if $v.disableLast else '' }} inline-flex h-6 w-6 items-center justify-center rounded-xl text-zinc-500 transition-all duration-150 hover:bg-teal-50 hover:text-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500/30" href="?{{ $v.prefix }}={{ $v.count }}{{ $v.other }}">
+          <i class="fas fa-angle-double-{{ 'right' if $t('dir')=='ltr' else 'left' }} text-sm"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+"""
 };
