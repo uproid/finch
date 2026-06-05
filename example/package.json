@@ -1,14 +1,15 @@
 {
   "name": "finch-assets",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "scripts": {
     "tailwind:build": "tailwindcss -c tailwind.config.js -i ./public/assets/tailwind.input.css -o ./public/assets/generated-tailwind.css --minify",
-    "tailwind:watch": "tailwindcss -c tailwind.config.js -i ./public/assets/tailwind.input.css -o ./public/assets/generated-tailwind.css --watch"
+    "tailwind:watch": "tailwindcss -c tailwind.config.js -i ./public/assets/tailwind.input.css -o ./public/assets/generated-tailwind.css --watch --minify"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.41",
-    "tailwindcss": "^3.4.18"
+    "autoprefixer": "^10.5.0",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.0",
+    "@tailwindcss/cli": "^4.3.0"
   }
 }
