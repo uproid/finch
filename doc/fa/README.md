@@ -80,7 +80,7 @@ doc_meta:
 
 ### جامعه
 
-* ایمیل: info@uproid.com
+* ایمیل: info@finchdart.com
 * دیسکورد: https://discord.gg/YduDmJxCp9
 
 

@@ -14,7 +14,7 @@ class LoginForm extends AdvancedForm {
       csrf(),
       Field(
         'email',
-        // initValue: 'example@uproid.com',
+        // initValue: 'example@finchdart.com',
         validators: [
           FieldValidator.requiredField(),
           FieldValidator.isEmailField(),

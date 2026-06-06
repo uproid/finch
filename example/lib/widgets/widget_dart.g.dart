@@ -743,7 +743,7 @@ var mapTemplates = {
         <span class="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-white px-3 py-1.5 shadow-sm">
           <i class="fa-solid fa-envelope text-[11px] text-amber-600"></i>
           <span class="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">{{ $t('form.validation.credentials.email') }}</span>
-          <code class="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-mono text-amber-900">example@uproid.com</code>
+          <code class="rounded bg-amber-100 px-1.5 py-0.5 text-xs font-mono text-amber-900">example@finchdart.com</code>
         </span>
         <span class="inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-white px-3 py-1.5 shadow-sm">
           <i class="fa-solid fa-lock text-[11px] text-amber-600"></i>
@@ -1413,21 +1413,21 @@ var mapTemplates = {
       <input name="married" type="hidden" value="false" />
       <label class="relative inline-flex cursor-pointer items-center">
         <input name="married" id="married" type="checkbox" value="true" class="peer sr-only" {{ 'checked' if $n('form/married/value') else '' }} />
-        <div class="h-5 w-9 rounded-full bg-zinc-300 transition peer-checked:bg-primary-600"></div>
+        <div class="h-5 w-9 rounded-full bg-zinc-300 transition peer-checked:bg-blue-600"></div>
         <div class="absolute left-0 top-0 h-5 w-5 translate-x-0 rounded-full bg-white shadow transition peer-checked:translate-x-4"></div>
       </label>
     </div>
     <div>
       <label for="color" class="mb-1 block text-sm font-medium text-zinc-700">{{ $t('person.form.label.color') }}</label>
-      <input type="color" id="color" name="color" value="{{ $n('form/color/value','#FF0055') }}" title="{{ $t('person.form.tooltip.color') }}" class="h-10 w-24 cursor-pointer rounded-md border border-zinc-300 bg-white p-1 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" />
+      <input type="color" id="color" name="color" value="{{ $n('form/color/value','#FF0055') }}" title="{{ $t('person.form.tooltip.color') }}" class="h-10 w-24 cursor-pointer rounded-md border border-zinc-300 bg-white p-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30" />
     </div>
   </div>
 
   <!-- Actions -->
   <div class="flex flex-wrap gap-3 border-t border-zinc-200 pt-4">
-    <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.submit') }}</button>
+    <button type="submit" class="wave inline-flex items-center rounded-md bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30">{{ $t('person.form.button.submit') }}</button>
     {% if $n('data/_id') %}
-    <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.cancel') }}</a>
+    <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30">{{ $t('person.form.button.cancel') }}</a>
     {% endif %}
   </div>
 </form>""",
@@ -4545,7 +4545,7 @@ $t('sidebar.info') }}
             <i class="fas fa-users text-sm"></i>
             <span>{{ $t('project.contributing') }}</span>
           </a>
-          <a href="https://github.com/uproid/finch/tree/master/doc" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
+          <a href="https://finchdart.com" class="wave inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-teal-300 hover:text-teal-700 hover:shadow-md focus:outline-none focus:ring-4 focus:ring-teal-500/20">
             <i class="fas fa-book text-sm"></i>
             <span>{{ $t('project.documentation') }}</span>
           </a>

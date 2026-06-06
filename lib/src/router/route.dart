@@ -146,7 +146,7 @@ class Route {
     rq.addParams(route.params);
 
     // Check is param or not
-    if (key.contains("{")) {
+    if (key.contains("{") || key.contains(':')) {
       var paramPath = getParamsPath(path, endpoint);
       urlParams = paramPath.$2;
       endpoint = paramPath.$1;
@@ -329,8 +329,8 @@ class Route {
   /// Example:
   /// ```dart
   /// final result = getParamsPath('/users/123/posts/hello-world', '/users/{id}/posts/{slug}');
-  /// // result.$1 = '/users/123/posts/hello-world'
-  /// // result.$2 = {'id': '123', 'slug': 'hello-world'}
+  /// result.$1 = '/users/123/posts/hello-world'
+  /// result.$2 = {'id': '123', 'slug': 'hello-world'}
   /// ```
   (String, Map<String, Object?>) getParamsPath(
     String clientPath,
@@ -348,11 +348,19 @@ class Route {
 
     for (int i = 0; i < clientUri.pathSegments.length; i++) {
       var key = Uri.decodeFull(serverUri.pathSegments[i]);
-      if (!key.startsWith("{") || !key.endsWith("}")) {
+
+      if (!(key.startsWith("{") && key.endsWith("}")) && !key.startsWith(':')) {
         continue;
       } else {
-        key = key.replaceAll("{", "").replaceAll("}", "");
-        resultKey = resultKey.replaceFirst("{$key}", clientUri.pathSegments[i]);
+        if (key.startsWith(':')) {
+          key = key.substring(1);
+          resultKey =
+              resultKey.replaceFirst(":$key", clientUri.pathSegments[i]);
+        } else {
+          key = key.replaceAll("{", "").replaceAll("}", "");
+          resultKey =
+              resultKey.replaceFirst("{$key}", clientUri.pathSegments[i]);
+        }
         resultParams[key] = clientUri.pathSegments[i];
       }
     }
