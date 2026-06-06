@@ -311,6 +311,24 @@ void main() async {
               });
             },
           ),
+          FinchRoute(
+            path: '/check_param_classic/:key1/:key2',
+            index: () async {
+              return rq.renderData(data: {
+                'key1': rq.getParam('key1'),
+                'key2': rq.getParam('key2'),
+              });
+            },
+          ),
+          FinchRoute(
+            path: '/check_param_finch/:key1/:key2',
+            index: () async {
+              return rq.renderData(data: {
+                'key1': rq.getParam('key1'),
+                'key2': rq.getParam('key2'),
+              });
+            },
+          ),
         ],
       ),
     ];
@@ -552,7 +570,6 @@ void main() async {
       Uri.parse("http://localhost:${httpServer.port}/de/language_cookie"),
       headers: headers,
     );
-    Console.json(req.body);
     data = jsonDecode(req.body);
     resCookies = data['cookies'];
     language = data['language'];
@@ -780,6 +797,63 @@ void main() async {
       isFalse,
       reason: "Email field should have errors",
     );
+  });
+
+  group('Test Route Params', () {
+    test('Classic Params', () async {
+      var value1 = String.fromCharCodes(
+        List.generate(10, (index) => Random().nextInt(26) + 97),
+      );
+      var value2 = String.fromCharCodes(
+        List.generate(10, (index) => Random().nextInt(26) + 97),
+      );
+
+      var req = await http.get(
+        Uri.parse(
+          "http://localhost:${httpServer.port}/check_param_classic/$value1/$value2",
+        ),
+      );
+      var data = jsonDecode(req.body);
+      expect(
+        data['key1'],
+        value1,
+        reason: "key1 should be '$value1'",
+      );
+      expect(
+        data['key2'],
+        value2,
+        reason: "key2 should be '$value2'",
+      );
+      expect(req.statusCode, 200, reason: "Status code should be 200");
+    });
+
+    test('Finch Params', () async {
+      var value1 = String.fromCharCodes(
+        List.generate(10, (index) => Random().nextInt(26) + 97),
+      );
+      var value2 = String.fromCharCodes(
+        List.generate(10, (index) => Random().nextInt(26) + 97),
+      );
+      var req = await http.get(
+        Uri.parse(
+          "http://localhost:${httpServer.port}/check_param_finch/$value1/$value2",
+        ),
+      );
+
+      var data = jsonDecode(req.body);
+
+      expect(
+        data['key1'],
+        value1,
+        reason: "key1 should be '$value1'",
+      );
+      expect(
+        data['key2'],
+        value2,
+        reason: "key2 should be '$value2'",
+      );
+      expect(req.statusCode, 200, reason: "Status code should be 200");
+    });
   });
 }
 

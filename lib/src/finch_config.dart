@@ -73,7 +73,7 @@ class FinchConfigs {
     this.jinjaMapTemplate,
     this.fakeDelay = 0,
     List<String>? languages,
-    this.mailDefault = "example@uproid.com",
+    this.mailDefault = "example@finchdart.com",
     this.mailHost = "smtp.zoho.eu",
     this.blockStart = '{%',
     this.blockEnd = "%}",

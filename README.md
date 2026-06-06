@@ -244,7 +244,7 @@ For more comprehensive examples, explore the `example/` directory in this reposi
 
 For in-depth guides and API references:
 
-- [Official Documentation](https://github.com/uproid/finch/tree/master/doc)
+- [Official Documentation](https://finchdart.com)
 - [API Reference](https://pub.dev/documentation/finch/latest/)
 - [Examples Repository](https://github.com/uproid/finch/tree/master/example)
 - [Live Demo](https://example.finchdart.com)

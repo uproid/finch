@@ -80,7 +80,7 @@ Feel free to customize and extend the example provided with the package to fully
 
 ### Community
 
-* Contact: info@uproid.com
+* Contact: info@finchdart.com
 * Discord: https://discord.gg/YduDmJxCp9
 
 

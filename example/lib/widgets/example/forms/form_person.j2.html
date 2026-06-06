@@ -175,21 +175,21 @@
       <input name="married" type="hidden" value="false" />
       <label class="relative inline-flex cursor-pointer items-center">
         <input name="married" id="married" type="checkbox" value="true" class="peer sr-only" {{ 'checked' if $n('form/married/value') else '' }} />
-        <div class="h-5 w-9 rounded-full bg-zinc-300 transition peer-checked:bg-primary-600"></div>
+        <div class="h-5 w-9 rounded-full bg-zinc-300 transition peer-checked:bg-blue-600"></div>
         <div class="absolute left-0 top-0 h-5 w-5 translate-x-0 rounded-full bg-white shadow transition peer-checked:translate-x-4"></div>
       </label>
     </div>
     <div>
       <label for="color" class="mb-1 block text-sm font-medium text-zinc-700">{{ $t('person.form.label.color') }}</label>
-      <input type="color" id="color" name="color" value="{{ $n('form/color/value','#FF0055') }}" title="{{ $t('person.form.tooltip.color') }}" class="h-10 w-24 cursor-pointer rounded-md border border-zinc-300 bg-white p-1 shadow-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/30" />
+      <input type="color" id="color" name="color" value="{{ $n('form/color/value','#FF0055') }}" title="{{ $t('person.form.tooltip.color') }}" class="h-10 w-24 cursor-pointer rounded-md border border-zinc-300 bg-white p-1 shadow-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30" />
     </div>
   </div>
 
   <!-- Actions -->
   <div class="flex flex-wrap gap-3 border-t border-zinc-200 pt-4">
-    <button type="submit" class="wave inline-flex items-center rounded-md bg-primary-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.submit') }}</button>
+    <button type="submit" class="wave inline-flex items-center rounded-md bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/30">{{ $t('person.form.button.submit') }}</button>
     {% if $n('data/_id') %}
-    <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-primary-500/30">{{ $t('person.form.button.cancel') }}</a>
+    <a href="{{ $e.url('/example/person') }}" class="wave inline-flex items-center rounded-md border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 shadow-sm hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-blue-500/30">{{ $t('person.form.button.cancel') }}</a>
     {% endif %}
   </div>
 </form>

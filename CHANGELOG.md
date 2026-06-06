@@ -1,4 +1,8 @@
 
+## 1.3.3
+- Updated documentation to reflect the new `:param` syntax support in routing [#63](https://github.com/uproid/finch/issues/63)
+- Added comprehensive tests for both classic `{param}` and new `:param` parameter styles
+
 ## 1.3.2
 - [#58](https://github.com/uproid/finch/issues/58) Fixes #58: Resolved issues in the migrate -i and migrate -r processes. The migration process will now stop if a MySQL error occurs.
 - fixing issue for examples
@@ -325,7 +329,7 @@ In this project, all controllers and related classes have been updated to use a 
 ## WebApp-1.0.26
 - Improved the Finch CLI
     - Fixed bug for OpenApi
-    - An example for Swagger has been added: 'https://example.uproid.com/swagger'
+    - An example for Swagger has been added: 'https://example.finchdart.com/swagger'
     - A utility menu has been developed for when the project is running to make controlling the project through the CLI easier.
     ```bash
     finch run [ENTER]

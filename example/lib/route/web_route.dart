@@ -223,8 +223,8 @@ Future<List<FinchRoute>> getWebRoute(Request rq) async {
     ),
     FinchRoute(
       key: 'root.person.show',
-      path: 'api/person/{id}',
-      extraPath: ['example/person/{id}'],
+      path: 'api/person/:id',
+      extraPath: ['example/person/:id'],
       index: homeController.onePerson,
       methods: Methods.GET_POST,
       apiDoc: ApiDocuments.onePerson,

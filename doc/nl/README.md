@@ -81,5 +81,5 @@ Voel je vrij om de voorbeelden aan te passen en het project uit te breiden om de
 
 ### Community
 
-* Contact: info@uproid.com
+* Contact: info@finchdart.com
 * Discord: https://discord.gg/YduDmJxCp9

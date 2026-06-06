@@ -214,7 +214,7 @@ class ApiController extends Controller {
         "title": "$title - OpenAPI 3.1",
         "description":
             "Finch Api documentation maker v${FinchApp.info.version}",
-        "contact": {"email": "info@uproid.com"},
+        "contact": {"email": "info@finchdart.com"},
         "license": {
           "name": "Apache 2.0",
           "url": "http://www.apache.org/licenses/LICENSE-2.0.html"

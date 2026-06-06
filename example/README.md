@@ -5,9 +5,9 @@ docker compose up --build
 ```
 
 ## Examples
-  Please refer to the documentation and the GitHub page for a comprehensive review of the examples. You can also view the example as a [Demo](https://example.uproid.com).
+  Please refer to the documentation and the GitHub page for a comprehensive review of the examples. You can also view the example as a [Demo](https://example.finchdart.com).
 
-### [View Examples](https://github.com/uproid/finch/tree/master/example)  |  [Live Demo](https://example.uproid.com) | [Documentations](https://github.com/uproid/finch/tree/master/doc)
+### [View Examples](https://github.com/uproid/finch/tree/master/example)  |  [Live Demo](https://example.finchdart.com) | [Documentations](https://finchdart.com)
 
 ```dart
 import 'package:finch/finch_console.dart';
