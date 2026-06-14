@@ -8,8 +8,8 @@ void main(List<String> args) async {
     name: 'help',
     shortName: 'h',
     hideInHelp: true,
-    onSelect: (CappController controller) {
-      controller.writeHelp();
+    onSelect: (c) {
+      c.writeHelp();
       return false;
     },
   );
@@ -35,7 +35,7 @@ void main(List<String> args) async {
           shortName: 'u',
         ),
       ],
-      run: (controller) => Main().main(controller),
+      run: (c) => Main().main(c),
     ),
     controllers: [
       CappController(
@@ -71,25 +71,25 @@ void main(List<String> args) async {
             value: 'simple',
           ),
         ],
-        run: (controller) => CreateProject().create(controller),
+        run: (c) => CreateProject().create(c),
       ),
       CappController(
         'get',
         description: 'Get packages of project, (dart pub get)',
-        run: (controller) => ProjectCommands().get(controller),
+        run: (c) => ProjectCommands().get(c),
         options: [helpOption],
       ),
       CappController(
         'runner',
         description:
             'Build runner of project, (dart pub run build_runner build)',
-        run: (controller) => ProjectCommands().runner(controller),
+        run: (c) => ProjectCommands().runner(c),
         options: [helpOption],
       ),
       CappController(
         'run',
         description: 'Run project, (dart run)',
-        run: (controller) => ProjectCommands().run(controller),
+        run: (c) => ProjectCommands().run(c),
         options: [
           helpOption,
           CappOption(
@@ -107,7 +107,7 @@ void main(List<String> args) async {
       CappController(
         'serve',
         description: 'Serve project with file watcher',
-        run: (controller) => ProjectCommands().run(controller, serve: true),
+        run: (c) => ProjectCommands().run(c, serve: true),
         options: [
           helpOption,
           CappOption(
@@ -125,7 +125,7 @@ void main(List<String> args) async {
       CappController(
         'build',
         description: 'Build Project (dart compile exe)',
-        run: (controller) => ProjectCommands().build(controller),
+        run: (c) => ProjectCommands().build(c),
         options: [
           helpOption,
           CappOption(
@@ -201,13 +201,67 @@ void main(List<String> args) async {
       CappController(
         'test',
         description: 'Unit test of project, (dart test)',
-        run: (controller) => ProjectCommands().test(controller),
+        run: (c) => ProjectCommands().test(c),
         options: [
           helpOption,
           CappOption(
             name: 'reporter',
             shortName: 'r',
             description: 'Set how to print test results',
+          ),
+        ],
+      ),
+      CappController(
+        'make:controller',
+        description: 'Make new controller',
+        run: (c) => ProjectCommands().makeController(c),
+        options: [
+          helpOption,
+          CappOption(
+            name: 'name',
+            shortName: 'n',
+            description: 'Name of controller',
+          ),
+          CappOption(
+            name: 'path',
+            shortName: 'p',
+            description: 'Path of controller (default: ./lib/controllers/)',
+          ),
+        ],
+      ),
+      CappController(
+        'make:service',
+        description: 'Make new service',
+        run: (c) => ProjectCommands().makeService(c),
+        options: [
+          helpOption,
+          CappOption(
+            name: 'name',
+            shortName: 'n',
+            description: 'Name of service',
+          ),
+          CappOption(
+            name: 'path',
+            shortName: 'p',
+            description: 'Path of service (default: ./lib/services/)',
+          ),
+        ],
+      ),
+      CappController(
+        'make:middleware',
+        description: 'Make new middleware',
+        run: (c) => ProjectCommands().makeMiddleware(c),
+        options: [
+          helpOption,
+          CappOption(
+            name: 'name',
+            shortName: 'n',
+            description: 'Name of middleware',
+          ),
+          CappOption(
+            name: 'path',
+            shortName: 'p',
+            description: 'Path of middleware (default: ./lib/middleware/)',
           ),
         ],
       ),

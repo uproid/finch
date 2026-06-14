@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:capp/capp.dart';
 import 'package:finch/model_less.dart';
+import 'package:finch/src/cli/commands/make/make_controller.dart';
+import 'package:finch/src/cli/commands/make/make_middleware.dart';
+import 'package:finch/src/cli/commands/make/make_service.dart';
 import 'package:finch/src/db/mysql/mysql_migration.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
 import 'package:finch/src/tools/convertor/widget_to_dart.dart';
@@ -495,5 +498,59 @@ class ProjectCommands {
       CappColors.success,
     );
     return CappConsole.empty;
+  }
+
+  Future<CappConsole> makeController(CappController c) async {
+    var name = c.getOption('name', def: '');
+    var path = c.getOption('path', def: './lib/controllers');
+
+    if (c.getOption('path').isNotEmpty) {
+      path = c.getOption('path');
+    }
+
+    if (name.isEmpty) {
+      name = CappConsole.read("Enter controller name:", isRequired: true);
+    }
+    var res = await CappConsole.progress<String>(
+      "Creating controller...",
+      () async => MakeController.make(name, path),
+    );
+    return CappConsole(res, CappColors.success);
+  }
+
+  Future<CappConsole> makeService(CappController c) async {
+    var name = c.getOption('name', def: '');
+    var path = c.getOption('path', def: './lib/services');
+
+    if (c.getOption('path').isNotEmpty) {
+      path = c.getOption('path');
+    }
+
+    if (name.isEmpty) {
+      name = CappConsole.read("Enter service name:", isRequired: true);
+    }
+    var res = await CappConsole.progress<String>(
+      "Creating service...",
+      () async => MakeService.make(name, path),
+    );
+    return CappConsole(res, CappColors.success);
+  }
+
+  Future<CappConsole> makeMiddleware(CappController c) async {
+    var name = c.getOption('name', def: '');
+    var path = c.getOption('path', def: './lib/middleware');
+
+    if (c.getOption('path').isNotEmpty) {
+      path = c.getOption('path');
+    }
+
+    if (name.isEmpty) {
+      name = CappConsole.read("Enter middleware name:", isRequired: true);
+    }
+    var res = await CappConsole.progress<String>(
+      "Creating middleware...",
+      () async => MakeMiddleware.make(name, path),
+    );
+    return CappConsole(res, CappColors.success);
   }
 }
