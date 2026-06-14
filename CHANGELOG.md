@@ -1,4 +1,13 @@
 
+## 1.4.0
+- Added new commands to make `controller`, `middlware` and `services`
+  - `finch make:controller --name test`
+  - `finch make:service --name test`
+  - `finch make:middleware --name test`
+- Upgrade dependencies
+- Update documents
+- added new app tamlates: `finch templates`
+
 ## 1.3.3
 - Updated documentation to reflect the new `:param` syntax support in routing [#63](https://github.com/uproid/finch/issues/63)
 - Added comprehensive tests for both classic `{param}` and new `:param` parameter styles

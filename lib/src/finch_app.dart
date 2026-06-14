@@ -787,6 +787,57 @@ class FinchApp {
               );
             },
           ),
+          CappController(
+            'make:controller',
+            description: 'Make new controller',
+            run: (c) => ProjectCommands().makeController(c),
+            options: [
+              CappOption(
+                name: 'name',
+                shortName: 'n',
+                description: 'Name of controller',
+              ),
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of controller (default: ./lib/controllers/)',
+              ),
+            ],
+          ),
+          CappController(
+            'make:service',
+            description: 'Make new service',
+            run: (c) => ProjectCommands().makeService(c),
+            options: [
+              CappOption(
+                name: 'name',
+                shortName: 'n',
+                description: 'Name of service',
+              ),
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of service (default: ./lib/services/)',
+              ),
+            ],
+          ),
+          CappController(
+            'make:middleware',
+            description: 'Make new middleware',
+            run: (c) => ProjectCommands().makeMiddleware(c),
+            options: [
+              CappOption(
+                name: 'name',
+                shortName: 'n',
+                description: 'Name of middleware',
+              ),
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of middleware (default: ./lib/middleware/)',
+              ),
+            ],
+          ),
           ...commands,
         ],
       );
@@ -1204,5 +1255,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.3.3';
+  final String version = '1.4.0';
 }
