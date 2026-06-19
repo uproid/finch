@@ -1,4 +1,7 @@
 
+## 1.4.1
+- Update dependencies (Sqler 1.2.1), to fix bugs of sqlite queries
+
 ## 1.4.0
 - Added new commands to make `controller`, `middlware` and `services`
   - `finch make:controller --name test`
