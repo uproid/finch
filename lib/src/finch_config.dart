@@ -3,6 +3,8 @@ import 'package:finch/finch_model.dart';
 import 'package:finch/src/tools/convertor/string_validator.dart';
 import 'package:finch/src/tools/path.dart';
 import 'package:finch/finch_console.dart';
+import 'package:finch/src/widgets/finch_string_widget.dart';
+import 'package:finch/src/widgets/widget_error.dart';
 
 var env = DotEnv(includePlatformEnvironment: true)..load();
 
@@ -86,6 +88,7 @@ class FinchConfigs {
     FinchSqliteConfig? sqliteConfig,
     this.poweredBy = "Dart Finch",
     this.enableLocalDebugger = false,
+    FinchStringWidget? errorWidget,
   }) {
     this.appPath = appPath ?? pathApp;
     this.dbPath = dbPath ?? pathTo("db");
@@ -105,6 +108,7 @@ class FinchConfigs {
     this.mysqlConfig = mysqlConfig ?? FinchMysqlConfig();
     this.sqliteConfig = sqliteConfig ?? FinchSqliteConfig();
     this.languages = languages ?? FinchDBConfig.defaultLanguages.keys.toList();
+    this.errorWidget = errorWidget ?? ErrorWidget();
   }
 
   final String version;
@@ -151,6 +155,7 @@ class FinchConfigs {
   late final FinchDBConfig dbConfig;
   late final FinchMysqlConfig mysqlConfig;
   late final FinchSqliteConfig sqliteConfig;
+  late final FinchStringWidget errorWidget;
 
   /// Enable local debugger
   /// This is useful for debugging the application in a local environment.

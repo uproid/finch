@@ -17,7 +17,6 @@ import 'package:finch/src/tools/convertor/serializable/value_converter/json_valu
 import 'package:finch/src/tools/convertor/string_validator.dart';
 import 'package:finch/src/tools/convertor/translate_string.dart';
 import 'package:finch/src/tools/path.dart';
-import 'package:finch/src/widgets/widget_error.dart';
 import 'package:intl/intl.dart';
 import 'package:jinja/jinja.dart';
 import 'package:jinja/loaders.dart';
@@ -75,7 +74,7 @@ class Request {
   /// The [HttpRequest] instance associated with this request.
   final HttpRequest _rq;
   var _defaultContentType = ContentType.html;
-  static FinchStringWidget errorWidget = ErrorWidget();
+  static FinchStringWidget errorWidget = FinchApp.config.errorWidget;
 
   /// Manages assets like JavaScript and CSS for rendering.
   late final AssetManager assetManager = AssetManager();
