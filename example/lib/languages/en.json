@@ -236,5 +236,7 @@
   "Example SQLite": "Example SQLite",
   "Example SQLite Categories": "Example SQLite Categories",
   "error.field.password": "Password must contain at least 8 characters, including uppercase, lowercase, number, and special character",
-  "Invalid CSRF token. Please try again.": "Invalid CSRF token. Please reload the page and try again."
+  "Invalid CSRF token. Please try again.": "Invalid CSRF token. Please reload the page and try again.",
+  "error.404": "Error 404",
+  "error.404.message": "The requested page was not found. Please check if the entered address is correct."
 }

@@ -1,3 +1,4 @@
+import 'core/error_custom_view.dart';
 import 'languages/language_dart.g.dart';
 import 'widgets/widget_dart.g.dart';
 import 'package:finch/model.dart';
@@ -51,6 +52,7 @@ FinchConfigs configs = FinchConfigs(
     enable: true,
     filePath: env['SQLITE_PATH'] ?? './example_database.sqlite',
   ),
+  errorWidget: ErrorCustomView(),
 );
 
 final app = FinchApp(configs: configs);

@@ -18,6 +18,9 @@ extension TranslateString on String {
   TString get tr {
     return TString(this);
   }
+
+  String get trWrite => TString(this).write();
+  String trWriteParam([Map values = const {}]) => TString(this).write(values);
 }
 
 /// Class representing a translatable string.
