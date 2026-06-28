@@ -351,12 +351,12 @@ void main() {
       FinchApp.appLanguages = {
         'en': {
           'hello': 'Hello',
-          'greeting': 'Hello, {0}!',
+          'greeting': 'Hello, {1}!',
           'deep.key': 'Deep value',
         },
         'fa': {
           'hello': 'سلام',
-          'greeting': 'سلام، {0}!',
+          'greeting': 'سلام، {1}!',
         },
       };
     });
@@ -404,11 +404,11 @@ void main() {
     });
 
     test('writeByLang substitutes parameters', () {
-      final result = TString('greeting').writeByLang('en', {'0': 'World'});
+      final result = TString('greeting').writeByLang('en', {'1': 'World'});
       expect(
         result,
         'Hello, World!',
-        reason: 'writeByLang should substitute {0} placeholder',
+        reason: 'writeByLang should substitute {1} placeholder',
       );
     });
 
@@ -445,7 +445,8 @@ void main() {
       expect(
         () => ts.write(),
         throwsA(isA<StateError>()),
-        reason: 'write() should throw StateError when called outside a request zone',
+        reason:
+            'write() should throw StateError when called outside a request zone',
       );
     });
 
@@ -453,7 +454,7 @@ void main() {
         () {
       final ts = TString('greeting');
       expect(
-        () => ts.write({'0': 'World'}),
+        () => ts.write({'1': 'World'}),
         throwsA(isA<StateError>()),
         reason:
             'write(params) should throw StateError when called outside a request zone',
@@ -476,14 +477,15 @@ void main() {
 
     test('trWriteParam throws StateError without a request zone', () {
       expect(
-        () => 'hello'.trWriteParam({'0': 'value'}),
+        () => 'hello'.trWriteParam({'1': 'value'}),
         throwsA(isA<StateError>()),
         reason:
             'trWriteParam should throw StateError when called outside a request zone',
       );
     });
 
-    test('trWriteParam with empty params throws StateError without a request zone',
+    test(
+        'trWriteParam with empty params throws StateError without a request zone',
         () {
       expect(
         () => 'hello'.trWriteParam(),
@@ -506,14 +508,15 @@ void main() {
       expect(
         caught,
         isA<StateError>(),
-        reason: 'trWrite extension should exist on String and delegate to write()',
+        reason:
+            'trWrite extension should exist on String and delegate to write()',
       );
     });
 
     test('trWriteParam is accessible as a String extension method', () {
       Object? caught;
       try {
-        'test_key'.trWriteParam({'0': 'val'});
+        'test_key'.trWriteParam({'test_key': 'val'});
       } catch (e) {
         caught = e;
       }
