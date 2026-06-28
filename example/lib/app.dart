@@ -1,4 +1,4 @@
-import 'package:example/core/error_custom_view.dart';
+import 'core/error_custom_view.dart';
 import 'languages/language_dart.g.dart';
 import 'widgets/widget_dart.g.dart';
 import 'package:finch/model.dart';
