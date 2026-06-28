@@ -9,12 +9,25 @@ permissions:
   security-events: write
 
 jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+            echo 'matrix={"os":["ubuntu-latest","macos-latest","windows-latest"]}' >> $GITHUB_OUTPUT
+          else
+            echo 'matrix={"os":["ubuntu-latest"]}' >> $GITHUB_OUTPUT
+          fi
+
   build:
+    needs: setup
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: true
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+      matrix: ${{ fromJSON(needs.setup.outputs.matrix) }}
 
     steps:
       - uses: actions/checkout@v4
