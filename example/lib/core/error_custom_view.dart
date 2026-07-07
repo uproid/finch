@@ -35,7 +35,7 @@ class ErrorCustomView extends FinchStringWidget {
       fromName: env['DEBUG_EMAIL_FROM_NAME'] ?? 'Finch Example',
       host: env['DEBUG_EMAIL_HOST'] ?? '',
       port: int.tryParse(env['DEBUG_EMAIL_PORT'] ?? '587') ?? 587,
-      html: args.joinMap("<hr/>", " : "),
+      html: args.joinMap(" : ", "<hr/>"),
       password: env['DEBUG_EMAIL_PASSWORD'] ?? '',
       ssl: env['DEBUG_EMAIL_SSL']?.toLowerCase() == 'true' ? true : false,
       username: env['DEBUG_EMAIL_USERNAME'] ?? '',
