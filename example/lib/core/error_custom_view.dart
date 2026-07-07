@@ -3,7 +3,6 @@ import 'package:finch/finch_console.dart';
 import 'package:finch/finch_mail.dart';
 import 'package:finch/htmler.dart';
 import 'package:finch/route.dart';
-import 'package:finch/tools.dart';
 import 'package:finch/ui.dart';
 
 class ErrorCustomView extends FinchStringWidget {
@@ -28,7 +27,7 @@ class ErrorCustomView extends FinchStringWidget {
     var to = [env['DEBUG_EMAIL_TO'] ?? ''];
     if (to.isEmpty) return;
 
-    args.addAll({
+    args.addAll(<String, dynamic>{
       'url': Context.rq.uri.toString(),
       'method': Context.rq.method,
       'headers': Context.rq.headers,
@@ -56,7 +55,7 @@ class ErrorCustomView extends FinchStringWidget {
     var res = "";
     for (var key in args.keys) {
       var arg = args[key];
-      res = "<b>$key</b>: ";
+      res += "<b>$key</b>: ";
       if (arg is List) {
         res += "${arg.join(', ')}<hr>";
       } else if (arg is Map) {
