@@ -2,6 +2,7 @@ import 'package:finch/finch_app.dart';
 import 'package:finch/finch_console.dart';
 import 'package:finch/finch_mail.dart';
 import 'package:finch/htmler.dart';
+import 'package:finch/route.dart';
 import 'package:finch/tools.dart';
 import 'package:finch/ui.dart';
 
@@ -27,6 +28,15 @@ class ErrorCustomView extends FinchStringWidget {
     var to = [env['DEBUG_EMAIL_TO'] ?? ''];
     if (to.isEmpty) return;
 
+    args.addAll({
+      'url': Context.rq.uri.toString(),
+      'method': Context.rq.method,
+      'headers': Context.rq.headers,
+      'data': Context.rq.getAllData(),
+      'route': Context.rq.route?.toDetails(),
+      'ip': Context.rq.getIP(),
+    });
+
     MailSender.sendEmail(
       from: env['DEBUG_EMAIL_FROM'] ?? '',
       to: to,
@@ -35,10 +45,26 @@ class ErrorCustomView extends FinchStringWidget {
       fromName: env['DEBUG_EMAIL_FROM_NAME'] ?? 'Finch Example',
       host: env['DEBUG_EMAIL_HOST'] ?? '',
       port: int.tryParse(env['DEBUG_EMAIL_PORT'] ?? '587') ?? 587,
-      html: args.joinMap(" : ", "<hr/>"),
+      html: _mapToHtml(args),
       password: env['DEBUG_EMAIL_PASSWORD'] ?? '',
       ssl: env['DEBUG_EMAIL_SSL']?.toLowerCase() == 'true' ? true : false,
       username: env['DEBUG_EMAIL_USERNAME'] ?? '',
     );
+  }
+
+  String _mapToHtml(Map args) {
+    var res = "";
+    for (var key in args.keys) {
+      var arg = args[key];
+      res = "<b>$key</b>: ";
+      if (arg is List) {
+        res += "${arg.join(', ')}<hr>";
+      } else if (arg is Map) {
+        res += _mapToHtml(arg);
+      } else {
+        res += "${arg.toString()}<hr>";
+      }
+    }
+    return res;
   }
 }
