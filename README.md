@@ -11,8 +11,6 @@ A lightweight, robust, and feature-rich web framework for Dart that makes server
 
  [**Pub Package**](https://pub.dev/packages/finch) •  [**Documentation**](https://finchdart.com) •  [**Live Demo**](https://example.finchdart.com)
 
-**The Finch package was developed as an adaptation of the WebApp package. We made extensive improvements to [*WebApp*](https://pub.dev/packages/webapp), focusing on simplicity in coding and overall stability, and released the enhanced version under the name Finch. From now on, all future updates will be made to this package, and WebApp will soon be deprecated.**
-
 ## Overview
 
 Finch is a powerful and modern web application framework built with Dart, designed with a focus on performance, simplicity, security, and stability. It provides everything you need to build robust, multi-platform, and scalable server-side applications and websites with minimal setup and maximum efficiency.
