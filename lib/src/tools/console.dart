@@ -130,6 +130,9 @@ class Console {
     return inDebugMode;
   }
 
+  /// Checks if the application is not running in debug mode.
+  static bool get isNotDebug => !isDebug;
+
   /// Checks if the application is running in test mode.
   ///
   /// This method determines if the current execution environment is a test
