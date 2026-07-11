@@ -78,7 +78,6 @@ class ApiController extends Controller {
         var data = {};
         RegExp regex = RegExp(r'{.*?}');
         data['tags'] = [
-          //pathNorm(route.path, normSlashs: true),
           pathNorm(route.path.replaceAll(regex, ''), normSlashs: true),
         ];
         data['summary'] = route.title;
@@ -292,6 +291,13 @@ class ApiController extends Controller {
         parentPath,
         route.path,
       ]);
+
+      // Convert /...:key/ to /.../{key}/
+      route.path = route.path.replaceAllMapped(
+        RegExp(r':(\w+)'),
+        (match) => '{${match.group(1)}}',
+      );
+
       route.auth ??= auth;
       result.add(route);
 
