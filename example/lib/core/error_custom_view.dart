@@ -10,9 +10,7 @@ class ErrorCustomView extends FinchStringWidget {
   Tag Function(Map<dynamic, dynamic> args)? get generateHtml => (args) {
         var statusCode = args['status'] ?? 404;
         if (statusCode != 404) {
-          if (Console.isNotDebug) {
-            _sendEmail(statusCode, args);
-          }
+          _sendEmail(statusCode, args);
           return ErrorWidget().generateHtml!.call(args);
         }
 
@@ -23,9 +21,18 @@ class ErrorCustomView extends FinchStringWidget {
         );
       };
 
+  bool _allowSend() {
+    const notAllowKeys = ['root.error'];
+    if (notAllowKeys.contains(Context.rq.route?.key)) {
+      return false;
+    }
+    return true;
+  }
+
   Future<void> _sendEmail(int statusCode, Map<dynamic, dynamic> args) async {
-    var to = [env['DEBUG_EMAIL_TO'] ?? ''];
-    if (to.isEmpty) return;
+    if (_allowSend() == false) return;
+
+    var to = [env['DEBUG_EMAIL_TO'] ?? 'test@finchdart.com'];
 
     args.addAll(<String, dynamic>{
       'url': Context.rq.uri.toString(),
@@ -37,18 +44,21 @@ class ErrorCustomView extends FinchStringWidget {
     });
 
     MailSender.sendEmail(
-      from: env['DEBUG_EMAIL_FROM'] ?? '',
+      from: env['DEBUG_EMAIL_FROM'] ?? 'test@finchdart.com',
       to: to,
       allowInsecure: true,
       subject: 'Finch-Example Error: $statusCode',
       fromName: env['DEBUG_EMAIL_FROM_NAME'] ?? 'Finch Example',
-      host: env['DEBUG_EMAIL_HOST'] ?? '',
-      port: int.tryParse(env['DEBUG_EMAIL_PORT'] ?? '587') ?? 587,
+      host: env['DEBUG_EMAIL_HOST'] ?? 'mail',
+      port: int.tryParse(env['DEBUG_EMAIL_PORT'] ?? '1025') ?? 1025,
       html: _mapToHtml(args),
-      password: env['DEBUG_EMAIL_PASSWORD'] ?? '',
+      password: env['DEBUG_EMAIL_PASSWORD'],
       ssl: env['DEBUG_EMAIL_SSL']?.toLowerCase() == 'true' ? true : false,
-      username: env['DEBUG_EMAIL_USERNAME'] ?? '',
-    );
+      username: env['DEBUG_EMAIL_USERNAME'],
+    ).onError((error, stackTrace) {
+      Console.e('Error sending email: $error');
+      return false;
+    });
   }
 
   String _mapToHtml(Map args) {

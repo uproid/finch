@@ -93,3 +93,9 @@ services:
       - ${PWD-.}/example/mysql:/var/lib/mysql
     networks:
       - default
+
+  mail:
+    image: axllent/mailpit:latest
+    ports:
+      - "8025:8025"
+      - "1025:1025"

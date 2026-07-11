@@ -387,8 +387,11 @@ class HomeController extends Controller {
   }
 
   Future<String> socket() async {
-    await socketManager.requestHandle(rq);
-    return rq.renderSocket();
+    return socketManager.requestHandle(rq).then((rq) {
+      return rq.renderSocket();
+    }).catchError((e) {
+      return rq.renderError(404, message: 'Socket connection failed: $e');
+    });
   }
 
   Future<String> info() async {

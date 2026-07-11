@@ -1,4 +1,7 @@
 
+## 1.4.3
+- Fixed a WebSocket bug in `SocketManager.requestHandle`
+
 ## 1.4.2
 - Added errorWidget to the web app config to enable better customization of error pages. [#66](https://github.com/uproid/finch/issues/66)
 
