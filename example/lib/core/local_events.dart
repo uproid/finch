@@ -26,7 +26,8 @@ var localEvents = <String, Object>{
       }
     }
 
-    var queryParams = Context.rq.uri.safeQueryParameters;
+    var queryParams = Context.rq.uri.safeQueryParameters
+        .map((key, value) => MapEntry(key, value.toString()));
 
     var newUrl = Uri(
       queryParameters: {
@@ -38,7 +39,8 @@ var localEvents = <String, Object>{
     return newUrl.toString();
   },
   'removeUrlQuery': (dynamic keys) {
-    var queryParams = Context.rq.uri.safeQueryParameters;
+    var queryParams = Context.rq.uri.safeQueryParameters
+        .map((key, value) => MapEntry(key, value.toString()));
 
     for (var key in keys) {
       queryParams.remove(key);
