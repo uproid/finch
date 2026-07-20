@@ -1,4 +1,9 @@
 
+## 1.4.4
+- [#70](https://github.com/uproid/finch/issues/70) Fixed `FormatException: Unexpected extension byte` when request URLs contain malformed percent-encoded sequences (e.g. `/%AF/test`)
+  - Added `safePathSegments` extension on `Uri` and `safeDecodeUriComponent()` helper for crash-safe decoding of path segments (invalid UTF-8 bytes are replaced with `�` instead of throwing)
+  - Used safe decoding in route matching, language detection, redirects and public file serving
+
 ## 1.4.3
 - Fixed a WebSocket bug in `SocketManager.requestHandle`
 - Fixed ApiDoc to correctly display `:param` style route parameters by converting them to `{param}` format in the OpenAPI/Swagger output
@@ -328,7 +333,7 @@ In this project, all controllers and related classes have been updated to use a 
 ## WebApp-1.0.32
 - Fixed the redirection for external links/URI
 
-## 1.0.31
+## WebApp-1.0.31
 - Fixed Finch CLI to create new project in new paths
 - Fixed example
 
