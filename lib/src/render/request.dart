@@ -179,7 +179,8 @@ class Request {
 
   /// Retrieves the current language based on URI, session, or settings.
   String getLanguage() {
-    var ln = uri.pathSegments.isNotEmpty ? uri.pathSegments[0] : '';
+    var segments = uri.safePathSegments;
+    var ln = segments.isNotEmpty ? segments[0] : '';
     if (ln.isNotEmpty && FinchApp.config.languages.contains(ln)) {
       changeLanguege(ln);
       return ln;
@@ -1227,7 +1228,7 @@ class Request {
 
     var uri = Uri.parse(path);
     if (checkApiPath && isApiEndpoint) {
-      uri = uri.replace(pathSegments: ['api', ...uri.pathSegments]);
+      uri = uri.replace(pathSegments: ['api', ...uri.safePathSegments]);
     }
 
     uri = uri.normalizePath();
@@ -1482,12 +1483,11 @@ class Request {
       },
       'urlToLanguage': (String language) {
         var res = '';
-        if (_rq.requestedUri.pathSegments.isNotEmpty &&
-            _rq.requestedUri.pathSegments[0] == language) {
+        var segments = _rq.requestedUri.safePathSegments;
+        if (segments.isNotEmpty && segments[0] == language) {
           res = url(_rq.requestedUri.path);
-        } else if (_rq.requestedUri.pathSegments.isNotEmpty &&
-            _rq.requestedUri.pathSegments[0] == getLanguage()) {
-          var paths = _rq.requestedUri.pathSegments.sublist(1);
+        } else if (segments.isNotEmpty && segments[0] == getLanguage()) {
+          var paths = segments.sublist(1);
           res = url('/$language/${paths.join('/')}');
         } else {
           res = url('/$language${_rq.requestedUri.path}');
