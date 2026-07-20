@@ -329,6 +329,15 @@ void main() async {
               });
             },
           ),
+          FinchRoute(
+            path: '/%AF/test',
+            index: () async {
+              return rq.renderData(data: {
+                'key1': 'value1',
+                'key2': 'value2',
+              });
+            },
+          ),
         ],
       ),
     ];
@@ -853,6 +862,28 @@ void main() async {
         reason: "key2 should be '$value2'",
       );
       expect(req.statusCode, 200, reason: "Status code should be 200");
+    });
+
+    test('Url segments with special characters', () async {
+      String url = 'http://localhost:${httpServer.port}/%AF/test';
+      var req = await http.get(Uri.parse(url));
+      var data = jsonDecode(req.body);
+      expect(
+        data['key1'],
+        'value1',
+        reason: "key1 should be 'value1'",
+      );
+      expect(
+        data['key2'],
+        'value2',
+        reason: "key2 should be 'value2'",
+      );
+    });
+
+    test('Url segments with special characters 404', () async {
+      String url = 'http://localhost:${httpServer.port}/%AF/test/404';
+      var req = await http.get(Uri.parse(url));
+      expect(req.statusCode, 404, reason: "Status code should be 404");
     });
   });
 }

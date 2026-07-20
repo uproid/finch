@@ -112,14 +112,13 @@ class Route {
   /// try to use nginx in production for better performance
   /// and security
   bool _readFromPublic() {
-    String path;
-    try {
-      path = Uri.decodeFull(rq.uri.path);
-    } on FormatException {
-      // Malformed percent-encoding (e.g. `/%AF/zsssss`): decode leniently
-      // per segment so the request never crashes the router.
-      path = rq.uri.path.split('/').map(safeDecodeUriComponent).join('/');
+    String path = SafeUri.safeDecodeFull(rq.uri.path);
+    List<String> invalidSegemnts = ['/../', '/./', '\\..\\', '\\.\\'];
+    if (invalidSegemnts.any((segment) => path.contains(segment))) {
+      rq.renderError(403, message: 'Access denied!', toData: rq.isApiEndpoint);
+      return false;
     }
+
     var publicFile = getFileFromPublic(path);
     try {
       if (publicFile.existsSync()) {

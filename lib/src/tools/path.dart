@@ -162,7 +162,7 @@ String get pathApp {
 }
 
 /// Extension providing a crash-safe alternative to [Uri.pathSegments].
-extension SafeUriPathSegments on Uri {
+extension SafeUri on Uri {
   /// Like [Uri.pathSegments], but never throws a [FormatException] when the
   /// path contains malformed percent-encoded sequences (e.g. `/%AF/zsssss`).
   ///
@@ -177,6 +177,34 @@ extension SafeUriPathSegments on Uri {
       if (raw.startsWith('/')) raw = raw.substring(1);
       if (raw.isEmpty) return const [];
       return List.unmodifiable(raw.split('/').map(safeDecodeUriComponent));
+    }
+  }
+
+  Map<String, String> get safeQueryParameters {
+    try {
+      return queryParameters;
+    } on FormatException {
+      return query.split("&").fold({}, (map, element) {
+        int index = element.indexOf("=");
+        if (index == -1) {
+          if (element != "") {
+            map[safeDecodeUriComponent(element)] = "";
+          }
+        } else if (index != 0) {
+          var key = element.substring(0, index);
+          var value = element.substring(index + 1);
+          map[safeDecodeUriComponent(key)] = safeDecodeUriComponent(value);
+        }
+        return map;
+      });
+    }
+  }
+
+  static String safeDecodeFull(String path) {
+    try {
+      return Uri.decodeFull(path);
+    } on FormatException {
+      return path.split('/').map(safeDecodeUriComponent).join('/');
     }
   }
 }

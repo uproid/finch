@@ -249,7 +249,7 @@ class Request {
     String content = "";
 
     // For GET
-    var params = _rq.uri.queryParameters;
+    var params = _rq.uri.safeQueryParameters;
     get.addAll(_checkValues<Map<String, dynamic>>(params));
 
     // For POST or PUT
@@ -1326,8 +1326,7 @@ class Request {
         }
       }
 
-      var queryParams = Context.rq.uri.queryParameters
-          .map((key, value) => MapEntry(key, value));
+      var queryParams = Context.rq.uri.safeQueryParameters;
 
       var newUrl = Uri(
         queryParameters: {
@@ -1339,24 +1338,23 @@ class Request {
       return newUrl.toString();
     },
     'removeUrlQuery': (dynamic keys) {
-      var queryParams = Context.rq.uri.queryParameters
-          .map((key, value) => MapEntry(key, value));
+      var queryParams = Context.rq.uri.safeQueryParameters;
 
       for (var key in keys) {
         queryParams.remove(key);
       }
 
       var newUrl = Uri(
-        queryParameters: queryParams,
+        queryParameters: Map.from(queryParams),
       );
 
       return newUrl.toString();
     },
     'existUrlQuery': (dynamic keys) {
       for (var key in keys) {
-        if (Context.rq.uri.queryParameters.containsKey(key) &&
-            Context.rq.uri.queryParameters[key] != null &&
-            Context.rq.uri.queryParameters[key]!.isNotEmpty) {
+        if (Context.rq.uri.safeQueryParameters.containsKey(key) &&
+            Context.rq.uri.safeQueryParameters[key] != null &&
+            Context.rq.uri.safeQueryParameters[key]!.isNotEmpty) {
           return true;
         }
       }
@@ -1364,7 +1362,7 @@ class Request {
     },
     'endpointQuery': () {
       var endpoint = Context.rq.uri.path;
-      if (Context.rq.uri.queryParameters.isNotEmpty) {
+      if (Context.rq.uri.safeQueryParameters.isNotEmpty) {
         endpoint += '?${Context.rq.uri.query}';
       }
       return endpoint;
@@ -1493,7 +1491,7 @@ class Request {
           res = url('/$language${_rq.requestedUri.path}');
         }
 
-        res = Uri.decodeFull(uri.replace(path: res).toString());
+        res = SafeUri.safeDecodeFull(uri.replace(path: res).toString());
         return res;
       },
       'urlParam': (String path, Map<String, String> params) {
