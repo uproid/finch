@@ -112,7 +112,13 @@ class Route {
   /// try to use nginx in production for better performance
   /// and security
   bool _readFromPublic() {
-    var path = Uri.decodeFull(rq.uri.path);
+    String path = SafeUri.safeDecodeFull(rq.uri.path);
+    List<String> invalidSegemnts = ['/../', '/./', '\\..\\', '\\.\\'];
+    if (invalidSegemnts.any((segment) => path.contains(segment))) {
+      rq.renderError(403, message: 'Access denied!', toData: rq.isApiEndpoint);
+      return false;
+    }
+
     var publicFile = getFileFromPublic(path);
     try {
       if (publicFile.existsSync()) {
@@ -342,26 +348,27 @@ class Route {
     var serverUri = Uri(path: serverPath);
     var clientUri = Uri(path: clientPath);
 
-    if (serverUri.pathSegments.length != clientUri.pathSegments.length) {
+    var serverSegments = serverUri.safePathSegments;
+    var clientSegments = clientUri.safePathSegments;
+
+    if (serverSegments.length != clientSegments.length) {
       return (resultKey, resultParams);
     }
 
-    for (int i = 0; i < clientUri.pathSegments.length; i++) {
-      var key = Uri.decodeFull(serverUri.pathSegments[i]);
+    for (int i = 0; i < clientSegments.length; i++) {
+      var key = serverSegments[i];
 
       if (!(key.startsWith("{") && key.endsWith("}")) && !key.startsWith(':')) {
         continue;
       } else {
         if (key.startsWith(':')) {
           key = key.substring(1);
-          resultKey =
-              resultKey.replaceFirst(":$key", clientUri.pathSegments[i]);
+          resultKey = resultKey.replaceFirst(":$key", clientSegments[i]);
         } else {
           key = key.replaceAll("{", "").replaceAll("}", "");
-          resultKey =
-              resultKey.replaceFirst("{$key}", clientUri.pathSegments[i]);
+          resultKey = resultKey.replaceFirst("{$key}", clientSegments[i]);
         }
-        resultParams[key] = clientUri.pathSegments[i];
+        resultParams[key] = clientSegments[i];
       }
     }
 

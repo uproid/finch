@@ -26,8 +26,8 @@ var localEvents = <String, Object>{
       }
     }
 
-    var queryParams = Context.rq.uri.queryParameters
-        .map((key, value) => MapEntry(key, value));
+    var queryParams = Context.rq.uri.safeQueryParameters
+        .map((key, value) => MapEntry(key, value.toString()));
 
     var newUrl = Uri(
       queryParameters: {
@@ -39,8 +39,8 @@ var localEvents = <String, Object>{
     return newUrl.toString();
   },
   'removeUrlQuery': (dynamic keys) {
-    var queryParams = Context.rq.uri.queryParameters
-        .map((key, value) => MapEntry(key, value));
+    var queryParams = Context.rq.uri.safeQueryParameters
+        .map((key, value) => MapEntry(key, value.toString()));
 
     for (var key in keys) {
       queryParams.remove(key);
@@ -54,9 +54,9 @@ var localEvents = <String, Object>{
   },
   'existUrlQuery': (dynamic keys) {
     for (var key in keys) {
-      if (Context.rq.uri.queryParameters.containsKey(key) &&
-          Context.rq.uri.queryParameters[key] != null &&
-          Context.rq.uri.queryParameters[key]!.isNotEmpty) {
+      if (Context.rq.uri.safeQueryParameters.containsKey(key) &&
+          Context.rq.uri.safeQueryParameters[key] != null &&
+          Context.rq.uri.safeQueryParameters[key]!.isNotEmpty) {
         return true;
       }
     }
