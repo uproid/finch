@@ -150,7 +150,7 @@ class FinchCron {
   }
 
   static String evryYear([int year = 1]) {
-    return '0 0 0 1 1 * */$year';
+    return '0 0 0 1 1 */$year';
   }
 
   /// Stops the cron job and cleans up resources.
