@@ -1,4 +1,8 @@
 
+## 1.6.1
+- Fixed [#88](https://github.com/uproid/finch/issues/88): unique field validation now reads the count from the query result via `res.assoc.first` instead of `res.rows.first.assoc()`
+- `FinchApp._runCommands()` is now public as `runCommands()`, with a new `direct` parameter to process commands once instead of opening the interactive prompt
+
 ## 1.6.0
 - Refactored the database connection process: added a unified `DBManager` (`FinchApp.db`) that connects/closes MongoDB, MySQL and SQLite together
   - `mongoDb`, `mysqlDriver` and `sqliteDriver` are now backed by dedicated `DBConnection` classes (`MongodbConn`, `MySqlConn`, `SqliteConn`) instead of ad-hoc fields on `FinchApp`
