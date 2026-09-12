@@ -565,7 +565,7 @@ class FieldValidator {
       }
       var res = await db.execute(sqler);
       if (res.rows.isNotEmpty) {
-        var count = res.rows.first.assoc()['count_of_field'] ?? '0';
+        var count = res.assoc.first['count_of_field']?.toString() ?? '0';
         if (count.toString().toInt(def: 10) == 0) {
           return FieldValidateResult(success: true);
         }
