@@ -1,21 +1,21 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:capp/capp.dart';
+import 'package:finch/finch_mongo_db.dart';
+import 'package:finch/mysql.dart';
 import 'package:finch/src/cli/commands/commands.dart';
+import 'package:finch/src/db/db_manager.dart';
 import 'package:finch/src/tools/convertor/widget_to_dart.dart';
 import 'package:finch/src/tools/convertor/language_to_dart.dart';
-import 'package:mysql_client/mysql_client.dart';
+import 'package:mysql_client_plus/mysql_client_plus.dart';
 import 'package:sqlite3/sqlite3.dart';
 import 'package:finch/src/db/mysql/mysql_migration.dart';
-import 'package:finch/src/db/mysql/sql_database_result.dart';
 import 'package:finch/src/db/mysql/sqlite_migration.dart';
 import 'package:finch/src/widgets/widget_console.dart';
-import 'package:finch/finch_mysql.dart';
 import 'package:finch/finch_route.dart';
 import 'package:finch/finch_app.dart';
 import 'package:finch/src/tools/console.dart';
 import 'package:finch/src/tools/multi_language/language.dart';
-import 'package:mongo_dart/mongo_dart.dart' as mongo;
 import 'package:finch/finch_tools.dart';
 
 /// A comprehensive web application server framework for Dart.
@@ -62,17 +62,17 @@ class FinchApp {
   /// A boolean indicating if the server has an active WebSocket manager.
   bool get hasSocket => socketManager != null;
 
-  /// The MongoDB database instance.
-  mongo.Db? _mongoDb;
+  // Database manager
+  late DBManager db;
 
-  /// The MySQL database connection instance.
-  MySQLConnection? _mysqlDb;
-  DatabaseDriver<MySQLConnection> get mysqlDriver =>
-      DatabaseDriver<MySQLConnection>(mysqlDb);
-  DatabaseDriver<Database> get sqliteDriver =>
-      DatabaseDriver<Database>(sqliteDb);
+  /// Mysql Database Driver
+  DatabaseDriver<MySQLConnectionPool> get mysqlDriver => db.mysql.driver;
 
-  Database? _sqliteDb;
+  /// Sqite Database Driver
+  DatabaseDriver<Database> get sqliteDriver => db.sqlite.driver;
+
+  /// MongoDB Database Connection
+  Db get mongoDb => db.mongodb.db;
 
   /// A list of [FinchCron] instances representing scheduled tasks.
   final List<FinchCron> crons = [];
@@ -84,7 +84,7 @@ class FinchApp {
   static late FinchConfigs config;
 
   /// A list of functions that return a [Future] containing a list of [FinchRoute] based on the [Request].
-  final List<Future<List<FinchRoute>> Function(Request rq)> _webRoutes = [];
+  final List<Future<List<FinchRoute>> Function()> _webRoutes = [];
 
   /// Clears all registered routes from the server.
   /// Returns the [FinchApp] instance to allow method chaining.
@@ -104,6 +104,10 @@ class FinchApp {
     this.onRequest,
   }) {
     FinchApp.config = configs;
+    db = DBManager(configs);
+    db.connectAll().onError((e, s) {
+      throw ("Error connect to DB: ${e.toString()}");
+    });
     debuggerInit();
   }
 
@@ -117,7 +121,7 @@ class FinchApp {
   /// The [router] function returns a [Future] containing a list of [FinchRoute] based on the provided [Request].
   /// This allows for dynamic routing based on the request.
   /// Returns the [FinchApp] instance to allow method chaining.
-  FinchApp addRouting(Future<List<FinchRoute>> Function(Request rq) router) {
+  FinchApp addRouting(Future<List<FinchRoute>> Function() router) {
     _webRoutes.add(router);
 
     return this;
@@ -130,36 +134,16 @@ class FinchApp {
     List<FinchRoute> routing = [];
 
     for (var webRoute in _webRoutes) {
-      routing.addAll(await webRoute(Context.rq));
+      routing.addAll(await webRoute());
     }
 
     return routing;
   }
 
-  /// Gets the MongoDB database instance.
-  /// If the database is not connected, this method will attempt to connect to MongoDB.
-  /// Throws an exception if the database is not running.
-  mongo.Db get mongoDb {
-    if (_mongoDb == null) {
-      connectMongoDb().then((value) => _mongoDb = value);
-      throw ('Error DB is not running');
-    }
-
-    return _mongoDb!;
-  }
-
-  MySQLConnection get mysqlDb {
-    if (_mysqlDb == null || !_mysqlDb!.connected) {
-      connectMysqlDb();
-    }
-    return _mysqlDb!;
-  }
-
-  Database get sqliteDb {
-    if (_sqliteDb == null) {
-      connectSqliteDb();
-    }
-    return _sqliteDb!;
+  /// Register callback action on console logger
+  FinchApp onError(LogCallback callBack) {
+    Console.onError.add(callBack);
+    return this;
   }
 
   /// Stops the server and closes the database connection.
@@ -169,13 +153,7 @@ class FinchApp {
       await server!.close(force: force);
     }
 
-    await mongoDb.close();
-    await mysqlDb.close();
-    sqliteDb.close();
-
-    _mongoDb = null;
-    _mysqlDb = null;
-    _sqliteDb = null;
+    await db.closeAll();
     server = null;
   }
 
@@ -203,6 +181,7 @@ class FinchApp {
   /// If [awaitCommands] is true, it will also handle command-line inputs.
   Future<HttpServer> start([List<String>? args, bool awaitCommands = true]) {
     _args = args ?? [];
+
     if (config.noStop) {
       return runZonedGuarded(
         () => _run(args, awaitCommands: awaitCommands),
@@ -231,12 +210,6 @@ class FinchApp {
       dartLanguages: config.dartLanguages,
     ).init();
 
-    _mongoDb = await connectMongoDb().onError((_, __) {
-      throw ("Error connect to MongoDB");
-    });
-
-    await connectMysqlDb();
-
     server = await HttpServer.bind(
       config.ip,
       config.port,
@@ -249,13 +222,7 @@ class FinchApp {
         ['', '@> Finch ${FinchApp.info.version}'],
         ['Url', config.uri.toString()],
         ['Path App', pathApp],
-        if (config.dbConfig.enable && _mongoDb != null && _mongoDb!.isConnected)
-          ['MongoDB', 'Connected'],
-        if (_mysqlDb != null && mysqlDriver.connected()) ['MySQL', 'Connected'],
-        if (config.sqliteConfig.enable &&
-            _sqliteDb != null &&
-            sqliteDriver.connected())
-          ['SQLite', 'Connected'],
+        ['databases', db.connections.join(', ')],
         if (hasSocket) ['WebSocket', 'Enabled'],
         if (config.isLocalDebug) ['Debug Mode', 'Enabled'],
         if (crons.isNotEmpty) ['Cron Jobs', crons.length.toString()],
@@ -289,20 +256,6 @@ class FinchApp {
           var router = Route(routing: await getAllRoutes());
 
           runZonedGuarded(() async {
-            if (config.dbConfig.enable) {
-              if (_mongoDb == null) {
-                _mongoDb =
-                    await connectMongoDb().onError((error, stackTrace) async {
-                  throw ("Error connect to DB");
-                });
-              } else if (!_mongoDb!.isConnected) {
-                await _mongoDb!.open().onError((error, stackTrace) async {
-                  Console.e("Error connect to DB: ${config.dbConfig.link}");
-                  throw ("Error connect to DB");
-                });
-              }
-            }
-
             if (onRequest != null) {
               rq = await onRequest!(rq);
             }
@@ -345,7 +298,7 @@ class FinchApp {
 
     CappConsole.write(welcomeFinch.join('\n'));
 
-    await _runCommands(_args);
+    await runCommands(_args);
   }
 
   final _helpOption = CappOption(
@@ -398,9 +351,7 @@ class FinchApp {
                 description: 'Show help',
               ),
             ],
-            run: (c) async {
-              return c.manager.writeHelpModern(c.manager.controllers);
-            },
+            run: (c) async => c.manager.writeHelpModern(c.manager.controllers),
           ),
           CappController(
             'migrate',
@@ -414,12 +365,7 @@ class FinchApp {
               CappOption(
                 name: 'sqlite',
                 shortName: 'sqlite',
-                description: 'Init SQLite migration',
-              ),
-              CappOption(
-                name: 'create',
-                shortName: 'c',
-                description: 'Create migration',
+                description: 'Init SQLite and MySQL migration together',
               ),
               CappOption(
                 name: 'name',
@@ -439,96 +385,7 @@ class FinchApp {
               ),
             ],
             description: 'Mysql/Sqlite Migration commands',
-            run: (c) async {
-              if (c.existsOption('init')) {
-                var res = await CappConsole.progress<List<String>>(
-                  "Initializing migration...",
-                  () async =>
-                      MysqlMigration(mysqlDriver).migrateInit().catchError((e) {
-                    CappConsole.write(
-                      "\n\n$e\n",
-                      CappColors.error,
-                    );
-                    return <String>[];
-                  }),
-                );
-                var index = 1;
-                var table = res.map((e) => [(index++).toString(), e]).toList();
-                if (table.isEmpty) {
-                  table.add(['migrations to execute.']);
-                } else {
-                  table.insert(0, ['#', 'Migration Files']);
-                }
-                CappConsole.writeTable(table, color: CappColors.success);
-
-                if (c.existsOption('sqlite')) {
-                  var res = await CappConsole.progress<List<String>>(
-                    "Initializing migration...",
-                    () async => SqliteMigration(sqliteDriver).migrateInit(),
-                  );
-                  var index = 1;
-                  var table =
-                      res.map((e) => [(index++).toString(), e]).toList();
-                  if (table.isEmpty) {
-                    table.add(['SQLITE: migrations to execute.']);
-                  } else {
-                    table.insert(0, ['#', 'Migration Files']);
-                  }
-                  CappConsole.writeTable(table, color: CappColors.success);
-                  return CappConsole("");
-                }
-                return CappConsole("");
-              }
-
-              if (c.existsOption('create')) {
-                var name = "";
-                if (c.existsOption('name')) {
-                  name = c.getOption('name');
-                } else {
-                  name = CappConsole.read(
-                    "Enter name of migration: ",
-                    isRequired: true,
-                  );
-                }
-
-                var res = await CappConsole.progress<String>(
-                  "Creating migration...",
-                  () async => MysqlMigration.migrateCreate(name: name),
-                );
-                return CappConsole(res);
-              }
-
-              if (c.existsOption('rollback')) {
-                int deep = c.getOption('rollback', def: '1').toInt(def: 1);
-                var res = await CappConsole.progress<String>(
-                  "Rolling back migration...",
-                  () async => MysqlMigration(mysqlDriver)
-                      .migrateRollback(deep)
-                      .catchError((e) {
-                    CappConsole.write(
-                      "\n\n$e\n",
-                      CappColors.error,
-                    );
-                    return "Error rolling back migration";
-                  }),
-                );
-                return CappConsole(res);
-              }
-
-              if (c.existsOption('list')) {
-                var res =
-                    await MysqlMigration(mysqlDriver).checkMigrationStatus();
-                res.insert(
-                    0, ["#", 'Migration Files', 'Executed', 'Created At']);
-                CappConsole.writeTable(res, color: CappColors.success);
-                return CappConsole("");
-              }
-
-              return CappConsole(
-                "Please run the migration commands",
-                CappColors.warning,
-              );
-            },
+            run: _migrateCommand,
           ),
           CappController(
             'build_widgets',
@@ -604,11 +461,6 @@ class FinchApp {
                 description: 'Init migration',
               ),
               CappOption(
-                name: 'create',
-                shortName: 'c',
-                description: 'Create migration',
-              ),
-              CappOption(
                 name: 'name',
                 shortName: 'n',
                 description: 'Name of migration file while creating',
@@ -627,57 +479,68 @@ class FinchApp {
             ],
             run: (c) async {
               if (c.existsOption('init')) {
-                var res = await CappConsole.progress<List<String>>(
-                  "Initializing migration...",
-                  () async => SqliteMigration(sqliteDriver).migrateInit(),
-                );
-                var index = 1;
-                var table = res.map((e) => [(index++).toString(), e]).toList();
-                if (table.isEmpty) {
-                  table.add(['No migrations to execute.']);
-                } else {
-                  table.insert(0, ['#', 'Migration Files']);
-                }
-                CappConsole.writeTable(table, color: CappColors.success);
-                return CappConsole("");
-              }
-
-              if (c.existsOption('create')) {
-                var name = "";
-                if (c.existsOption('name')) {
-                  name = c.getOption('name');
-                } else {
-                  name = CappConsole.read(
-                    "Enter name of migration: ",
-                    isRequired: true,
+                try {
+                  var res = await CappConsole.progress<List<String>>(
+                    "Initializing migration...",
+                    () async => SqliteMigration(sqliteDriver).migrateInit(
+                        migrations: _dartMigrations
+                            .where((m) => m.target == MigrationTarget.sqlite)
+                            .toList()),
+                    type: CappProgressType.circle,
                   );
+                  var index = 1;
+                  var table =
+                      res.map((e) => [(index++).toString(), e]).toList();
+                  if (table.isEmpty) {
+                    table.add(['No migrations to execute.']);
+                  } else {
+                    table.insert(0, ['#', 'Migration Files']);
+                  }
+                  CappConsole.writeTable(
+                    table,
+                    color: CappColors.success,
+                  );
+                } catch (e) {
+                  await _commandListSqliteMigrations(c, CappColors.error);
+                  CappConsole.write(e, CappColors.error);
                 }
-
-                var res = await CappConsole.progress<String>(
-                  "Creating migration...",
-                  () async =>
-                      SqliteMigration(sqliteDriver).migrateCreate(name: name),
-                );
-                return CappConsole(res);
+                return CappConsole.empty;
               }
 
               if (c.existsOption('rollback')) {
                 int deep = c.getOption('rollback', def: '1').toInt(def: 1);
-                var res = await CappConsole.progress<String>(
+                var res = await CappConsole.progress<List<String>>(
                   "Rolling back migration...",
-                  () async =>
-                      SqliteMigration(sqliteDriver).migrateRollback(deep),
+                  () async => SqliteMigration(sqliteDriver).migrateRollback(
+                      deep,
+                      dartMigrations: _dartMigrations
+                          .where((m) => m.target == MigrationTarget.sqlite)
+                          .toList()),
+                  type: CappProgressType.circle,
+                ).catchError((e) {
+                  CappConsole.write(
+                    "\n\n$e\n",
+                    CappColors.error,
+                  );
+                  return <String>[];
+                });
+
+                CappConsole.writeTable(
+                  [
+                    ['#', 'Migration Files'],
+                    ...res
+                        .asMap()
+                        .entries
+                        .map((e) => [(e.key + 1).toString(), e.value]),
+                  ],
+                  color: CappColors.warning,
                 );
-                return CappConsole(res);
+
+                return CappConsole.empty;
               }
 
               if (c.existsOption('list')) {
-                var res =
-                    await SqliteMigration(sqliteDriver).checkMigrationStatus();
-                res.insert(
-                    0, ["#", 'Migration Files', 'Executed', 'Created At']);
-                CappConsole.writeTable(res, color: CappColors.success);
-                return CappConsole("");
+                return _commandListSqliteMigrations(c);
               }
 
               return CappConsole(
@@ -734,6 +597,7 @@ class FinchApp {
                     ).init();
                     return appLanguages.length.toString();
                   },
+                  type: CappProgressType.circle,
                 );
                 return CappConsole("Count of languages: $res");
               }
@@ -787,6 +651,150 @@ class FinchApp {
               );
             },
           ),
+          CappController(
+            'make:controller',
+            description: 'Make new controller',
+            run: (c) => ProjectCommands().makeController(c),
+            options: [
+              CappOption(
+                name: 'name',
+                shortName: 'n',
+                description: 'Name of controller',
+              ),
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of controller (default: ./lib/controllers/)',
+              ),
+            ],
+          ),
+          CappController(
+            'make:service',
+            description: 'Make new service',
+            run: (c) => ProjectCommands().makeService(c),
+            options: [
+              CappOption(
+                name: 'name',
+                shortName: 'n',
+                description: 'Name of service',
+              ),
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of service (default: ./lib/services/)',
+              ),
+            ],
+          ),
+          CappController(
+            'make:middleware',
+            description: 'Make new middleware',
+            run: (c) => ProjectCommands().makeMiddleware(c),
+            options: [
+              CappOption(
+                name: 'name',
+                shortName: 'n',
+                description: 'Name of middleware',
+              ),
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of middleware (default: ./lib/middleware/)',
+              ),
+            ],
+          ),
+          CappController(
+            'make:migration',
+            description: 'Make new migration',
+            run: (c) => ProjectCommands().createMigrateFile(c),
+            options: [
+              CappOption(
+                name: 'name',
+                shortName: 'n',
+                description: 'Name of migration',
+              ),
+              CappOption(
+                name: 'path',
+                shortName: 'p',
+                description: 'Path of migration (default: ./lib/migrations/)',
+              ),
+              CappOption(
+                name: 'sqlite',
+                shortName: 's',
+                description: 'Create migration for SQLite',
+                value: 'sqlite',
+              ),
+            ],
+          ),
+          CappController(
+            'route',
+            description: 'Inspect routes',
+            run: (c) async {
+              var routes = await exploreAllRoutes();
+              var showDetail = c.existsOption('detail');
+              var table = <List<String>>[
+                [
+                  '#',
+                  'Method',
+                  'Path',
+                  'Auth',
+                  'Key',
+                  if (showDetail) ...[
+                    'Controller',
+                    'Function',
+                    'Type',
+                    'Permissions',
+                    'Middlewares',
+                    'Ports'
+                  ],
+                ],
+              ];
+              for (var route in routes) {
+                table.add([
+                  route['#'].toString(),
+                  route['method'].toString(),
+                  route['fullPath'].toString(),
+                  route['hasAuth'] ? 'Yes' : 'No',
+                  route['key']?.toString() ?? '-',
+                  if (showDetail) ...[
+                    route['controller']?.toString() ?? '-',
+                    route['index']?.toString() ?? '-',
+                    route['type']?.toString() ?? '-',
+                    route['permissions']?.toString() ?? '-',
+                    route['middlewares']?.toString() ?? '-',
+                    route['ports']?.toString() ?? '-',
+                  ]
+                ]);
+              }
+              if (c.existsOption('json')) {
+                return CappConsole.writeJson(
+                  routes,
+                  pretty: true,
+                  color: CappColors.success,
+                );
+              } else {
+                CappConsole.writeTable(table, color: CappColors.success);
+              }
+              return CappConsole.empty;
+            },
+            options: [
+              _helpOption,
+              CappOption(
+                name: 'list',
+                shortName: 'l',
+                description: 'List all routes',
+              ),
+              CappOption(
+                name: 'detail',
+                shortName: 'd',
+                description: 'Show more details of routes',
+              ),
+              CappOption(
+                name: 'json',
+                shortName: 'j',
+                description: 'Show more details in JSON format',
+              ),
+            ],
+          ),
           ...commands,
         ],
       );
@@ -803,8 +811,13 @@ class FinchApp {
   /// Otherwise, it starts an interactive command prompt (Finch>) where
   /// users can continue entering commands.
   /// [args] - List of command-line arguments to process
-  Future<void> _runCommands(List<String> args) async {
+  Future<void> runCommands(List<String> args, [bool direct = false]) async {
     if (args.isEmpty) {
+      return;
+    }
+
+    if (direct) {
+      await _getCommandManager(args).process(newArgs: args);
       return;
     }
 
@@ -812,54 +825,6 @@ class FinchApp {
       initArgs: args,
       appLabel: () => 'Finch> ',
     );
-  }
-
-  /// Connects to MongoDB using the connection string from the configuration.
-  /// If `config.dbConfig.enable` is true, the database connection is opened.
-  /// Returns a [Future] containing the [mongo.Db] instance.
-  Future<mongo.Db> connectMongoDb() async {
-    var db = mongo.Db(config.dbConfig.link);
-    if (config.dbConfig.enable) {
-      await db.open().onError((err, stack) {
-        Console.e(err.toString());
-      });
-    }
-    return db;
-  }
-
-  /// Connects to MySQL using the connection string from the configuration.
-  Future<void> connectMysqlDb() async {
-    if (config.mysqlConfig.enable) {
-      _mysqlDb = await MySQLConnection.createConnection(
-        host: config.mysqlConfig.host,
-        port: config.mysqlConfig.port,
-        userName: config.mysqlConfig.user,
-        password: config.mysqlConfig.pass,
-        databaseName: config.mysqlConfig.databaseName,
-        secure: config.mysqlConfig.secure,
-        collation: config.mysqlConfig.collation,
-      );
-      _mysqlDb!.onClose(
-        () => Console.e("MySQL connection closed"),
-      );
-      if (config.mysqlConfig.enable) {
-        await _mysqlDb!.connect().onError((err, stack) {
-          Console.e(err.toString());
-        });
-      }
-    }
-  }
-
-  /// Connects to SQLite using the connection string from the configuration.
-  Future<void> connectSqliteDb() async {
-    if (config.sqliteConfig.enable) {
-      try {
-        _sqliteDb = sqlite3.open(config.sqliteConfig.filePath);
-      } catch (e) {
-        Console.e("Error connecting to SQLite: $e");
-        _sqliteDb = null;
-      }
-    }
   }
 
   /// Registers a [FinchCron] instance to be scheduled.
@@ -924,6 +889,30 @@ class FinchApp {
   /// when [debuggerInit] is called multiple times.
   var _isDebuggerInit = false;
 
+  /// Register all dart file migrations into app
+  FinchApp registerDartMigration(List<DartMigration> migrations) {
+    // validate unique migration names
+    for (var migration in migrations) {
+      if (_dartMigrations
+          .where((m) => m.uniqueName == migration.uniqueName)
+          .isNotEmpty) {
+        Console.e(
+          "Application Error: \n"
+          "Class: $migration\n"
+          "Migration with name '${migration.uniqueName}'"
+          " is not unique. Please ensure all migration names are unique.",
+        );
+        // Exit the application with a non-zero status code to indicate an error
+        exit(1);
+      }
+      _dartMigrations.add(migration.register(this));
+    }
+
+    return this;
+  }
+
+  final List<DartMigration> _dartMigrations = [];
+
   /// Initializes the local development debugger system.
   /// Sets up a WebSocket-based debugging interface that provides:
   /// - Real-time route inspection and listing
@@ -974,7 +963,6 @@ class FinchApp {
             await debugger?.sendToAll({}, path: 'restartStarted');
             await stop(force: true);
             await start();
-            await getAllRoutes();
           }),
           'get_data': SocketEvent(onMessage: (socket, data) async {
             debugger?.sendToAll({
@@ -990,7 +978,6 @@ class FinchApp {
           'reinit': SocketEvent(onMessage: (socket, data) async {
             print("Server is restarting...");
             await restart();
-            await getAllRoutes();
           }),
         },
       );
@@ -1019,26 +1006,34 @@ class FinchApp {
           }, path: "updateMemory");
         },
       ).start();
-      _webRoutes.add((Request rq) async {
-        rq.buffer.writeln(
-            "<script src='${rq.url('/debugger/console.js')}'></script>");
+      _webRoutes.add(() async {
+        Context.rqOrNull?.buffer.writeln(
+            "<script src='${Context.rq.url('/debugger/console.js')}'></script>");
         return [
           FinchRoute(
             path: 'debugger',
             index: () async {
-              await debugger?.requestHandle(rq, userId: "LOCAL_USER");
+              await debugger?.requestHandle(Context.rq, userId: "LOCAL_USER");
               debugger?.sendToAll({
                 'type': 'user_connected',
                 'userId': "LOCAL_USER",
               });
-              return rq.renderSocket();
+              return Context.rq.renderSocket();
             },
             children: [
               FinchRoute(
                 path: 'console.js',
                 index: () async {
-                  return rq.renderString(
-                    text: ConsoleWidget().layout,
+                  // Set by the `finch serve` CLI process on the child app's
+                  // environment so the browser debugger can connect its
+                  // terminal panel directly to that WebSocket port.
+                  var terminalPort = int.tryParse(
+                      Platform.environment['FINCH_TERMINAL_PORT'] ?? '');
+                  var terminalPortScript = terminalPort != null
+                      ? 'window.FINCH_TERMINAL_PORT = $terminalPort;\n'
+                      : '';
+                  return Context.rq.renderString(
+                    text: '$terminalPortScript${ConsoleWidget().layout}',
                     contentType: ContentType(
                       'text',
                       'javascript',
@@ -1070,11 +1065,11 @@ class FinchApp {
     Map<String, dynamic> params = const {},
     List<String> permissions = const [],
   }) {
-    _webRoutes.add((Request rq) async {
+    _webRoutes.add(() async {
       return [
         FinchRoute(
           path: path,
-          index: index != null ? () => index(rq) : null,
+          index: index != null ? () => index(Context.rq) : null,
           methods: methods,
           auth: auth,
           children: children,
@@ -1191,6 +1186,116 @@ class FinchApp {
       permissions: permissions,
     );
   }
+
+  // Commands
+  Future<CappConsole> _commandListSqliteMigrations(
+    CappController c, [
+    CappColors color = CappColors.success,
+  ]) async {
+    var res = await SqliteMigration(sqliteDriver).checkMigrationStatus(
+        migrations: _dartMigrations
+            .where((m) => m.target == MigrationTarget.sqlite)
+            .toList());
+    res.insert(0, ["#", 'Migration Files', 'Executed', 'Created At']);
+    CappConsole.writeTable(res, color: color);
+    return CappConsole.empty;
+  }
+
+  Future<CappConsole> _migrateCommand(CappController c) async {
+    if (c.existsOption('init')) {
+      var res = await CappConsole.progress<List<String>>(
+        "Initializing migration...",
+        () async => MysqlMigration(db.mysql.driver)
+            .migrateInit(
+                migrations: _dartMigrations
+                    .where((m) => m.target == MigrationTarget.mysql)
+                    .toList())
+            .catchError((e) {
+          CappConsole.write(
+            "\n\n$e\n",
+            CappColors.error,
+          );
+          return <String>[];
+        }),
+        type: CappProgressType.circle,
+      );
+      var index = 1;
+      var table = res.map((e) => [(index++).toString(), 'MySQL', e]).toList();
+      table.insert(0, ['#', 'Type', 'Migration Files']);
+
+      if (table.isEmpty) {
+        table.add(['', '', 'migrations to execute.']);
+      }
+
+      if (c.existsOption('sqlite')) {
+        var res = await CappConsole.progress<List<String>>(
+          "Initializing migration...",
+          () async => SqliteMigration(sqliteDriver).migrateInit(
+              migrations: _dartMigrations
+                  .where((m) => m.target == MigrationTarget.sqlite)
+                  .toList()),
+          type: CappProgressType.circle,
+        );
+        var index = 1;
+        table.addAll(
+            res.map((e) => [(index++).toString(), 'SQLite', e]).toList());
+        if (table.isEmpty) {
+          table.add(['', '', 'SQLITE: migrations to execute.']);
+        }
+      }
+
+      CappConsole.writeTable(table, color: CappColors.success);
+      return CappConsole("");
+    }
+
+    if (c.existsOption('rollback')) {
+      int deep = c.getOption('rollback', def: '1').toInt(def: 1);
+      var res = await CappConsole.progress<List<String>>(
+        "Rolling back migration...",
+        () async => MysqlMigration(db.mysql.driver)
+            .migrateRollback(deep,
+                dartMigrations: _dartMigrations
+                    .where((m) => m.target == MigrationTarget.mysql)
+                    .toList())
+            .catchError((e) {
+          CappConsole.write(
+            "\n\n$e\n",
+            CappColors.error,
+          );
+          return <String>[];
+        }),
+        type: CappProgressType.circle,
+      );
+      CappConsole.writeTable(
+        [
+          ['#', 'Migration Files'],
+          ...res
+              .toList()
+              .asMap()
+              .entries
+              .map((e) => [(e.key + 1).toString(), e.value])
+        ],
+        color: CappColors.warning,
+      );
+
+      return CappConsole.empty;
+    }
+
+    if (c.existsOption('list')) {
+      var res = await MysqlMigration(db.mysql.driver).checkMigrationStatus(
+          migrations: _dartMigrations
+              .where((m) => m.target == MigrationTarget.mysql)
+              .toList());
+      res.insert(0, ["#", 'Migration Files', 'Executed', 'Created At']);
+      CappConsole.writeTable(res, color: CappColors.success);
+      return CappConsole("");
+    }
+
+    return CappConsole(
+      "Please run the migration commands",
+      CappColors.warning,
+    );
+  }
 }
 
 /// Provides version and build information for the Finch server.
@@ -1204,5 +1309,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.3.2';
+  final String version = '1.6.1';
 }

@@ -41,9 +41,11 @@ finch:
   # Path of migrations files for different databases
   mysql_migrate:
     path: ./migrations
+    type: sql
   # Path of migrations files for different databases
   sqlite_migrate:
-    path: ./migrations_sqlite
+    path: ./lib/dart_migration
+    type: dart
   build_output: ./build_example
   public_path: ./public
   

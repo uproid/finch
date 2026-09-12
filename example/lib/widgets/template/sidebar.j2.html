@@ -30,7 +30,7 @@
       </div>
 
       <!-- ====== NAVIGATION ====== -->
-      <div class="space-y-1.5">
+      <div class="space-y-1">
         <div class="px-3 mb-1 flex items-center gap-2">
           <span class="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></span>
           <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-400">{{ $t('sidebar.navigation') }}</span>
@@ -39,11 +39,11 @@
 
         <a
           href="{{ $e.routeUrl('root.home') }}"
-          class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm shadow-teal-100' if $e.isKey('root.home') else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}"
+          class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm shadow-teal-100' if $e.isKey('root.home') else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}"
           aria-current="page"
         >
           {% if $e.isKey('root.home') %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if $e.isKey('root.home') else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if $e.isKey('root.home') else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
             <i class="fa-solid fa-house text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.home') }}</span>
@@ -51,10 +51,10 @@
 
         <a
           href="{{ $e.routeUrl('root.info') }}"
-          class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm shadow-teal-100' if $e.isKey('root.info') else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}"
+          class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm shadow-teal-100' if $e.isKey('root.info') else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}"
         >
           {% if $e.isKey('root.info') %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if $e.isKey('root.info') else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if $e.isKey('root.info') else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
             <i class="fa-solid fa-circle-info text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.info') }}</span>
@@ -62,7 +62,7 @@
       </div>
 
       <!-- ====== WEB EXAMPLES ====== -->
-      <div class="space-y-1.5">
+      <div class="space-y-1">
         <div class="px-3 mb-1 flex items-center gap-2">
           <span class="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></span>
           <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-400">{{ $t('sidebar.webExamples') }}</span>
@@ -70,70 +70,80 @@
         </div>
 
         {% set isFormActive = $e.hasKey(['root.form','root.form.post']) %}
-        <a href="{{ $e.routeUrl('root.form') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isFormActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.form') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isFormActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isFormActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isFormActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isFormActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
             <i class="fa-solid fa-pen-to-square text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.formExample') }}</span>
         </a>
 
         {% set isCookieActive = $e.hasKey(['root.cookie','root.cookie.post']) %}
-        <a href="{{ $e.routeUrl('root.cookie') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isCookieActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.cookie') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isCookieActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isCookieActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/30' if isCookieActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-amber-100 group-hover:text-amber-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-md shadow-amber-500/30' if isCookieActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-amber-100 group-hover:text-amber-600' }}">
             <i class="fa-solid fa-cookie-bite text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.cookieExample') }}</span>
         </a>
 
         {% set isRouteActive = $e.hasKey(['root.route']) %}
-        <a href="{{ $e.routeUrl('root.route') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isRouteActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.route') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isRouteActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isRouteActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isRouteActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isRouteActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
             <i class="fa-solid fa-route text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.routeExample') }}</span>
         </a>
 
         {% set isSocketActive = $e.hasKey(['root.socket']) %}
-        <a href="{{ $e.routeUrl('root.socket') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isSocketActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.socket') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isSocketActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isSocketActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-yellow-400 to-amber-500 text-white shadow-md shadow-yellow-500/30' if isSocketActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-amber-100 group-hover:text-amber-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-yellow-400 to-amber-500 text-white shadow-md shadow-yellow-500/30' if isSocketActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-amber-100 group-hover:text-amber-600' }}">
             <i class="fa-solid fa-bolt text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.socketExample') }}</span>
         </a>
 
+        {% set isMeetingActive = $e.hasKey(['root.meeting']) %}
+        <a href="{{ $e.routeUrl('root.meeting') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isMeetingActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+          {% if isMeetingActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-rose-500 to-fuchsia-600 text-white shadow-md shadow-rose-500/30' if isMeetingActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-rose-100 group-hover:text-rose-600' }}">
+            <i class="fa-solid fa-video text-sm"></i>
+          </span>
+          <span class="flex-1 truncate">{{ $t('sidebar.meetingExample') }}</span>
+          <span class="inline-flex items-center rounded-full bg-rose-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-rose-600 ring-1 ring-rose-300/60">New</span>
+        </a>
+
         {% set isEmailActive = $e.hasKey(['root.email','root.email.post']) %}
-        <a href="{{ $e.routeUrl('root.email') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isEmailActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.email') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isEmailActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isEmailActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-sky-500 to-cyan-500 text-white shadow-md shadow-sky-500/30' if isEmailActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-sky-100 group-hover:text-sky-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-sky-500 to-cyan-500 text-white shadow-md shadow-sky-500/30' if isEmailActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-sky-100 group-hover:text-sky-600' }}">
             <i class="fa-solid fa-envelope text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.emailExample') }}</span>
         </a>
 
         {% set isAuthActive = $e.hasKey(['root.panel']) %}
-        <a href="{{ $e.routeUrl('root.panel') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isAuthActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.panel') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isAuthActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isAuthActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30' if isAuthActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-md shadow-emerald-500/30' if isAuthActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
             <i class="fa-solid fa-shield-alt text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.authExample') }}</span>
         </a>
 
         {% set isLangActive = $e.hasKey(['root.language']) %}
-        <a href="{{ $e.routeUrl('root.language') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isLangActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.language') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isLangActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isLangActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-rose-500 text-white shadow-md shadow-emerald-500/30' if isLangActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-rose-500 text-white shadow-md shadow-emerald-500/30' if isLangActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
             <i class="fa-solid fa-language text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.languageExample') }}</span>
         </a>
 
-        <a href="{{ $e.routeUrl('mcp.books') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 text-zinc-600 hover:bg-zinc-50 hover:text-teal-700">
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 group-hover:bg-cyan-100 group-hover:text-cyan-600 transition-all duration-200">
+        <a href="{{ $e.routeUrl('mcp.books') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 text-zinc-600 hover:bg-zinc-50 hover:text-teal-700">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-zinc-100 text-zinc-500 group-hover:bg-cyan-100 group-hover:text-cyan-600 transition-all duration-200">
             <i class="fa-solid fa-robot text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('MCP Server') }}</span>
@@ -143,7 +153,7 @@
 
       <!-- ====== DATABASE ====== -->
       {% if mongoActive ?? mysqlActive %}
-      <div class="space-y-1.5">
+      <div class="space-y-1">
         <div class="px-3 mb-1 flex items-center gap-2">
           <span class="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></span>
           <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-400">{{ $t('sidebar.databaseExamples') }}</span>
@@ -152,18 +162,18 @@
 
         {% if mongoActive %}
         {% set isDbActive = $e.hasKey(['root.database']) %}
-        <a href="{{ $e.routeUrl('root.database') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-emerald-50 via-green-50 to-white text-emerald-700 font-semibold ring-1 ring-emerald-200/70 shadow-sm' if isDbActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-emerald-700' }}">
+        <a href="{{ $e.routeUrl('root.database') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-emerald-50 via-green-50 to-white text-emerald-700 font-semibold ring-1 ring-emerald-200/70 shadow-sm' if isDbActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-emerald-700' }}">
           {% if isDbActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-emerald-500 to-green-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-md shadow-emerald-500/30' if isDbActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-green-500 text-white shadow-md shadow-emerald-500/30' if isDbActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
             <i class="fa-solid fa-leaf text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.monogdbExample') }}</span>
         </a>
 
         {% set isPersonsActive = $e.hasKey(['root.persons','root.person.show','root.person.delete']) %}
-        <a href="{{ $e.routeUrl('root.persons') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isPersonsActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.persons') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isPersonsActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isPersonsActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isPersonsActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isPersonsActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
             <i class="fa-solid fa-users text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.freeModelDbExample') }}</span>
@@ -172,18 +182,18 @@
 
         {% if mysqlActive %}
         {% set isMysqlActive = $e.hasKey(['root.mysql']) %}
-        <a href="{{ $e.routeUrl('root.mysql') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-orange-50 via-amber-50 to-white text-orange-700 font-semibold ring-1 ring-orange-200/70 shadow-sm' if isMysqlActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-orange-700' }}">
+        <a href="{{ $e.routeUrl('root.mysql') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-orange-50 via-amber-50 to-white text-orange-700 font-semibold ring-1 ring-orange-200/70 shadow-sm' if isMysqlActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-orange-700' }}">
           {% if isMysqlActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-orange-500 to-amber-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30' if isMysqlActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-orange-100 group-hover:text-orange-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/30' if isMysqlActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-orange-100 group-hover:text-orange-600' }}">
             <i class="fa-solid fa-database text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.mysqlExample') }}</span>
         </a>
 
         {% set isSqliteActive = $e.hasKey(['root.sqlite']) %}
-        <a href="{{ $e.routeUrl('root.sqlite') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-sky-50 via-blue-50 to-white text-sky-700 font-semibold ring-1 ring-sky-200/70 shadow-sm' if isSqliteActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-sky-700' }}">
+        <a href="{{ $e.routeUrl('root.sqlite') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-sky-50 via-blue-50 to-white text-sky-700 font-semibold ring-1 ring-sky-200/70 shadow-sm' if isSqliteActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-sky-700' }}">
           {% if isSqliteActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-sky-500 to-blue-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-md shadow-sky-500/30' if isSqliteActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-sky-100 group-hover:text-sky-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-sky-500 to-blue-500 text-white shadow-md shadow-sky-500/30' if isSqliteActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-sky-100 group-hover:text-sky-600' }}">
             <i class="fa-solid fa-hard-drive text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('SQLite Example') }}</span>
@@ -193,7 +203,7 @@
       {% endif %}
 
       <!-- ====== DEV TOOLS ====== -->
-      <div class="space-y-1.5">
+      <div class="space-y-1">
         <div class="px-3 mb-1 flex items-center gap-2">
           <span class="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></span>
           <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-400">{{ $t('sidebar.developmentTools') }}</span>
@@ -201,27 +211,27 @@
         </div>
 
         {% set isPagActive = $e.hasKey(['root.pagination']) %}
-        <a href="{{ $e.routeUrl('root.pagination') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isPagActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.pagination') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isPagActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isPagActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isPagActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-md shadow-teal-500/30' if isPagActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-teal-100 group-hover:text-teal-600' }}">
             <i class="fa-solid fa-route text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.paginationExample') }}</span>
         </a>
 
         {% set isHtmlerActive = $e.hasKey(['root.htmler']) %}
-        <a href="{{ $e.routeUrl('root.htmler') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isHtmlerActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.htmler') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isHtmlerActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isHtmlerActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30' if isHtmlerActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-emerald-500 to-emerald-500 text-white shadow-md shadow-emerald-500/30' if isHtmlerActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-emerald-100 group-hover:text-emerald-600' }}">
             <i class="fa-solid fa-code text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.htmlerExample') }}</span>
         </a>
 
         {% set isSwagActive = $e.hasKey(['root.swagger']) %}
-        <a href="{{ $e.routeUrl('root.swagger') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-green-50 via-emerald-50 to-white text-green-700 font-semibold ring-1 ring-green-200/70 shadow-sm' if isSwagActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-green-700' }}">
+        <a href="{{ $e.routeUrl('root.swagger') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-green-50 via-emerald-50 to-white text-green-700 font-semibold ring-1 ring-green-200/70 shadow-sm' if isSwagActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-green-700' }}">
           {% if isSwagActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-green-500 to-emerald-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-md shadow-green-500/30' if isSwagActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-green-100 group-hover:text-green-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-green-500 to-emerald-500 text-white shadow-md shadow-green-500/30' if isSwagActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-green-100 group-hover:text-green-600' }}">
             <i class="fa-solid fa-book-open text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.swaggerExample') }}</span>
@@ -229,7 +239,7 @@
       </div>
 
       <!-- ====== DEBUG & TESTING ====== -->
-      <div class="space-y-1.5">
+      <div class="space-y-1">
         <div class="px-3 mb-1 flex items-center gap-2">
           <span class="h-px flex-1 bg-gradient-to-r from-transparent via-zinc-200 to-transparent"></span>
           <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-400">{{ $t('sidebar.debugTesting') }}</span>
@@ -237,18 +247,18 @@
         </div>
 
         {% set isErrorActive = $e.hasKey(['root.error']) %}
-        <a href="{{ $e.routeUrl('root.error') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-rose-50 via-emerald-50 to-white text-rose-700 font-semibold ring-1 ring-rose-200/70 shadow-sm' if isErrorActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-rose-700' }}">
+        <a href="{{ $e.routeUrl('root.error') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-rose-50 via-emerald-50 to-white text-rose-700 font-semibold ring-1 ring-rose-200/70 shadow-sm' if isErrorActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-rose-700' }}">
           {% if isErrorActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-rose-500 to-emerald-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-rose-500 to-emerald-500 text-white shadow-md shadow-rose-500/30' if isErrorActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-rose-100 group-hover:text-rose-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-rose-500 to-emerald-500 text-white shadow-md shadow-rose-500/30' if isErrorActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-rose-100 group-hover:text-rose-600' }}">
             <i class="fa-solid fa-triangle-exclamation text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.errorExample') }}</span>
         </a>
 
         {% set isDumpActive = $e.hasKey(['root.dump']) %}
-        <a href="{{ $e.routeUrl('root.dump') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isDumpActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+        <a href="{{ $e.routeUrl('root.dump') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isDumpActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isDumpActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
-          <span class="flex h-8 w-8 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-md shadow-cyan-500/30' if isDumpActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-cyan-100 group-hover:text-cyan-600' }}">
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-cyan-500 to-teal-500 text-white shadow-md shadow-cyan-500/30' if isDumpActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-cyan-100 group-hover:text-cyan-600' }}">
             <i class="fa-solid fa-bug text-sm"></i>
           </span>
           <span class="flex-1 truncate">{{ $t('sidebar.dumpExample') }}</span>

@@ -1,4 +1,86 @@
 
+## 1.6.1
+- Fixed [#88](https://github.com/uproid/finch/issues/88): unique field validation now reads the count from the query result via `res.assoc.first` instead of `res.rows.first.assoc()`
+- `FinchApp._runCommands()` is now public as `runCommands()`, with a new `direct` parameter to process commands once instead of opening the interactive prompt
+
+## 1.6.0
+- Refactored the database connection process: added a unified `DBManager` (`FinchApp.db`) that connects/closes MongoDB, MySQL and SQLite together
+  - `mongoDb`, `mysqlDriver` and `sqliteDriver` are now backed by dedicated `DBConnection` classes (`MongodbConn`, `MySqlConn`, `SqliteConn`) instead of ad-hoc fields on `FinchApp`
+  - MongoDB and MySQL now connect through connection pools (`Db.pool`, `MySQLConnectionPool`), configurable via a new `maxConnections` option on `FinchDBConfig`/`FinchMysqlConfig`
+  - MySQL migrations now run inside a real transactional session (`MySQLConnectionPool.transactional`)
+- Added `FinchApp.onError()` to register a callback that is invoked whenever an error is logged through `Console`
+- Removed several third-party dependencies in favor of small native implementations:
+  - Removed `dotenv`; added a native `EnvReader`/`EnvParser` (`.env` parsing, quotes, `$VAR`/`${VAR}` interpolation, comments)
+  - Removed `http`; added `FinchHttp` (`FinchHttp.get()`/`FinchHttp.post()`), exported from `finch/tools.dart`
+  - Removed `cron`; `FinchCron` now uses its own built-in `CronSchedule` parser/matcher (supports both 5-field and 6-field cron expressions)
+  - Removed `logger`; `Console`/`Print` now log through a native, colorized `Log` class
+  - Removed `crypto`; `toMd5()` now uses `pointycastle`
+- Developed a **Terminal** panel in the debugger console: `finch serve` opens a WebSocket server (`--terminalPort`, default `8282`) that streams the running app's stdout/stderr and lets you send commands back, viewable from the browser debugger
+- Added **Dart DevTools** panel to the debugger console, embedded directly in the browser UI
+  - `--enable-vm-service` now binds to `0.0.0.0:8181` (instead of localhost) so DevTools is reachable from inside Docker
+  - `docker-compose.yaml` now exposes port `8282` for the terminal
+- Added `--json`/`-j` option to the `routes` CLI command to print the routes list as JSON
+- Fixed language detection order in `Request.language` (URL segment, then API `lang` param, then cookie/session), and validated the result against `config.languages`
+- Updated dependencies: `html` to `^0.15.7`, `mime` to `^2.1.0`, `archive` to `^4.2.0`, `capp` to `^2.2.0`, `sqlite3` to `^3.5.2`, `yaml` to `^3.1.4`, `mcp_models` to `2.1.0`
+
+## 1.5.2
+- Removed the `Request rq` parameter from `FinchApp.addRouting()` callbacks; request data remains available through `Context.rq` inside route handlers
+- Improved route URL generation and method checks by passing request-specific values explicitly
+- Fix issue [#80](https://github.com/uproid/finch/issues/80): Support the Previous MCP Protocol Version with an Extended Deprecation Period
+
+## 1.5.1
+- Upgraded MCP support to MCP 2.0 (`mcp_models: 2.0.0`): replaced `initialize`/`notifications/initialized` handling with the new `server/discover` method and `DiscoverResult` response
+- Added `make:migration` command to create SQL or Dart migration files from the CLI
+  - `finch make:migration --name create_users_table`
+  - `finch make:migration --name create_users_table --sqlite`
+- Removed the `--create` option from `migrate`/`migrate_sqlite`; use `make:migration` instead
+- Improved the Finch CLI runtime console with command history, arrow-key navigation and line editing (press `h` to view history)
+- Fixed public file serving to reject requests resolving outside the public directory
+- Removed the `cryptography` package dependency
+- Updated dependencies: `capp` to `^2.1.0`, `mcp_models` to `2.0.0`
+- Added a new real-time "Meeting Room" example (WebSocket-based)
+
+## 1.5.0
+- [#75](https://github.com/uproid/finch/issues/75) Added Dart-based migrations as an alternative to SQL migration files
+  - New `DartMigration` abstract class (`up()`/`down()` build SQL via `addSql()`) with a `target` of `MigrationTarget.mysql` or `MigrationTarget.sqlite`
+  - Register migrations with `app.registerDartMigration([...])`; migration names must be unique
+  - `migrate --init`, `--rollback` and `--list` now run registered Dart migrations alongside (or instead of) file-based migrations
+- [#69](https://github.com/uproid/finch/issues/69) Migrations now run inside a database transaction, rolling back automatically if any statement fails
+  - Multi-statement migrations are executed as separate statements via a new SQL statement splitter
+- [#74](https://github.com/uproid/finch/issues/74) Removed deprecated dependencies and updated others to their latest versions
+  - Replaced `mysql_client` with `mysql_client_plus`
+  - Replaced `encrypt` with `cryptography`/`pointycastle` for `toSafe()`/`fromSafe()` AES encryption
+  - Upgraded `mongo_dart`, `mailer`, `jinja`, `intl`, `build_runner`, `test` and `sqlite3`
+- update to `capp^2.0.0` to support for chained command execution [#3](https://github.com/uproid/capp/issues/3)
+
+## 1.4.4
+- [#70](https://github.com/uproid/finch/issues/70) Fixed `FormatException: Unexpected extension byte` when request URLs contain malformed percent-encoded sequences (e.g. `/%AF/test`)
+  - Added `safePathSegments` extension on `Uri` and `safeDecodeUriComponent()` helper for crash-safe decoding of path segments (invalid UTF-8 bytes are replaced with `�` instead of throwing)
+  - Used safe decoding in route matching, language detection, redirects and public file serving
+
+## 1.4.3
+- Fixed a WebSocket bug in `SocketManager.requestHandle`
+- Fixed ApiDoc to correctly display `:param` style route parameters by converting them to `{param}` format in the OpenAPI/Swagger output
+
+## 1.4.2
+- Added errorWidget to the web app config to enable better customization of error pages. [#66](https://github.com/uproid/finch/issues/66)
+
+## 1.4.1
+- Update dependencies (Sqler 1.2.1), to fix bugs of sqlite queries
+
+## 1.4.0
+- Added new commands to make `controller`, `middlware` and `services`
+  - `finch make:controller --name test`
+  - `finch make:service --name test`
+  - `finch make:middleware --name test`
+- Upgrade dependencies
+- Update documents
+- added new app tamlates: `finch templates`
+
+## 1.3.3
+- Updated documentation to reflect the new `:param` syntax support in routing [#63](https://github.com/uproid/finch/issues/63)
+- Added comprehensive tests for both classic `{param}` and new `:param` parameter styles
+
 ## 1.3.2
 - [#58](https://github.com/uproid/finch/issues/58) Fixes #58: Resolved issues in the migrate -i and migrate -r processes. The migration process will now stop if a MySQL error occurs.
 - fixing issue for examples
@@ -305,7 +387,7 @@ In this project, all controllers and related classes have been updated to use a 
 ## WebApp-1.0.32
 - Fixed the redirection for external links/URI
 
-## 1.0.31
+## WebApp-1.0.31
 - Fixed Finch CLI to create new project in new paths
 - Fixed example
 
@@ -325,7 +407,7 @@ In this project, all controllers and related classes have been updated to use a 
 ## WebApp-1.0.26
 - Improved the Finch CLI
     - Fixed bug for OpenApi
-    - An example for Swagger has been added: 'https://example.uproid.com/swagger'
+    - An example for Swagger has been added: 'https://example.finchdart.com/swagger'
     - A utility menu has been developed for when the project is running to make controlling the project through the CLI easier.
     ```bash
     finch run [ENTER]

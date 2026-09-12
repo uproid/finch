@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import '../core/configs.dart';
 import '../forms/login_form.dart';
 import '../route/web_route.dart';
 import '../db/sqlite/sqlite_books.dart';
@@ -144,6 +145,10 @@ class HomeController extends Controller {
 
   Future<String> exampleSocket() async {
     return renderTemplate('example/socket');
+  }
+
+  Future<String> exampleMeeting() async {
+    return renderTemplate('example/meeting');
   }
 
   Future<String> exampleDatabase() async {
@@ -326,8 +331,8 @@ class HomeController extends Controller {
       'title': 'logo.title',
       'year': DateTime.now().year,
       'user': await authController.userLogined?.toParams(),
-      'mongoActive': app.mongoDb.isConnected,
-      'mysqlActive': app.mysqlDb.connected,
+      'mongoActive': app.db.mongodb.isConnected,
+      'mysqlActive': app.db.mysql.isConnected,
       'version': 'v${FinchApp.info.version}',
     });
 
@@ -387,8 +392,11 @@ class HomeController extends Controller {
   }
 
   Future<String> socket() async {
-    await socketManager.requestHandle(rq);
-    return rq.renderSocket();
+    return socketManager.requestHandle(rq).then((rq) {
+      return rq.renderSocket();
+    }).catchError((e) {
+      return rq.renderError(404, message: 'Socket connection failed: $e');
+    });
   }
 
   Future<String> info() async {
@@ -431,11 +439,13 @@ class HomeController extends Controller {
       },
       'Database': {
         'MongoDB connected': app.mongoDb.isConnected,
-        if (configs.isLocalDebug)
+        if (configs.isLocalDebug) ...{
           'MongoDB Host': "${configs.dbConfig.host}:${configs.dbConfig.port}",
+          'Datases': app.db.connections.join(', '),
+        },
         'MongoDB DB name': configs.dbConfig.dbName,
         'MongoDB Collections': collectionNames.join(', '),
-        'MySQL connected': app.mysqlDb.connected,
+        'MySQL connected': app.db.mysql.isConnected,
         if (configs.isLocalDebug)
           'MySQL Host':
               "${configs.mysqlConfig.host}:${configs.mysqlConfig.port}",

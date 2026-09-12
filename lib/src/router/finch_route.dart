@@ -189,7 +189,8 @@ class FinchRoute {
     return _fullPath = _initFullPath();
   }
 
-  String getUrl([
+  String getUrl(
+    Request rq, [
     Map<String, Object?> params = const {},
     Map<String, Object?> queries = const {},
   ]) {
@@ -199,7 +200,7 @@ class FinchRoute {
     });
     Map<String, String> q =
         queries.map((key, value) => MapEntry(key, value.toString()));
-    return Context.rq.url(path, params: q);
+    return rq.url(path, params: q);
   }
 
   Map<String, Object?> toDetails() {
@@ -240,8 +241,8 @@ class FinchRoute {
   /// // For a GET request: returns true
   /// // For a DELETE request: returns false
   /// ```
-  bool allowMethod() {
-    return (methods.contains(Context.rq.method));
+  bool allowMethod(String method) {
+    return (methods.contains(method));
   }
 
   /// Converts the route to a list of maps representing its details.

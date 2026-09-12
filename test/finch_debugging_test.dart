@@ -1,9 +1,9 @@
+import 'package:finch/src/tools/http/http.dart';
 import 'package:test/test.dart';
 import 'package:finch/src/tools/console.dart';
 import 'package:finch/finch_route.dart';
 import 'package:finch/finch_app.dart';
 import 'package:finch/finch_tools.dart';
-import 'package:http/http.dart' as http;
 
 void main() async {
   FinchApp server = FinchApp(
@@ -21,16 +21,16 @@ void main() async {
     ),
   );
 
-  Future<List<FinchRoute>> routing(Request rq) async {
+  Future<List<FinchRoute>> routing() async {
     return [
       FinchRoute(
         path: "/",
-        index: () => rq.renderString(text: "TEST"),
+        index: () => Context.rq.renderString(text: "TEST"),
         children: [
           FinchRoute(
             path: 'checkurl',
             index: () {
-              return rq.renderView(
+              return Context.rq.renderView(
                 path: "{{ \$e.url('test') }}",
                 isFile: false,
               );
@@ -46,14 +46,15 @@ void main() async {
             path: 'debug_test',
             methods: Methods.ALL,
             index: () {
-              return rq.renderView(path: "<h1>Debug Test</h1>", isFile: false);
+              return Context.rq
+                  .renderView(path: "<h1>Debug Test</h1>", isFile: false);
             },
           ),
           FinchRoute(
             path: 'widget',
             index: () {
-              rq.addParam("testParam", "paramValue");
-              return rq.renderView(
+              Context.rq.addParam("testParam", "paramValue");
+              return Context.rq.renderView(
                 path: "{{ \$e.url('test') }}\n"
                     "{{ testParam }}\n"
                     "{{ \$t('test.translate') }}\n",
@@ -65,19 +66,19 @@ void main() async {
             path: "api/info",
             methods: Methods.ONLY_GET,
             index: () {
-              rq.addParam("data", "TEST");
-              return rq.renderData(data: rq.getParams());
+              Context.rq.addParam("data", "TEST");
+              return Context.rq.renderData(data: Context.rq.getParams());
             },
           ),
           FinchRoute(
             path: "api/post",
             methods: Methods.ONLY_POST,
             index: () {
-              return rq.renderData(data: {
-                'sended': rq.getAll(),
+              return Context.rq.renderData(data: {
+                'sended': Context.rq.getAll(),
                 'cookies': {
-                  'sessionId': rq.getCookie('sessionId', safe: false),
-                  'username': rq.getCookie('username', safe: false),
+                  'sessionId': Context.rq.getCookie('sessionId', safe: false),
+                  'username': Context.rq.getCookie('username', safe: false),
                 },
               });
             },
@@ -99,21 +100,21 @@ void main() async {
 
   group("test debugger", () {
     test("checking Debugger1", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}/debugger/console.js"),
       );
 
       expect(
-        req.statusCode,
+        req.status,
         200,
         reason:
             "Response success should contain 'console.js' it used for debugging",
       );
-      expect(req.statusCode, 200, reason: "Status code should be 200");
+      expect(req.status, 200, reason: "Status code should be 200");
     });
 
     test("checking Debugger2", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}/debug_test/"),
       );
       var content = req.body;
@@ -124,11 +125,11 @@ void main() async {
         reason:
             "Response success should contain '<script src=...>' used for debugging",
       );
-      expect(req.statusCode, 200, reason: "Status code should be 200");
+      expect(req.status, 200, reason: "Status code should be 200");
     });
 
     test("checking Debugger3", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}/api/info"),
       );
       var content = req.body;
@@ -138,7 +139,7 @@ void main() async {
         false,
         reason: "debugger used only on HTML pages",
       );
-      expect(req.statusCode, 200, reason: "Status code should be 200");
+      expect(req.status, 200, reason: "Status code should be 200");
     });
   });
 }

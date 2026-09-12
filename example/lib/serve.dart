@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:async';
+import './core/configs.dart';
 import 'package:finch/console.dart';
 import 'package:finch/finch_app.dart';
 import 'app.dart' as app;
@@ -14,7 +15,7 @@ void main(List<String>? args) async {
 
   ServeManager([
     ServePath(
-      path: app.configs.languagePath,
+      path: configs.languagePath,
       extensions: ['json'],
       recursive: false,
       onChange: (event) async {
@@ -26,8 +27,8 @@ void main(List<String>? args) async {
       },
     ),
     ServePath(
-      path: app.configs.widgetsPath,
-      extensions: [app.configs.widgetsType],
+      path: configs.widgetsPath,
+      extensions: [configs.widgetsType],
       recursive: true,
       onChange: (event) async {
         var filePath = await _modifyWidgets();
@@ -42,8 +43,8 @@ void main(List<String>? args) async {
 
 Future<String> _modifyWidgets() async {
   var res = WidgetToDart(
-    app.configs.widgetsPath,
-    fileExtention: app.configs.widgetsType,
+    configs.widgetsPath,
+    fileExtention: configs.widgetsType,
   ).generate();
   app.app.debugger?.sendToAll(
     {
@@ -59,11 +60,11 @@ Future<({Map<String, Map<String, String>> map, String path})>
     _modifyLanguages() async {
   late ({Map<String, Map<String, String>> map, String path}) res;
   await LanguageToDart(
-    app.configs.languagePath,
+    configs.languagePath,
     fileExtention: '.json',
   ).generate().then((value) {
     res = value;
-    app.configs.dartLanguages = res.map;
+    configs.dartLanguages = res.map;
     FinchApp.appLanguages = res.map;
     app.app.debugger?.sendToAll(
       {'message': 'Languages is updated, reload the page to see the changes.'},

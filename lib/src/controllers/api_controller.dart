@@ -78,7 +78,6 @@ class ApiController extends Controller {
         var data = {};
         RegExp regex = RegExp(r'{.*?}');
         data['tags'] = [
-          //pathNorm(route.path, normSlashs: true),
           pathNorm(route.path.replaceAll(regex, ''), normSlashs: true),
         ];
         data['summary'] = route.title;
@@ -214,7 +213,7 @@ class ApiController extends Controller {
         "title": "$title - OpenAPI 3.1",
         "description":
             "Finch Api documentation maker v${FinchApp.info.version}",
-        "contact": {"email": "info@uproid.com"},
+        "contact": {"email": "info@finchdart.com"},
         "license": {
           "name": "Apache 2.0",
           "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
@@ -292,6 +291,13 @@ class ApiController extends Controller {
         parentPath,
         route.path,
       ]);
+
+      // Convert /...:key/ to /.../{key}/
+      route.path = route.path.replaceAllMapped(
+        RegExp(r':(\w+)'),
+        (match) => '{${match.group(1)}}',
+      );
+
       route.auth ??= auth;
       result.add(route);
 

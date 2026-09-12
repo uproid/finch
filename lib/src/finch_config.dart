@@ -1,10 +1,11 @@
-import 'package:dotenv/dotenv.dart';
 import 'package:finch/finch_model.dart';
-import 'package:finch/src/tools/convertor/string_validator.dart';
+import 'package:finch/src/tools/env.dart';
 import 'package:finch/src/tools/path.dart';
 import 'package:finch/finch_console.dart';
+import 'package:finch/src/widgets/finch_string_widget.dart';
+import 'package:finch/src/widgets/widget_error.dart';
 
-var env = DotEnv(includePlatformEnvironment: true)..load();
+var env = EnvReader();
 
 /// Configuration management system for the Finch framework.
 /// [FinchConfigs] provides comprehensive configuration management for all aspects
@@ -73,7 +74,7 @@ class FinchConfigs {
     this.jinjaMapTemplate,
     this.fakeDelay = 0,
     List<String>? languages,
-    this.mailDefault = "example@uproid.com",
+    this.mailDefault = "example@finchdart.com",
     this.mailHost = "smtp.zoho.eu",
     this.blockStart = '{%',
     this.blockEnd = "%}",
@@ -86,16 +87,17 @@ class FinchConfigs {
     FinchSqliteConfig? sqliteConfig,
     this.poweredBy = "Dart Finch",
     this.enableLocalDebugger = false,
+    FinchStringWidget? errorWidget,
   }) {
     this.appPath = appPath ?? pathApp;
     this.dbPath = dbPath ?? pathTo("db");
     this.backupPath = backupPath ?? pathTo("backup");
     this.widgetsPath = widgetsPath ?? pathTo("bin/widgets");
     this.languagePath = languagePath ?? pathTo("languages");
-    this.domain = domain ?? env['DOMAIN'] ?? 'localhost';
-    this.domainScheme = domainScheme ?? env['DOMAIN_SCHEME'] ?? "http";
-    this.domainPort = domainPort ?? int.parse(env['DOMAIN_PORT'] ?? "$port");
-    this.publicDir = publicDir ?? (env['PUBLIC_DIR'] ?? "public");
+    this.domain = domain ?? env.get('DOMAIN', 'localhost');
+    this.domainScheme = domainScheme ?? env.get('DOMAIN_SCHEME', 'http');
+    this.domainPort = domainPort ?? env.getInt('DOMAIN_PORT', port);
+    this.publicDir = publicDir ?? env.get('PUBLIC_DIR', 'public');
     uri = Uri(
       scheme: this.domainScheme,
       host: this.domain,
@@ -105,6 +107,7 @@ class FinchConfigs {
     this.mysqlConfig = mysqlConfig ?? FinchMysqlConfig();
     this.sqliteConfig = sqliteConfig ?? FinchSqliteConfig();
     this.languages = languages ?? FinchDBConfig.defaultLanguages.keys.toList();
+    this.errorWidget = errorWidget ?? ErrorWidget();
   }
 
   final String version;
@@ -151,6 +154,7 @@ class FinchConfigs {
   late final FinchDBConfig dbConfig;
   late final FinchMysqlConfig mysqlConfig;
   late final FinchSqliteConfig sqliteConfig;
+  late final FinchStringWidget errorWidget;
 
   /// Enable local debugger
   /// This is useful for debugging the application in a local environment.
@@ -170,8 +174,8 @@ class FinchConfigs {
   late final String pathCache;
 
   bool get isLocalDebug {
-    if (env['LOCAL_DEBUG'] != null) {
-      return env['LOCAL_DEBUG'].toString().toBool;
+    if (env.has('LOCAL_DEBUG')) {
+      return env.getBool('LOCAL_DEBUG');
     } else {
       return Console.isDebug;
     }
@@ -190,6 +194,8 @@ class FinchConfigs {
     return uri.replace(path: path).toString();
   }
 }
+
+abstract interface class DBConfig {}
 
 /// MySQL database configuration for the Finch framework.
 /// [FinchMysqlConfig] manages MySQL database connection settings and provides
@@ -219,7 +225,7 @@ class FinchConfigs {
 ///   enable: true,
 /// );
 /// ```
-class FinchMysqlConfig {
+class FinchMysqlConfig extends DBConfig {
   bool enable = false;
   String host = 'localhost';
   int port = 3306;
@@ -228,6 +234,7 @@ class FinchMysqlConfig {
   bool secure = true;
   String databaseName = "database_name";
   String collation = 'utf8mb4_general_ci';
+  int maxConnections;
 
   FinchMysqlConfig({
     String? host,
@@ -238,21 +245,22 @@ class FinchMysqlConfig {
     String? databaseName,
     String? collation,
     bool? enable,
+    this.maxConnections = 10,
   }) {
-    this.user = user ?? env['MYSQL_USER'] ?? 'database_username';
-    this.pass = pass ?? env['MYSQL_PASS'] ?? 'database_password';
-    this.secure = secure ?? env['MYSQL_SECURE']?.toBool ?? true;
-    this.host = host ?? env['MYSQL_HOST'] ?? 'localhost';
-    this.port = port ?? env['MYSQL_PORT']?.toInt() ?? 3306;
+    this.user = user ?? env.get('MYSQL_USER', 'database_username');
+    this.pass = pass ?? env.get('MYSQL_PASS', 'database_password');
+    this.secure = secure ?? env.getBool('MYSQL_SECURE', true);
+    this.host = host ?? env.get('MYSQL_HOST', 'localhost');
+    this.port = port ?? env.getInt('MYSQL_PORT', 3306);
     this.databaseName =
-        databaseName ?? env['MYSQL_DATABASE'] ?? 'database_name';
+        databaseName ?? env.get('MYSQL_DATABASE', 'database_name');
     this.collation =
-        collation ?? env['MYSQL_COLLATION'] ?? 'utf8mb4_general_ci';
+        collation ?? env.get('MYSQL_COLLATION', 'utf8mb4_general_ci');
     this.enable = enable ?? false;
   }
 }
 
-class FinchSqliteConfig {
+class FinchSqliteConfig extends DBConfig {
   bool enable = false;
   String filePath = 'database.sqlite';
 
@@ -292,10 +300,11 @@ class FinchSqliteConfig {
 ///   dbName: 'finch_db',
 ///   enable: true,
 /// );
-/// // Auto-generated connection string:
-/// // mongodb://finch_user:secure_password@localhost:27017/finch_db/?authSource=admin
+/// Auto-generated connection string:
+/// mongodb://finch_user:secure_password@localhost:27017/finch_db/?authSource=admin
 /// ```
-class FinchDBConfig {
+class FinchDBConfig extends DBConfig {
+  final int maxConnections;
   late final bool enable;
   late final String user;
   late final String pass;
@@ -315,15 +324,16 @@ class FinchDBConfig {
     String? dbName,
     String? auth,
     bool? enable,
+    this.maxConnections = 10,
   }) {
     this.user =
-        user ?? env['MONGO_INITDB_ROOT_USERNAME'] ?? 'database_username';
+        user ?? env.get('MONGO_INITDB_ROOT_USERNAME', 'database_username');
     this.pass =
-        pass ?? env['MONGO_INITDB_ROOT_PASSWORD'] ?? 'database_password';
-    this.auth = auth ?? env['MONGO_INITDB_ROOT_AUTH'] ?? 'admin';
-    this.host = host ?? env['MONGO_CONNECTION'] ?? 'localhost';
-    this.port = port ?? env['MONGO_PORT'] ?? '27017';
-    this.dbName = dbName ?? env['MONGO_INITDB_DATABASE'] ?? 'database_name';
+        pass ?? env.get('MONGO_INITDB_ROOT_PASSWORD', 'database_password');
+    this.auth = auth ?? env.get('MONGO_INITDB_ROOT_AUTH', 'admin');
+    this.host = host ?? env.get('MONGO_CONNECTION', 'localhost');
+    this.port = port ?? env.get('MONGO_PORT', '27017');
+    this.dbName = dbName ?? env.get('MONGO_INITDB_DATABASE', 'database_name');
     this.enable = enable ?? false;
   }
 

@@ -8,6 +8,9 @@ class SqliteResult
   @override
   Database database;
 
+  @override
+  final int countSqlStatements;
+
   /// The underlying SQLite result set from the database driver.
   @override
   final ResultSet resultSet;
@@ -20,7 +23,8 @@ class SqliteResult
   /// Parameters:
   /// * [resultSet] - The SQLite result set from the database operation
   /// * [errorMsg] - Optional error message, defaults to empty string
-  SqliteResult(this.database, this.resultSet, {this.errorMsg = ''});
+  SqliteResult(this.database, this.resultSet,
+      {this.errorMsg = '', this.countSqlStatements = 1});
 
   /// Returns `true` if the query executed successfully (no error message).
   @override

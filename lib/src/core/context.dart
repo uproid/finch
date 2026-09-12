@@ -13,6 +13,10 @@ class Context {
     return context as Request;
   }
 
+  static Request? get rqOrNull {
+    return Zone.current[_requestKey] as Request?;
+  }
+
   static bool get hasCurrent {
     return Zone.current[_requestKey] != null;
   }
