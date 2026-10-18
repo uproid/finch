@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:capp/capp.dart';
 import 'package:archive/archive_io.dart';
+import 'package:finch/finch_console.dart';
 import 'package:finch/tools.dart';
 
 class CreateProject {
@@ -10,96 +11,78 @@ class CreateProject {
       '${Directory.systemTemp.path}/template_${DateTime.timestamp().microsecondsSinceEpoch}.zip';
 
   Future<CappConsole> create(CappController controller) async {
-    var result = CappConsole("Error in creating project", CappColors.error);
-    var name = controller.getOption('name');
-    var isDocker = controller.existsOption('docker');
-    var useDocker = false;
-
-    if (!isDocker) {
-      useDocker = CappConsole.yesNo("Do you want to use docker?");
-    } else {
-      useDocker = true;
-    }
-
-    if (name.isEmpty) {
-      name = CappConsole.read(
-        "Enter project name:",
-        isRequired: true,
-        isSlug: true,
-      );
-    }
-
-    var path = controller.getOption('path', def: name);
-    path = Uri.parse(path).toFilePath(windows: Platform.isWindows);
-
-    CappConsole.write(path, CappColors.success);
-    if (Directory(path).existsSync()) {
-      return CappConsole("This path already exists! ($path)", CappColors.error);
-    }
-
-    Directory(path).createSync(recursive: true);
-    if (!Directory(path).existsSync()) {
-      return CappConsole("Error creating this path: $path", CappColors.error);
-    }
-    var template = controller.getOption('template', def: 'simple');
-
-    var repoUrl = projectUrl.replaceAll('{template}', template);
-    var dirName =
-        '{template}-finch-docker-master'.replaceAll('{template}', template);
-    String pathZip = await CappConsole.progress<String>(
-      "Waitng...",
-      () async {
-        return downloadFile(repoUrl, savePath);
-      },
-      type: CappProgressType.circle,
-    );
-
-    if (pathZip.isNotEmpty) {
-      var dirPrject = await extract(path, dirName);
-      if (dirPrject.isNotEmpty) {
-        await updatePacakge(
-          dirPrject,
-          name: name,
-          useDocker: useDocker,
-        );
-        result = CappConsole(
-            "Project created successfully: $dirPrject", CappColors.success);
-      }
-    }
-
-    return result;
-  }
-
-  Future<String> downloadFile(String url, String savePath) async {
     try {
-      // Make the HTTP GET request
-      final response = await FinchHttp.get(Uri.parse(url));
+      var name = controller.getOption('name');
+      var isDocker = controller.existsOption('docker');
+      var useDocker = false;
 
-      // Check if the request was successful
-      if (response.status == 200) {
-        // Create a file object
-        final file = File(savePath);
-
-        // Write the response body to the file
-        await file.writeAsBytes(response.bodyBytes);
-
-        return savePath;
+      if (!isDocker) {
+        useDocker = CappConsole.yesNo("Do you want to use docker?");
       } else {
-        CappConsole.write(
-          "Error downloading template: ${response.status}",
-          CappColors.error,
-          true,
+        useDocker = true;
+      }
+
+      if (name.isEmpty) {
+        name = CappConsole.read(
+          "Enter project name:",
+          isRequired: true,
+          isSlug: true,
         );
-        return "";
+      }
+
+      var path = controller.getOption('path', def: name);
+      path = Uri.parse(path).toFilePath(windows: Platform.isWindows);
+
+      CappConsole.write(path, CappColors.success);
+      if (Directory(path).existsSync()) {
+        return CappConsole(
+            "This path already exists! ($path)", CappColors.error);
+      }
+
+      Directory(path).createSync(recursive: true);
+      if (!Directory(path).existsSync()) {
+        return CappConsole("Error creating this path: $path", CappColors.error);
+      }
+      var template = controller.getOption('template', def: 'simple');
+
+      var repoUrl = projectUrl.replaceAll('{template}', template);
+      var dirName =
+          '{template}-finch-docker-master'.replaceAll('{template}', template);
+
+      await CappConsole.progressPercent('Download', (cpr) async {
+        await for (var proc
+            in FinchHttp.download(Uri.parse(repoUrl), savePath)) {
+          cpr.update(
+            percent: proc.percent,
+            message: proc.percent != null
+                ? 'Download ${proc.percent}/100'
+                : 'Downloading',
+          );
+        }
+      });
+
+      if (savePath.isNotEmpty) {
+        var dirPrject = await extract(path, dirName);
+        if (dirPrject.isNotEmpty) {
+          await updatePacakge(
+            dirPrject,
+            name: name,
+            useDocker: useDocker,
+          );
+          CappConsole.writeAlert(
+            "Project created successfully: $dirPrject",
+            CappColors.info,
+          );
+        }
       }
     } catch (e) {
-      CappConsole.write(
-        "Error downloading template: ${e.toString()}",
+      CappConsole.writeAlert(
+        "Error in creating project: $e",
         CappColors.error,
-        true,
       );
-      return "";
     }
+
+    return CappConsole.empty;
   }
 
   Future<String> extract(String dir, String dirName) async {
