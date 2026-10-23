@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:capp/capp.dart';
 import 'package:archive/archive_io.dart';
-import 'package:finch/finch_console.dart';
 import 'package:finch/tools.dart';
 
 class CreateProject {
