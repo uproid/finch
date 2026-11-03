@@ -105,9 +105,18 @@ class FinchApp {
   }) {
     FinchApp.config = configs;
     db = DBManager(configs);
-    db.connectAll().onError((e, s) {
-      throw ("Error connect to DB: ${e.toString()}");
-    });
+    void connect() {
+      db.connectAll().onError((e, s) {
+        Console.e(e);
+        // Reconnect after 5 seccond.
+        if (e is ErrorDBManagement) {
+          Console.w('Reconnect to DB after 5 sec...');
+          Future.delayed(Duration(seconds: 5), () => connect());
+        }
+      });
+    }
+
+    connect();
     debuggerInit();
   }
 
@@ -266,6 +275,13 @@ class FinchApp {
               'error': error,
               'stack': stack.toString().split("#"),
             });
+
+            // Self-heal any database connection that is actually down
+            // (server restart, network blip, ...) in the background. Not
+            // awaited, so it never delays the error response; and it's a
+            // no-op whenever every connection is still up, so normal
+            // request handling pays nothing for it.
+            unawaited(db.recoverFromError(error));
 
             rq.addParams({
               'error': error,
@@ -1309,5 +1325,5 @@ class _Info {
   /// - MINOR: New features (backward compatible)
   /// - PATCH: Bug fixes (backward compatible)
   /// - PRERELEASE: Pre-release identifiers (alpha, beta, rc)
-  final String version = '1.6.1';
+  final String version = '1.6.2-dev.1';
 }
