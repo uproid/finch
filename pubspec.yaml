@@ -52,7 +52,7 @@ dependencies:
   sqler: ^1.2.1
   html_unescape: ^2.0.0
   yaml: ^3.1.4
-  mcp_models: 2.1.0
+  mcp_models: ^2.1.0
   dag: ^0.1.2
 executables:
   finch: finch
