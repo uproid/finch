@@ -1,5 +1,5 @@
 
-## 1.6.2-dev.1
+## 1.6.2
 - Added automatic reconnect for database connections: `DBManager.recoverFromError()` reconnects a connection that dropped on its own (MongoDB server restart, network blip, ...) from the app's existing request-error handler, instead of polling on a timer or checking on every request
   - New `DBConnection.reconnect()` on the connection interface (default: close then reconnect); `MongodbConn` overrides it to re-open the *same* `Db` instance so long-lived references (e.g. `DBCollectionFree.db`) keep working after a reconnect
 - Added `FinchHttp.download()`: streams a file download to disk and reports progress via `DownloadProgress` (received/total/percent/isDone)
