@@ -1,3 +1,4 @@
+import 'package:finch/finch_tools.dart';
 import 'package:finch/src/tools/console.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
@@ -69,6 +70,7 @@ class MailSender {
     String? username,
     bool ssl = true,
     bool allowInsecure = true,
+    Map<String, dynamic>? headers,
   }) async {
     // Set up SMTP server credentials for Mailcatcher.
     final smtpServer = SmtpServer(
@@ -87,6 +89,10 @@ class MailSender {
       ..subject = subject
       ..text = text
       ..html = html;
+
+    if (headers != null) {
+      message.headers.addAll(headers);
+    }
 
     try {
       // Send the email using the SMTP server.
