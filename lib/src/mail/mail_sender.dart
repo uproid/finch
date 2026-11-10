@@ -1,4 +1,3 @@
-import 'package:finch/finch_tools.dart';
 import 'package:finch/src/tools/console.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
