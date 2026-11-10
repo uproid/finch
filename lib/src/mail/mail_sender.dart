@@ -29,6 +29,8 @@ class MailSender {
   ///   password: 'smtp-password',
   ///   ssl: true,
   ///   allowInsecure: false,
+  ///   cc: ['copy@example.com'],
+  ///   attachments: [FileAttachment(File('invoice.pdf'))],
   /// );
   ///
   /// if (success) {
@@ -54,6 +56,10 @@ class MailSender {
   /// - [username]: The SMTP server username (optional).
   /// - [ssl]: Whether to use SSL/TLS for the SMTP connection (optional, defaults to `true`).
   /// - [allowInsecure]: Whether to allow insecure connections if SSL is disabled (optional, defaults to `true`).
+  /// - [cc]: Carbon copy recipients, visible to everyone (optional).
+  /// - [bcc]: Blind carbon copy recipients, hidden from the other recipients (optional).
+  /// - [attachments]: A list of file attachments to include in the email (optional).
+  /// - [headers]: Extra custom headers such as `X-Mailer` (optional).
   ///
   /// Throws a [MailerException] if the email fails to send.
   static Future<bool> sendEmail({
@@ -69,6 +75,9 @@ class MailSender {
     String? username,
     bool ssl = true,
     bool allowInsecure = true,
+    List<String>? cc,
+    List<String>? bcc,
+    List<Attachment>? attachments,
     Map<String, dynamic>? headers,
   }) async {
     // Set up SMTP server credentials for Mailcatcher.
@@ -88,6 +97,12 @@ class MailSender {
       ..subject = subject
       ..text = text
       ..html = html;
+
+    if (cc != null) message.ccRecipients = cc;
+    if (bcc != null) message.bccRecipients = bcc;
+    if (attachments != null) {
+      message.attachments.addAll(attachments);
+    }
 
     if (headers != null) {
       message.headers.addAll(headers);

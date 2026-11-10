@@ -5,7 +5,7 @@
   - Note: apps that accept uploads larger than 10 MiB must raise `maxBodySize`
 - Added a **File Upload** example (`/example/upload`) that saves an uploaded file with `rq.getFile()` and shows the server body limit
 - The example nginx config now has per-IP rate limiting (`limit_req`/`limit_conn`) and client timeouts, and the nginx docs describe the request size limits
-- Added an optional `headers` parameter to `MailSender.sendEmail()`: a `Map<String, dynamic>` of custom headers (e.g. `Reply-To`, `X-Mailer`) that is added to the outgoing message
+- `MailSender.sendEmail()` has new optional parameters: `cc`, `bcc` (`List<String>`), `attachments` (`List<Attachment>`) and `headers` (`Map<String, dynamic>` of custom headers, e.g. `X-Mailer`)
 
 ## 1.6.2
 - Added automatic reconnect for database connections: `DBManager.recoverFromError()` reconnects a connection that dropped on its own (MongoDB server restart, network blip, ...) from the app's existing request-error handler, instead of polling on a timer or checking on every request
