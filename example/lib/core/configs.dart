@@ -24,6 +24,10 @@ FinchConfigs configs = FinchConfigs(
     user: env.get('MONGODB_USER', 'root'),
   ),
   port: (env.getInt('DOMAIN_PORT', 8085)),
+
+  /// Max size of a request body (the upload example allows files up to 5 MB).
+  /// Larger requests are rejected with `413 Payload Too Large`.
+  maxBodySize: 10 * 1024 * 1024,
   mysqlConfig: FinchMysqlConfig(
     enable: true,
     host: env.get('MYSQL_HOST', 'localhost'),

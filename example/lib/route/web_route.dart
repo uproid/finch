@@ -1,5 +1,6 @@
 import '../controllers/mcp_auth_controller.dart';
 import '../controllers/mcp_controller.dart';
+import '../controllers/upload_controller.dart';
 import '../middleware/test_middleware.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/htmler_controller.dart';
@@ -11,6 +12,7 @@ import '../controllers/home_controller.dart';
 
 final homeController = HomeController();
 final htmlerController = HtmlerController();
+final uploadController = UploadController();
 final authController = AppAuthController();
 final includeController = IncludeJsController();
 final apiController = ApiController(title: "API Documentation", app: app);
@@ -148,6 +150,24 @@ Future<List<FinchRoute>> getWebRoute() async {
           path: 'email',
           methods: Methods.ONLY_POST,
           index: homeController.exampleEmailSend,
+        ),
+        FinchRoute(
+          key: 'root.upload',
+          path: 'upload',
+          methods: Methods.ONLY_GET,
+          index: uploadController.exampleUpload,
+        ),
+        FinchRoute(
+          key: 'root.upload.post',
+          path: 'upload',
+          methods: Methods.ONLY_POST,
+          index: uploadController.exampleUploadPost,
+        ),
+        FinchRoute(
+          key: 'root.upload.delete',
+          path: 'upload/delete',
+          methods: Methods.ONLY_POST,
+          index: uploadController.exampleUploadDelete,
         ),
         FinchRoute(
           key: 'root.error',

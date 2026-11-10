@@ -124,6 +124,16 @@
           <span class="flex-1 truncate">{{ $t('sidebar.emailExample') }}</span>
         </a>
 
+        {% set isUploadActive = $e.hasKey(['root.upload','root.upload.post','root.upload.delete']) %}
+        <a href="{{ $e.routeUrl('root.upload') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isUploadActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
+          {% if isUploadActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}
+          <span class="flex h-7 w-7 items-center justify-center rounded-lg transition-all duration-200 {{ 'bg-gradient-to-br from-violet-500 to-indigo-500 text-white shadow-md shadow-violet-500/30' if isUploadActive else 'bg-zinc-100 text-zinc-500 group-hover:bg-violet-100 group-hover:text-violet-600' }}">
+            <i class="fa-solid fa-cloud-arrow-up text-sm"></i>
+          </span>
+          <span class="flex-1 truncate">{{ $t('sidebar.uploadExample') }}</span>
+          <span class="inline-flex items-center rounded-full bg-rose-500/10 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider text-rose-600 ring-1 ring-rose-300/60">New</span>
+        </a>
+
         {% set isAuthActive = $e.hasKey(['root.panel']) %}
         <a href="{{ $e.routeUrl('root.panel') }}" class="wave group relative flex w-full items-center gap-3 rounded-xl px-2 py-1.5 text-sm transition-all duration-200 {{ 'bg-gradient-to-r from-teal-50 via-cyan-50 to-white text-teal-700 font-semibold ring-1 ring-teal-200/70 shadow-sm' if isAuthActive else 'text-zinc-600 hover:bg-zinc-50 hover:text-teal-700' }}">
           {% if isAuthActive %}<span class="absolute inset-y-2 {{ 'right-0' if dir=='rtl' else 'left-0' }} w-1 rounded-full bg-gradient-to-b from-teal-500 to-cyan-500"></span>{% endif %}

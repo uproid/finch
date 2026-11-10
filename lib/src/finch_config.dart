@@ -83,6 +83,8 @@ class FinchConfigs {
     this.commentStart = '{#',
     this.commentEnd = '#}',
     this.cookiePassword = "password",
+    this.maxBodySize = 10 * 1024 * 1024,
+    this.maxSocketMessageSize = 1024,
     FinchMysqlConfig? mysqlConfig,
     FinchSqliteConfig? sqliteConfig,
     this.poweredBy = "Dart Finch",
@@ -151,6 +153,25 @@ class FinchConfigs {
   late final String commentStart;
   late final String commentEnd;
   late final String cookiePassword;
+
+  /// Maximum size, in bytes, of an incoming HTTP request body
+  /// (form, JSON, multipart upload or raw body).
+  ///
+  /// Request bodies are buffered in memory, so this limit protects the server
+  /// from memory exhaustion. A request whose `Content-Length` is above the
+  /// limit, or whose streamed body grows above it, is answered with
+  /// `413 Payload Too Large` and its body is discarded.
+  ///
+  /// Defaults to 10 MiB. Use `0` to disable the limit
+  /// (not recommended unless a reverse proxy enforces one).
+  final int maxBodySize;
+
+  /// Maximum size, in bytes, of a single incoming WebSocket message.
+  ///
+  /// A larger message closes the connection with status `1009`
+  /// (message too big). Defaults to 1 MiB.
+  /// Use `0` to disable the limit.
+  final int maxSocketMessageSize;
   late final FinchDBConfig dbConfig;
   late final FinchMysqlConfig mysqlConfig;
   late final FinchSqliteConfig sqliteConfig;

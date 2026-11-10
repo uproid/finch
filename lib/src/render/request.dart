@@ -82,6 +82,10 @@ class Request {
   /// Indicates whether the response has been closed.
   var isClosed = false;
 
+  /// Whether the request body exceeded [FinchConfigs.maxBodySize]; the body
+  /// was then discarded. See [ensureBodyWithinLimit].
+  bool _isBodyTooLarge = false;
+
   set contentType(ContentType contentType) {
     _defaultContentType = contentType;
   }
@@ -160,7 +164,29 @@ class Request {
     _rq.response.headers.add('Access-Control-Allow-Credentials', 'true');
     _rq.response.headers.add('X-Powered-By', FinchApp.config.poweredBy);
     await parseData();
+    if (_isBodyTooLarge) {
+      await _rejectPayloadTooLarge();
+    }
     return this;
+  }
+
+  /// Answers `413 Payload Too Large` (JSON for API endpoints) and throws
+  /// [PayloadTooLargeException], so the request never reaches routing.
+  Future<Never> _rejectPayloadTooLarge() async {
+    // The unread rest of the body is not wanted: don't reuse the connection.
+    _rq.response.headers.set('Connection', 'close');
+    await Context.run(this, () async {
+      await renderError(
+        413,
+        toData: isApiEndpoint,
+        message: 'Payload Too Large '
+            '(${FinchApp.config.maxBodySize} bytes exceeded)',
+      );
+      await writeAndClose('');
+    });
+    throw Exception(
+      'Payload Too Large: ${FinchApp.config.maxBodySize} bytes exceeded',
+    );
   }
 
   /// Holds parsed request data for GET, POST, content, and files.
@@ -254,14 +280,20 @@ class Request {
     get.addAll(_checkValues<Map<String, dynamic>>(params));
 
     // For POST or PUT
-    if (method == Methods.POST || method == Methods.PUT) {
+    final maxBody = FinchApp.config.maxBodySize;
+    if ((method == Methods.POST || method == Methods.PUT) &&
+        maxBody > 0 &&
+        _rq.contentLength > maxBody) {
+      // Declared size is already too big: reject without reading the body.
+      _isBodyTooLarge = true;
+    } else if (method == Methods.POST || method == Methods.PUT) {
       // Form Forms
       if (headers.contentType
           .toString()
           .toLowerCase()
           .contains("application/x-www-form-urlencoded")) {
         try {
-          content = await utf8.decoder.bind(stream).join();
+          content = await utf8.decoder.bind(_limitedBody()).join();
           var body = QueryString.parse(content);
           post.addAll(_checkValues(body));
         } catch (e) {
@@ -279,7 +311,7 @@ class Request {
           .toLowerCase()
           .contains("application/json")) {
         try {
-          content = await utf8.decoder.bind(stream).join();
+          content = await utf8.decoder.bind(_limitedBody()).join();
           var data = jsonDecode(content);
           post.addAll(_checkValues(data));
         } catch (e) {
@@ -287,7 +319,7 @@ class Request {
         }
       } else {
         try {
-          var bodyBytes = await stream
+          var bodyBytes = await _limitedBody()
               .fold<List<int>>([], (bytes, chunk) => bytes..addAll(chunk));
           content = String.fromCharCodes(bodyBytes);
         } catch (e) {
@@ -295,6 +327,13 @@ class Request {
         }
       }
     }
+    if (_isBodyTooLarge) {
+      // The body was cut short (or never read): do not expose partial data.
+      post.clear();
+      file.clear();
+      content = '';
+    }
+
     _dataRequest = {
       'POST': post,
       'GET': get,
@@ -303,6 +342,23 @@ class Request {
     };
 
     return _dataRequest;
+  }
+
+  /// The request body as a stream that stops at [FinchConfigs.maxBodySize].
+  ///
+  /// When the limit is exceeded [_isBodyTooLarge] is set and the stream ends
+  /// early, so no more than the limit (plus one chunk) is ever buffered.
+  Stream<List<int>> _limitedBody() async* {
+    final max = FinchApp.config.maxBodySize;
+    var total = 0;
+    await for (final chunk in _rq) {
+      total += chunk.length;
+      if (max > 0 && total > max) {
+        _isBodyTooLarge = true;
+        return;
+      }
+      yield chunk;
+    }
   }
 
   R _checkValues<R>(R value) {
@@ -1259,7 +1315,7 @@ class Request {
         final transformer =
             MimeMultipartTransformer(contentType!.parameters['boundary']!);
 
-        final parts = await transformer.bind(_rq).toList();
+        final parts = await transformer.bind(_limitedBody()).toList();
 
         await Future.forEach(parts, (part) async {
           final contentDisposition = part.headers['content-disposition'];

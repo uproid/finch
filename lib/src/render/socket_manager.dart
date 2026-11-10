@@ -76,6 +76,13 @@ class SocketManager {
 
     socket.listen(
       (data) {
+        final maxMessage = FinchApp.config.maxSocketMessageSize;
+        final size = data is String ? data.length : (data as List).length;
+        if (maxMessage > 0 && size > maxMessage) {
+          socket.close(WebSocketStatus.messageTooBig, 'Message too big');
+          return;
+        }
+
         var res = <String, dynamic>{};
         try {
           Map json = FinchJson.jsonDecoder(data);

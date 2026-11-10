@@ -1,4 +1,11 @@
 
+## 1.6.3
+- **Security:** request bodies are now capped. New `FinchConfigs.maxBodySize` (default 10 MiB, `0` = unlimited): a request with a larger `Content-Length`, or a streamed body that grows past the limit, is answered with `413 Payload Too Large` (JSON error on `/api/*`) before routing, and the body is discarded instead of being buffered in memory. Applies to form, JSON, multipart and raw bodies
+- **Security:** new `FinchConfigs.maxSocketMessageSize` (default 1 KiB): a larger WebSocket message closes the connection with status `1009`
+  - Note: apps that accept uploads larger than 10 MiB must raise `maxBodySize`
+- Added a **File Upload** example (`/example/upload`) that saves an uploaded file with `rq.getFile()` and shows the server body limit
+- The example nginx config now has per-IP rate limiting (`limit_req`/`limit_conn`) and client timeouts, and the nginx docs describe the request size limits
+
 ## 1.6.2
 - Added automatic reconnect for database connections: `DBManager.recoverFromError()` reconnects a connection that dropped on its own (MongoDB server restart, network blip, ...) from the app's existing request-error handler, instead of polling on a timer or checking on every request
   - New `DBConnection.reconnect()` on the connection interface (default: close then reconnect); `MongodbConn` overrides it to re-open the *same* `Db` instance so long-lived references (e.g. `DBCollectionFree.db`) keep working after a reconnect
