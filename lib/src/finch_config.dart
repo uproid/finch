@@ -84,7 +84,7 @@ class FinchConfigs {
     this.commentEnd = '#}',
     this.cookiePassword = "password",
     this.maxBodySize = 10 * 1024 * 1024,
-    this.maxSocketMessageSize = 1024,
+    this.maxSocketMessageSize = 1024 * 1024,
     FinchMysqlConfig? mysqlConfig,
     FinchSqliteConfig? sqliteConfig,
     this.poweredBy = "Dart Finch",

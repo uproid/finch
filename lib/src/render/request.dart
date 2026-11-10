@@ -176,6 +176,7 @@ class Request {
     // The unread rest of the body is not wanted: don't reuse the connection.
     _rq.response.headers.set('Connection', 'close');
     await Context.run(this, () async {
+      addParam('success', false);
       await renderError(
         413,
         toData: isApiEndpoint,

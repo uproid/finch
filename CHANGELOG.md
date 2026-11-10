@@ -1,7 +1,7 @@
 
 ## 1.6.3
 - **Security:** request bodies are now capped. New `FinchConfigs.maxBodySize` (default 10 MiB, `0` = unlimited): a request with a larger `Content-Length`, or a streamed body that grows past the limit, is answered with `413 Payload Too Large` (JSON error on `/api/*`) before routing, and the body is discarded instead of being buffered in memory. Applies to form, JSON, multipart and raw bodies
-- **Security:** new `FinchConfigs.maxSocketMessageSize` (default 1 KiB): a larger WebSocket message closes the connection with status `1009`
+- **Security:** new `FinchConfigs.maxSocketMessageSize` (default 1 MiB): a larger WebSocket message closes the connection with status `1009`
   - Note: apps that accept uploads larger than 10 MiB must raise `maxBodySize`
 - Added a **File Upload** example (`/example/upload`) that saves an uploaded file with `rq.getFile()` and shows the server body limit
 - The example nginx config now has per-IP rate limiting (`limit_req`/`limit_conn`) and client timeouts, and the nginx docs describe the request size limits
