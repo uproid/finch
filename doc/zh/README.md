@@ -40,6 +40,7 @@ doc_meta:
 29. [Finch 中间件指南](29.middleware.md)
 30. [Finch 路由缓存指南](30.route_cache.md)
 31. [Finch MCP 服务器指南](31.mcp_server.md)
+32. [pubspec.yaml 中的 Finch 配置](32.pubspec_configuration.md)
 
 ## 功能特性
 
@@ -80,7 +81,7 @@ Finch 采用 [MIT 许可证](../LICENSE)，允许您自由使用、修改和分�
 
 ### 社区
 
-* 联系方式: info@uproid.com
+* 联系方式: info@finchdart.com
 * Discord: https://discord.gg/YduDmJxCp9
 
 

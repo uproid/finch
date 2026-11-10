@@ -1,6 +1,7 @@
 import 'dart:convert';
-import 'package:encrypt/encrypt.dart';
+import 'dart:typed_data';
 import 'package:html_unescape/html_unescape.dart';
+import 'package:pointycastle/export.dart';
 
 /// Extension on [String] to provide additional security and sanitization methods.
 extension SafeString on String {
@@ -75,25 +76,53 @@ extension SafeString on String {
   /// Returns the encrypted string encoded in base64.
   String toSafe(String password) {
     try {
-      if (password.length > 32) {
-        password = password.substring(0, 32);
-      } else if (password.length < 32) {
-        while (password.length != 32) {
-          password += '-';
-        }
+      final keyBytes = _normalizePassword(password);
+
+      final ivBytes = keyBytes.sublist(0, 16);
+
+      final cipher = CBCBlockCipher(AESEngine())
+        ..init(
+          true,
+          ParametersWithIV(
+            KeyParameter(keyBytes),
+            ivBytes,
+          ),
+        );
+
+      final input = utf8.encode(this);
+
+      final paddedInput = _pkcs7Pad(
+        Uint8List.fromList(input),
+        16,
+      );
+
+      final output = Uint8List(paddedInput.length);
+
+      for (int offset = 0; offset < paddedInput.length; offset += 16) {
+        cipher.processBlock(
+          paddedInput,
+          offset,
+          output,
+          offset,
+        );
       }
 
-      var key = Key.fromUtf8(password);
-
-      password = password.substring(0, 16);
-      final iv = IV.fromUtf8(password);
-
-      final e = Encrypter(AES(key, mode: AESMode.cbc));
-      final encryptedData = e.encrypt(this, iv: iv);
-      return encryptedData.base64;
-    } catch (e) {
+      return base64.encode(output);
+    } catch (_) {
       return '';
     }
+  }
+
+  Uint8List _normalizePassword(String password) {
+    if (password.length > 32) {
+      password = password.substring(0, 32);
+    } else if (password.length < 32) {
+      while (password.length != 32) {
+        password += '-';
+      }
+    }
+
+    return Uint8List.fromList(utf8.encode(password));
   }
 
   /// Decrypts a base64-encoded AES-encrypted string using a provided password.
@@ -112,24 +141,57 @@ extension SafeString on String {
   /// Returns the decrypted string, or an error message if decryption fails.
   String fromSafe(String password) {
     try {
-      if (password.length > 32) {
-        password = password.substring(0, 32);
-      } else if (password.length < 32) {
-        while (password.length != 32) {
-          password += '-';
-        }
+      final keyBytes = _normalizePassword(password);
+
+      final ivBytes = keyBytes.sublist(0, 16);
+
+      final cipher = CBCBlockCipher(AESEngine())
+        ..init(
+          false,
+          ParametersWithIV(
+            KeyParameter(keyBytes),
+            ivBytes,
+          ),
+        );
+
+      final input = base64.decode(this);
+
+      final output = Uint8List(input.length);
+
+      for (int offset = 0; offset < input.length; offset += 16) {
+        cipher.processBlock(
+          input,
+          offset,
+          output,
+          offset,
+        );
       }
 
-      var key = Key.fromUtf8(password);
-
-      password = password.substring(0, 16);
-      final iv = IV.fromUtf8(password);
-
-      final e = Encrypter(AES(key, mode: AESMode.cbc));
-      final decryptedData = e.decrypt(Encrypted.fromBase64(this), iv: iv);
-      return decryptedData;
+      return utf8.decode(
+        _pkcs7Unpad(output),
+      );
     } catch (e) {
       return e.toString();
     }
+  }
+
+  Uint8List _pkcs7Pad(Uint8List data, int blockSize) {
+    final padLength = blockSize - (data.length % blockSize);
+
+    return Uint8List.fromList([...data, ...List.filled(padLength, padLength)]);
+  }
+
+  Uint8List _pkcs7Unpad(Uint8List data) {
+    if (data.isEmpty) {
+      throw const FormatException('Invalid padding');
+    }
+    final last = data.last;
+    if (last < 1 || last > data.length) {
+      throw const FormatException('Invalid padding');
+    }
+    return data.sublist(
+      0,
+      data.length - last,
+    );
   }
 }

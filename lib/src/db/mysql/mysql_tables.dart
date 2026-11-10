@@ -1,4 +1,4 @@
-import 'package:mysql_client/mysql_client.dart';
+import 'package:mysql_client_plus/mysql_client_plus.dart';
 import 'package:finch/src/forms/form_validator.dart';
 import 'package:finch/finch_mysql.dart';
 
@@ -310,10 +310,14 @@ extension MySqlTable on MTable {
 /// }
 /// ```
 class MySqlResult
-    implements SqlDatabaseResult<MySQLConnection, IResultSet, ResultSetRow> {
+    implements
+        SqlDatabaseResult<MySQLConnectionPool, IResultSet, ResultSetRow> {
   /// The underlying MySQL result set from the database driver.
   @override
   final IResultSet resultSet;
+
+  @override
+  final int countSqlStatements;
 
   /// Error message if the query failed, empty string if successful.
   @override
@@ -327,6 +331,7 @@ class MySqlResult
     required this.database,
     required this.resultSet,
     this.errorMsg = '',
+    this.countSqlStatements = 1,
   });
 
   /// Returns `true` if the query executed successfully (no error message).
@@ -373,7 +378,7 @@ class MySqlResult
   /// }
   /// ```
   @override
-  List<Map<String, String?>> get assoc =>
+  List<Map<String, dynamic>> get assoc =>
       rows.map((row) => row.assoc()).toList();
 
   /// Returns the first row as an associative array, or null if no rows exist.
@@ -389,7 +394,7 @@ class MySqlResult
   /// }
   /// ```
   @override
-  Map<String, String?>? get assocFirst {
+  Map<String, dynamic>? get assocFirst {
     if (rows.isEmpty) {
       return null;
     }
@@ -428,7 +433,7 @@ class MySqlResult
   }
 
   @override
-  MySQLConnection database;
+  MySQLConnectionPool database;
 }
 
 abstract class DataAssoc {

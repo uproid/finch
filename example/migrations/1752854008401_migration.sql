@@ -11,18 +11,16 @@ INSERT INTO products (name, price, stock) VALUES
 ('Headphones', 89.99, 50),
 ('Keyboard', 45.00, 30);
 
--- Insert Orders
-INSERT INTO orders (user_id) VALUES
-(1), -- Alice
-(2); -- Bob
+-- Insert Orders all User to Orders table
+INSERT INTO orders (user_id)
+SELECT id FROM users;
 
--- Insert Order Items
-INSERT INTO order_items (order_id, product_id, quantity) VALUES
-(1, 1, 1), -- Alice bought 1 Laptop
-(1, 4, 2), -- Alice bought 2 Keyboards
-(2, 2, 1), -- Bob bought 1 Smartphone
-(2, 3, 1); -- Bob bought 1 Headphones
+
+
 
 -- ## ROLL BACK:
 
--- no sql
+-- Delete all records from the orders table
+DELETE FROM orders;
+DELETE FROM products;
+DELETE FROM users;

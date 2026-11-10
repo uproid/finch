@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:finch/tools.dart';
 import 'package:test/test.dart';
 import 'package:finch/src/forms/advanced_form.dart';
 import 'package:finch/src/forms/form_validator.dart';
@@ -7,8 +8,6 @@ import 'package:finch/src/tools/console.dart';
 import 'package:finch/src/views/htmler.dart';
 import 'package:finch/finch_route.dart';
 import 'package:finch/finch_app.dart';
-import 'package:finch/finch_tools.dart';
-import 'package:http/http.dart' as http;
 import 'package:html/parser.dart';
 
 void main() async {
@@ -26,25 +25,25 @@ void main() async {
     ),
   );
 
-  Future<List<FinchRoute>> routing(Request rq) async {
+  Future<List<FinchRoute>> routing() async {
     return [
       FinchRoute(
         path: "/",
-        index: () => rq.renderString(text: "TEST"),
+        index: () => Context.rq.renderString(text: "TEST"),
         children: [
           FinchRoute(
             path: '/without_cache_test',
             index: () async {
-              rq.assetManager.includes = [];
-              rq.addAsset(Asset(
+              Context.rq.assetManager.includes = [];
+              Context.rq.addAsset(Asset(
                   path: 'public/test.css',
                   type: AssetType.css,
                   cache: AssetCache.appVersion));
-              rq.addAsset(Asset(
+              Context.rq.addAsset(Asset(
                   path: 'public/test.js',
                   type: AssetType.js,
                   cache: AssetCache.appVersion));
-              return rq.renderView(
+              return Context.rq.renderView(
                 path:
                     '{{ assets.css() }}, {{ assets.js() }}, {{ assets.dataJs() }}',
                 isFile: false,
@@ -54,16 +53,16 @@ void main() async {
           FinchRoute(
             path: '/with_cache_test',
             index: () async {
-              rq.assetManager.includes = [];
-              rq.addAsset(Asset(
+              Context.rq.assetManager.includes = [];
+              Context.rq.addAsset(Asset(
                   path: 'public/test.css',
                   type: AssetType.css,
                   cache: AssetCache.appVersion));
-              rq.addAsset(Asset(
+              Context.rq.addAsset(Asset(
                   path: 'public/test.js',
                   type: AssetType.js,
                   cache: AssetCache.appVersion));
-              return rq.renderView(
+              return Context.rq.renderView(
                 path:
                     '{{ assets.css() }}, {{ assets.js() }}, {{ assets.dataJs() }}',
                 isFile: false,
@@ -73,22 +72,22 @@ void main() async {
           FinchRoute(
             path: '/test_cookies/list',
             index: () {
-              rq.addCookie('SYSTEM_TEST', 'TEST_VALUE_2', safe: false);
-              return rq.renderDataParam(data: {
-                'cookies': rq.cookies,
-                'cookies_res': rq.response.cookies,
+              Context.rq.addCookie('SYSTEM_TEST', 'TEST_VALUE_2', safe: false);
+              return Context.rq.renderDataParam(data: {
+                'cookies': Context.rq.cookies,
+                'cookies_res': Context.rq.response.cookies,
               });
             },
           ),
           FinchRoute(
             path: '/test_cookies/delete_cookies',
             index: () {
-              var key = rq.get<String>('key');
+              var key = Context.rq.get<String>('key');
               Console.i("Deleting cookie with key: $key");
-              rq.removeCookie(key);
-              return rq.renderDataParam(data: {
-                'cookies': rq.cookies,
-                'cookies_res': rq.response.cookies,
+              Context.rq.removeCookie(key);
+              return Context.rq.renderDataParam(data: {
+                'cookies': Context.rq.cookies,
+                'cookies_res': Context.rq.response.cookies,
                 'key_to_delete': key,
               });
             },
@@ -98,7 +97,7 @@ void main() async {
             methods: Methods.GET_ONLY,
             index: () async {
               var _ = TestAdvancedForm();
-              return rq.renderDataParam();
+              return Context.rq.renderDataParam();
             },
           ),
           FinchRoute(
@@ -119,11 +118,11 @@ void main() async {
             index: () async {
               late String ln;
               for (var i = 0; i < 10; i++) {
-                ln = rq.getLanguage();
+                ln = Context.rq.getLanguage();
               }
-              return rq.renderDataParam(data: {
-                'cookies': rq.cookies,
-                'cookies_res': rq.response.cookies,
+              return Context.rq.renderDataParam(data: {
+                'cookies': Context.rq.cookies,
+                'cookies_res': Context.rq.response.cookies,
                 'language': ln,
               });
             },
@@ -134,7 +133,7 @@ void main() async {
             index: () async {
               var form = TestAdvancedForm();
               await form.check();
-              return rq.renderDataParam();
+              return Context.rq.renderDataParam();
             },
           ),
           FinchRoute(
@@ -150,17 +149,17 @@ void main() async {
                   );
                 },
               ).take(10);
-              return rq.renderSSE(stream);
+              return Context.rq.renderSSE(stream);
             },
           ),
           FinchRoute(
             path: 'htmler',
             index: () {
-              rq.addParam('variable', 'VALUE');
-              rq.addParam('list', ['item1', 'item2', 'item3', 'item4']);
-              rq.addParam('condition', true);
+              Context.rq.addParam('variable', 'VALUE');
+              Context.rq.addParam('list', ['item1', 'item2', 'item3', 'item4']);
+              Context.rq.addParam('condition', true);
 
-              return rq.renderTag(
+              return Context.rq.renderTag(
                   pretty: true,
                   tag: $Html(
                     attrs: {
@@ -229,7 +228,7 @@ void main() async {
           FinchRoute(
             path: 'checkurl',
             index: () {
-              return rq.renderView(
+              return Context.rq.renderView(
                 path: "{{ \$e.url('test') }}",
                 isFile: false,
               );
@@ -245,14 +244,15 @@ void main() async {
             path: 'debug_test',
             methods: Methods.ALL,
             index: () {
-              return rq.renderView(path: "<h1>Debug Test</h1>", isFile: false);
+              return Context.rq
+                  .renderView(path: "<h1>Debug Test</h1>", isFile: false);
             },
           ),
           FinchRoute(
             path: 'widget',
             index: () {
-              rq.addParam("testParam", "paramValue");
-              return rq.renderView(
+              Context.rq.addParam("testParam", "paramValue");
+              return Context.rq.renderView(
                 path: "{{ \$e.url('test') }}\n"
                     "{{ testParam }}\n"
                     "{{ \$t('test.translate') }}\n",
@@ -264,17 +264,17 @@ void main() async {
             path: "api/info",
             methods: Methods.ONLY_GET,
             index: () {
-              rq.addParam("data", "TEST");
-              return rq.renderData(data: rq.getParams());
+              Context.rq.addParam("data", "TEST");
+              return Context.rq.renderData(data: Context.rq.getParams());
             },
           ),
           FinchRoute(
             path: "api",
             index: () {
-              return rq.renderView(
+              return Context.rq.renderView(
                 path: '',
-                data: {'is_api': rq.isApiEndpoint},
-                toData: rq.isApiEndpoint,
+                data: {'is_api': Context.rq.isApiEndpoint},
+                toData: Context.rq.isApiEndpoint,
               );
             },
           ),
@@ -282,11 +282,11 @@ void main() async {
             path: "api/post",
             methods: Methods.ONLY_POST,
             index: () {
-              return rq.renderData(data: {
-                'sended': rq.getAll(),
+              return Context.rq.renderData(data: {
+                'sended': Context.rq.getAll(),
                 'cookies': {
-                  'sessionId': rq.getCookie('sessionId', safe: false),
-                  'username': rq.getCookie('username', safe: false),
+                  'sessionId': Context.rq.getCookie('sessionId', safe: false),
+                  'username': Context.rq.getCookie('username', safe: false),
                 },
               });
             },
@@ -296,7 +296,7 @@ void main() async {
             methods: Methods.ALL,
             auth: AppAuthController(true),
             index: () {
-              return rq.renderData(data: {
+              return Context.rq.renderData(data: {
                 'user': "TEST",
               });
             },
@@ -306,8 +306,35 @@ void main() async {
             methods: Methods.ALL,
             auth: AppAuthController(false),
             index: () {
-              return rq.renderData(data: {
+              return Context.rq.renderData(data: {
                 'user': "TEST",
+              });
+            },
+          ),
+          FinchRoute(
+            path: '/check_param_classic/:key1/:key2',
+            index: () async {
+              return Context.rq.renderData(data: {
+                'key1': Context.rq.getParam('key1'),
+                'key2': Context.rq.getParam('key2'),
+              });
+            },
+          ),
+          FinchRoute(
+            path: '/check_param_finch/:key1/:key2',
+            index: () async {
+              return Context.rq.renderData(data: {
+                'key1': Context.rq.getParam('key1'),
+                'key2': Context.rq.getParam('key2'),
+              });
+            },
+          ),
+          FinchRoute(
+            path: '/%AF/test',
+            index: () async {
+              return Context.rq.renderData(data: {
+                'key1': 'value1',
+                'key2': 'value2',
               });
             },
           ),
@@ -328,7 +355,7 @@ void main() async {
 
   group("Finch Server Test", () {
     test("Test List Cookies", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}/test_cookies/list"),
         headers: {
           'Cookie': 'test_cookie=TEST_VALUE;',
@@ -348,7 +375,7 @@ void main() async {
     });
 
     test("Test Delete Cookie by Backend", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse(
           "http://localhost:${httpServer.port}/test_cookies/delete_cookies?key=test_cookie",
         ),
@@ -369,15 +396,15 @@ void main() async {
     });
 
     test("Test 200", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}"),
       );
       expect(req.body, 'TEST', reason: "Response body should be 'TEST'");
-      expect(req.statusCode, 200, reason: "Status code should be 200");
+      expect(req.status, 200, reason: "Status code should be 200");
     });
 
     test("Test API", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}/api/info"),
       );
       var data = jsonDecode(req.body);
@@ -388,11 +415,11 @@ void main() async {
         true,
         reason: "timestamp should be > 0",
       );
-      expect(req.statusCode, 200, reason: "Status code should be 200");
+      expect(req.status, 200, reason: "Status code should be 200");
     });
 
     test('test api root path', () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}/api"),
       );
       var data = jsonDecode(req.body);
@@ -402,11 +429,11 @@ void main() async {
         true,
         reason: "is_api should be true",
       );
-      expect(req.statusCode, 200, reason: "Status code should be 200");
+      expect(req.status, 200, reason: "Status code should be 200");
     });
 
     test("Test API 404", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}/api/notfound"),
       );
       var data = jsonDecode(req.body);
@@ -417,11 +444,11 @@ void main() async {
         true,
         reason: "timestamp should be > 0",
       );
-      expect(req.statusCode, 404, reason: "Status code should be 404");
+      expect(req.status, 404, reason: "Status code should be 404");
     });
 
     test("Test 404", () async {
-      var req = await http.get(
+      var req = await FinchHttp.get(
         Uri.parse("http://localhost:${httpServer.port}/notfound"),
       );
       var data = req.body;
@@ -431,11 +458,11 @@ void main() async {
         true,
         reason: "Response body should be html",
       );
-      expect(req.statusCode, 404, reason: "Status code should be 404");
+      expect(req.status, 404, reason: "Status code should be 404");
     });
 
     test("Test Method", () async {
-      var req = await http.post(
+      var req = await FinchHttp.post(
         Uri.parse("http://localhost:${httpServer.port}/notfound"),
       );
       var data = req.body;
@@ -445,18 +472,19 @@ void main() async {
         true,
         reason: "Response body should be html",
       );
-      expect(req.statusCode, 404, reason: "Status code should be 404");
+      expect(req.status, 404, reason: "Status code should be 404");
     });
 
     test("Test POST data", () async {
       var random = Random().nextInt(100);
-      var req = await http.post(
+      var req = await FinchHttp.post(
         Uri.parse("http://localhost:${httpServer.port}/api/post"),
         body: {
           'test': 'TEST',
           'random': '$random',
         },
       );
+      print(req.body);
       var data = jsonDecode(req.body);
       expect(
         data['sended']['test'],
@@ -469,12 +497,12 @@ void main() async {
         random,
         reason: "Sendend random should be $random",
       );
-      expect(req.statusCode, 200, reason: "Status code should be 200");
+      expect(req.status, 200, reason: "Status code should be 200");
     });
   });
 
   test("Test Authenticator OK!", () async {
-    var req = await http.get(
+    var req = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/api/auth/ok"),
     );
     var data = jsonDecode(req.body);
@@ -484,11 +512,11 @@ void main() async {
       'TEST',
       reason: "Response body should be TEST",
     );
-    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(req.status, 200, reason: "Status code should be 200");
   });
 
   test("Test Authenticator FAILED!", () async {
-    var req = await http.get(
+    var req = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/api/auth/failed"),
     );
     var data = jsonDecode(req.body);
@@ -497,7 +525,7 @@ void main() async {
       false,
       reason: "Response success should be false",
     );
-    expect(req.statusCode, 404, reason: "Status code should be 404");
+    expect(req.status, 404, reason: "Status code should be 404");
   });
 
   test("Test Cookies", () async {
@@ -507,7 +535,7 @@ void main() async {
     var headers = {
       'Cookie': cookies,
     };
-    var req = await http.post(
+    var req = await FinchHttp.post(
       Uri.parse("http://localhost:${httpServer.port}/api/post"),
       headers: headers,
     );
@@ -525,7 +553,7 @@ void main() async {
       'johndoe',
       reason: "Response success should be johndoe",
     );
-    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(req.status, 200, reason: "Status code should be 200");
   });
 
   test("Test Cookies & Languages", () async {
@@ -536,7 +564,7 @@ void main() async {
     var headers = {
       'Cookie': cookies,
     };
-    var req = await http.post(
+    var req = await FinchHttp.post(
       Uri.parse("http://localhost:${httpServer.port}/language_cookie"),
       headers: headers,
     );
@@ -544,26 +572,25 @@ void main() async {
     var resCookies = data['cookies'] as List;
     var language = data['language'];
 
-    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(req.status, 200, reason: "Status code should be 200");
     expect(language, 'es', reason: "Language should be 'es'");
     expect(resCookies.first.toString(), contains('language=es;'));
 
-    req = await http.post(
+    req = await FinchHttp.post(
       Uri.parse("http://localhost:${httpServer.port}/de/language_cookie"),
       headers: headers,
     );
-    Console.json(req.body);
     data = jsonDecode(req.body);
     resCookies = data['cookies'];
     language = data['language'];
 
-    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(req.status, 200, reason: "Status code should be 200");
     expect(language, 'de', reason: "Language should be 'de'");
     expect(resCookies.first.toString(), contains('language=de;'));
   });
 
   test("check URL", () async {
-    var req = await http.get(
+    var req = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/checkurl"),
     );
     var data = req.body;
@@ -572,11 +599,11 @@ void main() async {
       "http://localhost:${httpServer.port}/test",
       reason: "Response success should be /test",
     );
-    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(req.status, 200, reason: "Status code should be 200");
   });
 
   test("check Error", () async {
-    var req = await http.get(
+    var req = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/error"),
     );
     var data = req.body;
@@ -585,11 +612,11 @@ void main() async {
       true,
       reason: "Response success should contain 'test error page'",
     );
-    expect(req.statusCode, 502, reason: "Status code should be 502");
+    expect(req.status, 502, reason: "Status code should be 502");
   });
 
   test("check Widget events", () async {
-    var req = await http.get(
+    var req = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/widget"),
     );
     var data = req.body;
@@ -599,11 +626,11 @@ void main() async {
       "http://localhost:${httpServer.port}/test\nparamValue\ntest.translate",
       reason: "Response success should contain 'test error page'",
     );
-    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(req.status, 200, reason: "Status code should be 200");
   });
 
   test('Test renderTag', () async {
-    var req = await http.get(
+    var req = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/htmler"),
     );
     var html = req.body;
@@ -652,17 +679,16 @@ void main() async {
       html,
       contains('TEST CENTER COMMENT'),
     );
-    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(req.status, 200, reason: "Status code should be 200");
   });
 
   test('Test SSE', () async {
-    var req = await http.get(
+    var req = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/sse"),
     );
-
-    expect(req.statusCode, 200, reason: "Status code should be 200");
+    expect(req.status, 200, reason: "Status code should be 200");
     expect(
-      req.headers['content-type'],
+      req.headers['content-type']?.join(''),
       'text/event-stream; charset=utf-8',
       reason: "Content-Type should be text/event-stream",
     );
@@ -682,19 +708,19 @@ void main() async {
   });
 
   test('Test Cache', () async {
-    var req1 = await http.get(
+    var req1 = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/without_cache_test"),
     );
-    var req2 = await http.get(
+    var req2 = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/with_cache_test"),
     );
     await Future.delayed(Duration(seconds: 1));
-    var req3 = await http.get(
+    var req3 = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/with_cache_test"),
     );
 
-    expect(req1.statusCode, 200, reason: "Status code should be 200");
-    expect(req2.statusCode, 200, reason: "Status code should be 200");
+    expect(req1.status, 200, reason: "Status code should be 200");
+    expect(req2.status, 200, reason: "Status code should be 200");
     expect(
       req1.body,
       equals(req2.body),
@@ -708,7 +734,7 @@ void main() async {
   });
 
   test('Test Advanced Form', () async {
-    var reqGet = await http.get(
+    var reqGet = await FinchHttp.get(
       Uri.parse("http://localhost:${httpServer.port}/advanced_form"),
       headers: {
         'Cookie': 'DARTSESSID=0f27deca10d6d3a19e9b5819c3f72eac;',
@@ -718,10 +744,10 @@ void main() async {
 
     var cookies = <String>[];
     if (reqGet.headers['set-cookie'] != null) {
-      cookies.add(reqGet.headers['set-cookie']!);
+      cookies.add(reqGet.headers['set-cookie']!.join('; '));
     }
 
-    var reqPost = await http.post(
+    var reqPost = await FinchHttp.post(
       Uri.parse("http://localhost:${httpServer.port}/advanced_form"),
       headers: {
         'Cookie': cookies.join('; '),
@@ -735,7 +761,7 @@ void main() async {
     );
     var dataPost = jsonDecode(reqPost.body);
 
-    var reqPost2 = await http.post(
+    var reqPost2 = await FinchHttp.post(
       Uri.parse("http://localhost:${httpServer.port}/advanced_form"),
       headers: {
         'Cookie': cookies.join('; '),
@@ -749,7 +775,7 @@ void main() async {
     );
     var dataPost2 = jsonDecode(reqPost2.body);
 
-    expect(reqPost.statusCode, 200, reason: "Status code should be 200");
+    expect(reqPost.status, 200, reason: "Status code should be 200");
     expect(
       dataPost['test_form']['success'],
       isTrue,
@@ -780,6 +806,85 @@ void main() async {
       isFalse,
       reason: "Email field should have errors",
     );
+  });
+
+  group('Test Route Params', () {
+    test('Classic Params', () async {
+      var value1 = String.fromCharCodes(
+        List.generate(10, (index) => Random().nextInt(26) + 97),
+      );
+      var value2 = String.fromCharCodes(
+        List.generate(10, (index) => Random().nextInt(26) + 97),
+      );
+
+      var req = await FinchHttp.get(
+        Uri.parse(
+          "http://localhost:${httpServer.port}/check_param_classic/$value1/$value2",
+        ),
+      );
+      var data = jsonDecode(req.body);
+      expect(
+        data['key1'],
+        value1,
+        reason: "key1 should be '$value1'",
+      );
+      expect(
+        data['key2'],
+        value2,
+        reason: "key2 should be '$value2'",
+      );
+      expect(req.status, 200, reason: "Status code should be 200");
+    });
+
+    test('Finch Params', () async {
+      var value1 = String.fromCharCodes(
+        List.generate(10, (index) => Random().nextInt(26) + 97),
+      );
+      var value2 = String.fromCharCodes(
+        List.generate(10, (index) => Random().nextInt(26) + 97),
+      );
+      var req = await FinchHttp.get(
+        Uri.parse(
+          "http://localhost:${httpServer.port}/check_param_finch/$value1/$value2",
+        ),
+      );
+
+      var data = jsonDecode(req.body);
+
+      expect(
+        data['key1'],
+        value1,
+        reason: "key1 should be '$value1'",
+      );
+      expect(
+        data['key2'],
+        value2,
+        reason: "key2 should be '$value2'",
+      );
+      expect(req.status, 200, reason: "Status code should be 200");
+    });
+
+    test('Url segments with special characters', () async {
+      String url = 'http://localhost:${httpServer.port}/%AF/test';
+      var req = await FinchHttp.get(Uri.parse(url));
+      var data = jsonDecode(req.body);
+      expect(
+        data['key1'],
+        'value1',
+        reason: "key1 should be 'value1'",
+      );
+      expect(
+        data['key2'],
+        'value2',
+        reason: "key2 should be 'value2'",
+      );
+    });
+
+    test('Url segments with special characters 404', () async {
+      String url = 'http://localhost:${httpServer.port}/%AF/test/404';
+      var req = await FinchHttp.get(Uri.parse(url));
+      expect(req.status, 404, reason: "Status code should be 404");
+    });
   });
 }
 

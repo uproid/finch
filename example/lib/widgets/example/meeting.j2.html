@@ -1,0 +1,270 @@
+{% extends 'template/template.j2.html' %}
+
+{% block title %}
+    {{ $t('sidebar.meetingExample') }}
+{% endblock %}
+
+{% block content %}
+
+{# Spotlight/pin layout: plain CSS (not Tailwind utilities) since these
+   classes are only ever toggled from meeting.js and would never be picked
+   up by Tailwind's template content scan otherwise. #}
+<style>
+  #videoGrid.pinned-mode {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-auto-rows: 90px;
+  }
+  #videoGrid.pinned-mode .tile {
+    order: 2;
+  }
+  #videoGrid.pinned-mode .tile.is-pinned {
+    order: 1;
+    grid-column: 1 / -1;
+    grid-row: span 5;
+  }
+  @media (min-width: 640px) {
+    #videoGrid.pinned-mode { grid-auto-rows: 110px; }
+  }
+</style>
+
+{# Tile template cloned by meeting.js for every participant (local + remote,
+   plus one extra tile per active screen share). #}
+<template id="tile-template">
+  <div class="tile group relative overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-950 shadow-soft">
+    <video class="tile-video block h-full w-full object-cover" autoplay playsinline></video>
+    <div class="tile-avatar absolute inset-0 hidden flex-col items-center justify-center gap-2 bg-gradient-to-br from-zinc-800 to-zinc-900">
+      <span class="tile-initial inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-teal-500 to-cyan-600 text-xl font-bold text-white shadow-lg">?</span>
+    </div>
+    <div class="tile-ring pointer-events-none absolute inset-0 rounded-2xl ring-0 ring-emerald-400/70 transition-all duration-150"></div>
+    <div class="absolute left-2.5 top-2.5 z-10 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur">
+      <span class="tile-dot h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+      <span class="tile-name truncate max-w-[140px]">Guest</span>
+    </div>
+    <div class="tile-badges absolute right-2.5 top-2.5 z-10 flex items-center gap-1.5">
+      <span class="tile-mic-off hidden inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-[10px] shadow"><i class="fa-solid fa-microphone-slash"></i></span>
+      <span class="tile-cam-off hidden inline-flex h-6 w-6 items-center justify-center rounded-full bg-zinc-700 text-white text-[10px] shadow"><i class="fa-solid fa-video-slash"></i></span>
+    </div>
+    <button type="button"
+            class="tile-pin-btn absolute bottom-2 right-2 z-10 hidden h-7 w-7 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur transition hover:bg-black/75 group-hover:flex"
+            data-label-on="{{ $t('meetingRoom.pin') }}" data-label-off="{{ $t('meetingRoom.unpin') }}"
+            title="{{ $t('meetingRoom.pin') }}">
+      <i class="fa-solid fa-expand text-[11px]"></i>
+    </button>
+  </div>
+</template>
+
+{# ============== HERO ============== #}
+<section class="reveal-up relative overflow-hidden rounded-3xl border border-zinc-200 bg-gradient-to-br from-zinc-900 via-fuchsia-950 to-rose-950 p-6 sm:p-8 shadow-soft">
+  <div class="pointer-events-none absolute -top-24 -end-24 h-72 w-72 rounded-full bg-rose-500/20 blur-3xl"></div>
+  <div class="pointer-events-none absolute -bottom-24 -start-24 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl"></div>
+
+  <div class="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <div class="flex items-start gap-4">
+      <div class="relative">
+        <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 ring-1 ring-white/20 backdrop-blur">
+          <i class="fa-solid fa-video text-2xl text-rose-300"></i>
+        </div>
+        <span id="liveDot" class="absolute -top-1 -end-1 hidden h-3.5 w-3.5">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex h-3.5 w-3.5 rounded-full bg-emerald-400 ring-2 ring-zinc-900"></span>
+        </span>
+      </div>
+      <div>
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-fuchsia-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-fuchsia-300 ring-1 ring-fuchsia-400/30">
+            <i class="fa-solid fa-network-wired"></i>
+            {{ $t('meetingRoom.badgeP2P') }}
+          </span>
+          <span id="liveBadge" class="hidden items-center gap-1.5 rounded-full bg-emerald-500/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-emerald-300 ring-1 ring-emerald-400/30">
+            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+            {{ $t('meetingRoom.badgeLive') }}
+          </span>
+        </div>
+        <h1 class="mt-2 text-2xl font-bold text-white sm:text-3xl">
+          {{ $t('meetingRoom.title') }}
+        </h1>
+        <p class="mt-1 max-w-2xl text-sm text-zinc-300">
+          {{ $t('meetingRoom.subtitle') }}
+        </p>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 sm:flex-row lg:flex-col lg:items-end">
+      <div class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 font-mono text-xs text-zinc-200 backdrop-blur">
+        <i class="fa-solid fa-link text-rose-300"></i>
+        <span class="text-zinc-400">signaling</span>
+        <span class="text-white">/ws</span>
+      </div>
+      <div class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs text-zinc-200 backdrop-blur">
+        <i class="fa-solid fa-bolt text-amber-300"></i>
+        Mesh <span class="font-semibold text-white">WebRTC</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+{# ============== JOIN SCREEN ============== #}
+<section id="joinScreen" class="reveal-up mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
+  <div class="lg:col-span-2">
+    <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+      <div class="flex items-center gap-3 border-b border-zinc-200 bg-zinc-50 px-5 py-4">
+        <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-fuchsia-600 text-white shadow-sm">
+          <i class="fa-solid fa-door-open"></i>
+        </span>
+        <div>
+          <p class="text-sm font-semibold text-zinc-800 leading-tight">{{ $t('meetingRoom.joinHeading') }}</p>
+          <p class="text-[11px] text-zinc-500">{{ $t('meetingRoom.joinSubheading') }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 p-5 md:grid-cols-2">
+        {# camera preview #}
+        <div class="relative overflow-hidden rounded-xl border border-zinc-200 bg-zinc-950 aspect-video">
+          <video id="localPreviewVideo" class="hidden h-full w-full object-cover" autoplay muted playsinline></video>
+          <div id="previewPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-zinc-400">
+            <i class="fa-solid fa-video text-3xl"></i>
+            <button id="btnEnableMedia" type="button"
+                    class="wave inline-flex items-center gap-2 rounded-lg bg-white/10 px-3.5 py-2 text-xs font-semibold text-white ring-1 ring-white/20 backdrop-blur transition hover:bg-white/20 disable-wave">
+              <i class="fa-solid fa-camera"></i>
+              {{ $t('meetingRoom.enableCamera') }}
+            </button>
+          </div>
+        </div>
+
+        {# form #}
+        <form id="joinForm" class="flex flex-col gap-3"
+              data-room-required="{{ $t('meetingRoom.roomRequired') }}"
+              data-join-label="{{ $t('meetingRoom.joinButton') }}"
+              data-connecting-label="{{ $t('meetingRoom.connecting') }}">
+          <div>
+            <label for="inputName" class="mb-1 block text-xs font-medium text-zinc-600">{{ $t('meetingRoom.yourName') }}</label>
+            <input id="inputName" type="text" maxlength="40" autocomplete="off" placeholder="{{ $t('meetingRoom.yourNamePlaceholder') }}"
+                   class="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-800 shadow-sm outline-none transition focus:border-rose-400 focus:ring-2 focus:ring-rose-500/20" />
+          </div>
+          <div>
+            <label for="inputRoom" class="mb-1 block text-xs font-medium text-zinc-600">{{ $t('meetingRoom.roomName') }}</label>
+            <input id="inputRoom" type="text" maxlength="60" autocomplete="off" placeholder="{{ $t('meetingRoom.roomNamePlaceholder') }}"
+                   class="w-full rounded-xl border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-800 shadow-sm outline-none transition focus:border-rose-400 focus:ring-2 focus:ring-rose-500/20" />
+          </div>
+          <p id="joinError" class="hidden rounded-lg bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700 ring-1 ring-rose-200"></p>
+          <button id="btnJoin" type="submit"
+                  class="wave mt-1 inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-rose-600 to-fuchsia-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:from-rose-700 hover:to-fuchsia-700 focus:outline-none focus:ring-2 focus:ring-rose-500/40 disable-wave disabled:opacity-60">
+            <i class="fa-solid fa-right-to-bracket"></i>
+            <span>{{ $t('meetingRoom.joinButton') }}</span>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <aside class="rounded-2xl border border-amber-200 bg-amber-50/60 p-4">
+    <div class="flex items-start gap-3">
+      <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
+        <i class="fa-solid fa-lightbulb"></i>
+      </div>
+      <div class="text-xs leading-relaxed text-amber-900">
+        {{ $t('meetingRoom.techNote') }}
+      </div>
+    </div>
+  </aside>
+</section>
+
+{# ============== MEETING SCREEN (hidden until joined) ============== #}
+<section id="meetingScreen" class="reveal-up mt-6 hidden">
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-4">
+
+    {# ---------- STAGE ---------- #}
+    <div class="lg:col-span-3">
+      <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-200 bg-zinc-50 px-4 py-3">
+          <div class="flex items-center gap-2 text-sm font-semibold text-zinc-700">
+            <i class="fa-solid fa-hashtag text-zinc-400"></i>
+            <span id="roomLabel">-</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-2.5 py-1 text-[11px] font-medium text-zinc-600">
+              <i class="fa-solid fa-users"></i>
+              <span id="participantCount">1</span>
+            </span>
+            <button id="btnCopyLink" type="button"
+                    data-copied-text="{{ $t('meetingRoom.linkCopied') }}"
+                    class="wave inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:border-rose-300 hover:bg-rose-50 hover:text-rose-700 disable-wave">
+              <i class="fa-solid fa-link"></i>
+              <span>{{ $t('meetingRoom.copyLink') }}</span>
+            </button>
+          </div>
+        </div>
+
+        <div id="videoGrid" class="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2 xl:grid-cols-3"
+             data-screen-suffix="{{ $t('meetingRoom.screenSuffix') }}"
+             style="min-height: 360px;"></div>
+        <p id="waitingHint" class="hidden px-4 pb-4 text-center text-xs text-zinc-400">{{ $t('meetingRoom.waitingForOthers') }}</p>
+
+        {# controls #}
+        <div class="flex flex-wrap items-center justify-center gap-2 border-t border-zinc-200 bg-zinc-50 px-4 py-3">
+          <button id="btnToggleMic" type="button" data-active="true"
+                  data-label-on="{{ $t('meetingRoom.mic') }}" data-label-off="{{ $t('meetingRoom.muted') }}"
+                  class="wave inline-flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700 disable-wave" title="{{ $t('meetingRoom.mic') }}">
+            <i class="fa-solid fa-microphone"></i>
+          </button>
+          <button id="btnToggleCamera" type="button" data-active="true"
+                  data-label-on="{{ $t('meetingRoom.camera') }}" data-label-off="{{ $t('meetingRoom.cameraOff') }}"
+                  class="wave inline-flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700 disable-wave" title="{{ $t('meetingRoom.camera') }}">
+            <i class="fa-solid fa-video"></i>
+          </button>
+          <button id="btnShareScreen" type="button" data-active="false"
+                  data-label-on="{{ $t('meetingRoom.screenShare') }}" data-label-off="{{ $t('meetingRoom.stopShare') }}"
+                  class="wave inline-flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 disable-wave" title="{{ $t('meetingRoom.screenShare') }}">
+            <i class="fa-solid fa-display"></i>
+          </button>
+          <button id="btnToggleChat" type="button"
+                  class="wave inline-flex h-11 w-11 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-700 shadow-sm transition hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 disable-wave lg:hidden" title="{{ $t('meetingRoom.chat') }}">
+            <i class="fa-solid fa-comment"></i>
+          </button>
+          <button id="btnLeave" type="button"
+                  class="wave ms-2 inline-flex items-center gap-2 rounded-full bg-rose-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-rose-700 disable-wave">
+            <i class="fa-solid fa-phone-slash"></i>
+            {{ $t('meetingRoom.leave') }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    {# ---------- SIDE PANEL: participants + chat ---------- #}
+    <aside id="sidePanel" class="flex flex-col gap-4">
+      <div class="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+        <div class="flex items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-4 py-3">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-rose-500 to-fuchsia-600 text-white shadow-sm">
+            <i class="fa-solid fa-users text-xs"></i>
+          </span>
+          <p class="text-sm font-semibold text-zinc-800">{{ $t('meetingRoom.participants') }}</p>
+        </div>
+        <div id="participantsList" class="flex max-h-56 flex-col gap-1 overflow-y-auto p-3 text-sm text-zinc-700"></div>
+      </div>
+
+      <div class="flex flex-1 flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-soft">
+        <div class="flex items-center gap-2 border-b border-zinc-200 bg-zinc-50 px-4 py-3">
+          <span class="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 text-white shadow-sm">
+            <i class="fa-solid fa-comment text-xs"></i>
+          </span>
+          <p class="text-sm font-semibold text-zinc-800">{{ $t('meetingRoom.chat') }}</p>
+        </div>
+        <div id="chatMessages" class="flex min-h-[180px] flex-1 flex-col gap-2 overflow-y-auto p-3 text-xs"></div>
+        <form id="chatForm" class="flex items-center gap-2 border-t border-zinc-200 p-2.5">
+          <input id="chatInput" type="text" maxlength="500" autocomplete="off" placeholder="{{ $t('meetingRoom.chatPlaceholder') }}"
+                 class="flex-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-800 outline-none transition focus:border-teal-400 focus:ring-2 focus:ring-teal-500/20" />
+          <button type="submit" class="wave inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-teal-600 text-white transition hover:bg-teal-700 disable-wave">
+            <i class="fa-solid fa-paper-plane text-xs"></i>
+          </button>
+        </form>
+      </div>
+    </aside>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block script %}
+<script src="/assets/meeting.js"></script>
+{% endblock %}

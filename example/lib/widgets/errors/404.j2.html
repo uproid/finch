@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="{{ $e.ln }}" dir="{{ $t('dir') }}" class="h-full scroll-smooth">
+
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<title>{{ $t('error.404') }}</title>
+		<meta name="robots" content="noindex, nofollow">
+		<meta name="theme-color" content="#0d9488"/>
+		<link rel="icon" href="/favicon.ico" type="image/x-icon"/>
+		<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+		<link rel="stylesheet" href="/assets/effects/wave/wave.css"/>
+		<link rel="stylesheet" href="/assets/generated-tailwind.css"/>
+		<link rel="stylesheet" href="/assets/app.css" crossorigin="anonymous"/>
+		<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+		<style>
+			html,
+			body {
+				font-family: 'Rubik', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+			}
+			body {
+				font-feature-settings: "cv11", "ss01", "ss03";
+			}
+		</style>
+	</head>
+
+	<body class="h-full min-h-screen bg-zinc-50 text-zinc-800 font-sans antialiased selection:bg-teal-200 selection:text-teal-900">
+
+		<div
+			class="flex flex-col items-center justify-center min-h-screen px-6 text-center">
+
+			<!-- Title -->
+			<h1 class="reveal-up mt-4 text-6xl font-bold text-teal-600">
+				{{ $t('error.404') }}
+			</h1>
+
+			<!-- Description -->
+			<p class="reveal-up mt-6 text-lg max-w-md text-zinc-500 leading-relaxed">
+				{{ $t('error.404.message') }}
+			</p>
+
+			<!-- Actions -->
+			<div class="reveal-up mt-8 flex flex-col sm:flex-row items-center gap-3">
+				<a href="/" class="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-semibold px-6 py-3 text-sm transition-colors shadow-soft-lg focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2">
+					<i class="fa-solid fa-house text-xs"></i>
+					{{ $t('sidebar.home') }}
+				</a>
+			</div>
+		</div>
+	</body>
+</html>

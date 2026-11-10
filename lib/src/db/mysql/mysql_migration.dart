@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:capp/capp.dart';
 import 'package:finch/finch_tools.dart';
+import 'package:finch/mysql.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
-import 'package:mysql_client/mysql_client.dart';
+import 'package:mysql_client_plus/mysql_client_plus.dart';
 import 'package:finch/src/tools/console.dart';
-import 'package:finch/finch_mysql.dart';
 import 'package:finch/finch_app.dart';
 
 /// A class for handling MySQL database migrations.
@@ -15,7 +15,7 @@ import 'package:finch/finch_app.dart';
 /// have been executed.
 class MysqlMigration {
   /// The MySQL database connection used for executing migrations.
-  DatabaseDriver<MySQLConnection> db;
+  DatabaseDriver<MySQLConnectionPool> db;
 
   /// Creates a new [MysqlMigration] instance with the provided database connection.
   /// [db] The MySQL connection to use for migration operations.
@@ -74,29 +74,77 @@ class MysqlMigration {
   /// before the rollback marker is executed during migration.
   /// Returns a success message listing the executed migration files,
   /// or a message indicating no migrations were needed.
-  Future<List<String>> migrateInit() async {
+  Future<List<String>> migrateInit({
+    List<DartMigration> migrations = const [],
+  }) async {
     await _createTable();
-    var files = await getMigrationFiles();
+    var files = await _getMigrationFiles();
     var executedFiles = <String>[];
-    for (var file in files) {
-      var filename = path.basename(file.path);
-      var exists = await checkExcutedMigration(filename);
-      if (exists) continue;
+    if (migrations.isNotEmpty) {
+      for (var migration in migrations) {
+        var check = await _checkExcutedMigration(migration.uniqueName);
+        if (check.exist) continue;
 
-      var sqlContent = await file.readAsString();
-      sqlContent = sqlContent.split('-- ## ROLL BACK:')[0];
-      if (sqlContent.isEmpty) continue;
-      var res = await db.executeString(sqlContent);
-      if (res.success) {
-        executedFiles.add(filename);
-        await migrationTable.insert(db, {
-          'file': QVar(filename),
-          'sort': QVar(DateTime.now().millisecondsSinceEpoch.toString()),
+        await db.database.transactional((MySQLConnection dbSession) async {
+          await dbSession.execute('START TRANSACTION;');
+          try {
+            final sqls = migration.upSQLs;
+            for (var sql in sqls) {
+              var arrSql = DatabaseDriver.splitSqlStatements(sql);
+              for (var sql in arrSql) {
+                await db.database.execute(sql);
+              }
+            }
+            await dbSession.execute('COMMIT;');
+            executedFiles.add(migration.uniqueName);
+            await migrationTable.insert(db, {
+              'file': QVar(migration.uniqueName),
+              'sort': QVar(DateTime.now().millisecondsSinceEpoch.toString()),
+            });
+          } catch (e) {
+            await dbSession.execute('ROLLBACK;');
+            throw Exception(
+              'Error executing migration: ${migration.uniqueName}\nError message: \n$e',
+            );
+          }
         });
-      } else {
-        throw Exception(
-          'Error executing migration file: $filename\nError message: ${res.errorMsg}',
-        );
+      }
+    } else if (files.isEmpty) {
+      throw Exception(
+        'No migration files found in the migrations directory.',
+      );
+    } else {
+      for (var file in files) {
+        var filename = path.basename(file.path);
+        var exists = await _checkExcutedMigration(filename);
+        if (exists.exist) continue;
+        var sqlContent = await file.readAsString();
+        sqlContent = sqlContent.split('-- ## ROLL BACK:')[0];
+        if (sqlContent.isEmpty) continue;
+
+        db.database.transactional((sessionDb) async {
+          try {
+            await sessionDb.execute('START TRANSACTION;');
+            var arrSql = DatabaseDriver.splitSqlStatements(sqlContent.trim());
+            for (var sql in arrSql) {
+              await sessionDb.execute(
+                sql.trim(),
+              );
+            }
+            executedFiles.add(filename);
+            await migrationTable.insert(db, {
+              'file': QVar(filename),
+              'sort': QVar(DateTime.now().millisecondsSinceEpoch.toString()),
+            });
+            await sessionDb.execute('COMMIT;');
+          } catch (e) {
+            await sessionDb.execute('ROLLBACK;');
+            throw Exception(
+              'Error executing migration file: $filename\nError message: \n$e',
+            );
+          }
+        });
+        await db.executeString('COMMIT;');
       }
     }
 
@@ -115,7 +163,10 @@ class MysqlMigration {
   /// Migration files must contain a rollback section marked with
   /// `-- ## ROLL BACK:` followed by the SQL statements to undo the migration.
   /// Returns a success message listing the rolled back migration files.
-  Future<String> migrateRollback(int deep) async {
+  Future<List<String>> migrateRollback(
+    int deep, {
+    List<DartMigration> dartMigrations = const [],
+  }) async {
     List<String> successRollbackFiles = [];
     var resMigrations = await migrationTable.select(
       db,
@@ -132,27 +183,52 @@ class MysqlMigration {
       if (filename == null || filename.isEmpty) continue;
       migrations.add(filename);
     }
-
     for (var migration in migrations) {
+      List<String> rollbackContent = [];
       var filename = migration;
+      var rollbackTarget = '';
       if (filename.isEmpty) continue;
-      var file = File(path.join(
-        pathTo(
-          FinchApp.config.pathMigrationMySQL,
-        ),
-        filename,
-      ));
-      if (!file.existsSync()) continue;
-      var sqlContent = await file.readAsString();
-      if (!sqlContent.contains('-- ## ROLL BACK:')) continue;
-      var rollbackContent = sqlContent.split('-- ## ROLL BACK:')[1];
+      if (dartMigrations.isNotEmpty) {
+        for (var dartMigration in dartMigrations.reversed) {
+          if (dartMigration.uniqueName == filename) {
+            if (dartMigration.uniqueName.isEmpty) continue;
+            rollbackTarget = dartMigration.uniqueName;
+            rollbackContent.addAll(dartMigration.downSQLs);
+            break;
+          }
+        }
+      } else {
+        var file = File(path.join(
+          pathTo(
+            FinchApp.config.pathMigrationMySQL,
+          ),
+          filename,
+        ));
+        if (!file.existsSync()) continue;
+        var sqlContent = await file.readAsString();
+        if (!sqlContent.contains('-- ## ROLL BACK:')) continue;
+        rollbackContent.add(sqlContent.split('-- ## ROLL BACK:')[1]);
+        rollbackTarget = file.path;
+      }
       if (rollbackContent.isEmpty) continue;
 
-      var res = await db.executeString(rollbackContent);
-      if (!res.success) {
-        throw Exception(
-          'Error executing rollback for migration file: $filename\nError message: ${res.errorMsg}',
-        );
+      for (var sql in rollbackContent) {
+        await db.executeString('START TRANSACTION;');
+        try {
+          var res = await db.executeString(
+            sql,
+            separateStatements: true,
+          );
+          if (res.error) {
+            throw res.errorMsg;
+          }
+          await db.executeString('COMMIT;');
+        } catch (e) {
+          await db.executeString('ROLLBACK;');
+          throw Exception(
+            'Error executing rollback for migration: $filename\nError message: $e',
+          );
+        }
       }
 
       await migrationTable.delete(
@@ -165,10 +241,10 @@ class MysqlMigration {
           )
           ..addParam('file', QVar(filename)),
       );
-      successRollbackFiles.add(file.path);
+      successRollbackFiles.add(File(rollbackTarget).fileFullName);
     }
 
-    return 'Rollback completed successfully for: \n${successRollbackFiles.join('\n')}';
+    return successRollbackFiles;
   }
 
   /// Creates a new migration file template.
@@ -182,23 +258,25 @@ class MysqlMigration {
   static Future<String> migrateCreate({
     String name = '',
     String? migrationPath,
+    bool isSqlite = false,
+    String type = 'sql',
   }) async {
     File file = File(
       path.join(
         migrationPath ?? pathTo(FinchApp.config.pathMigrationMySQL),
-        '${DateTime.now().millisecondsSinceEpoch}_'
+        'z${DateTime.now().millisecondsSinceEpoch}_'
         '${name.isNotEmpty ? '${name.toSlug().replaceAll('-', '_')}_' : ''}'
-        'migration.sql',
+        'migration.$type',
       ),
     );
 
     file.createSync(recursive: true);
     file.writeAsString(
-      '-- ${DateTime.now()} \n'
-      '-- MySQL Migration File \n'
-      '${name.isNotEmpty ? '-- Name: $name \n' : ''}'
-      '-- ## NEW VERSION:\n\n\n\n'
-      '-- ## ROLL BACK:\n\n\n\n',
+      _getMigrationTemplate(
+        name: name,
+        isSqlite: isSqlite,
+        type: type,
+      ),
     );
     CappConsole.write("\n");
     CappConsole.writeTable(
@@ -209,26 +287,28 @@ class MysqlMigration {
       dubleBorder: true,
       color: CappColors.success,
     );
-    return 'Create migration file command executed successfully.';
+    return 'Create migration file command executed successfully.\n'
+        'Register this migration file in your FinchApp '
+        'instance using the registerDartMigration method.';
   }
 
   /// Checks if a migration file has already been executed.
   /// [filename] The name of the migration file to check
   /// Returns `true` if the migration has been executed, `false` otherwise.
-  Future<bool> checkExcutedMigration(String filename) async {
+  Future<({bool exist, String createdAt})> _checkExcutedMigration(
+    String filename,
+  ) async {
     var query = Sqler()
-      ..from(QField(migrationTable.name))
-      ..addSelect(SQL.count(QField('file', as: 'count_records')))
+      ..from(migrationTable.qName)
+      ..addSelect(QSelectAll())
       ..where(
         WhereOne(QField('file'), QO.EQ, QParam('file')),
       )
       ..addParam('file', QVar(filename));
-    var res = await migrationTable.select(
-      db,
-      query,
-    );
-
-    return res.countRecords > 0;
+    var res = await migrationTable.select(db, query);
+    var exist = res.numRows > 0;
+    var createdAt = res.assocFirst?['created_at']?.toString() ?? '';
+    return (exist: exist, createdAt: createdAt);
   }
 
   /// Retrieves all migration files from the migrations directory.
@@ -240,7 +320,7 @@ class MysqlMigration {
   /// order based on their timestamp prefixes.
   /// Returns a list of [File] objects representing the migration files.
   /// Returns an empty list if the migrations directory doesn't exist.
-  Future<List<File>> getMigrationFiles() async {
+  Future<List<File>> _getMigrationFiles() async {
     // Get all migration files from the migrations directory
     var dir = Directory(pathTo(FinchApp.config.pathMigrationMySQL));
     if (!dir.existsSync()) {
@@ -257,21 +337,78 @@ class MysqlMigration {
     return res;
   }
 
-  Future<List<List<String>>> checkMigrationStatus() async {
-    var migrationFiles = await getMigrationFiles();
+  Future<List<List<String>>> checkMigrationStatus({
+    List<DartMigration> migrations = const [],
+  }) async {
     var statusList = <List<String>>[];
-    var index = 1;
-    for (var file in migrationFiles) {
-      var fileName = path.basename(file.path);
-      var executed = await checkExcutedMigration(fileName);
-      statusList.add([
-        "${index++}",
-        fileName,
-        executed ? 'Yes' : 'No',
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(file.statSync().modified),
-      ]);
+    if (migrations.isNotEmpty) {
+      var index = 1;
+      for (var migration in migrations) {
+        var executed = await _checkExcutedMigration(migration.uniqueName);
+        statusList.add([
+          "${index++}",
+          migration.uniqueName,
+          executed.exist ? 'Yes' : 'No',
+          executed.createdAt.isNotEmpty
+              ? DateFormat('yyyy-MM-dd HH:mm:ss').format(
+                  DateTime.parse(executed.createdAt),
+                )
+              : '',
+        ]);
+      }
+    } else {
+      var migrationFiles = await _getMigrationFiles();
+      var index = 1;
+      for (var file in migrationFiles) {
+        var fileName = path.basename(file.path);
+        var executed = await _checkExcutedMigration(fileName);
+        statusList.add([
+          "${index++}",
+          fileName,
+          executed.exist ? 'Yes' : 'No',
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(file.statSync().modified),
+        ]);
+      }
     }
-
     return statusList;
+  }
+
+  static String _getMigrationTemplate({
+    required String name,
+    bool isSqlite = false,
+    String type = 'sql',
+  }) {
+    if (type.trim() != 'dart') {
+      return '-- ${DateTime.now()} \n'
+          '-- ${isSqlite ? 'SQLite' : 'MySQL'} Migration File \n'
+          '${name.isNotEmpty ? '-- Name: $name \n' : ''}'
+          '-- ## NEW VERSION:\n\n\n\n'
+          '-- ## ROLL BACK:\n\n\n\n';
+    } else {
+      return '''import 'package:finch/${isSqlite ? 'sqlite' : 'mysql'}.dart';
+/// A Dart migration class for ${isSqlite ? 'SQLite' : 'MySQL'} database migrations.
+/// Create at: ${DateTime.now()}
+/// Name: $name
+/// @TODO Important: Create a new instance of this class into registerDartMigration method in your FinchApp instance.
+class M${name.toSlug().toPascalCase()} extends DartMigration {
+  @override
+  MigrationTarget get target => MigrationTarget.${isSqlite ? 'sqlite' : 'mysql'};
+
+  M${name.toSlug().toPascalCase()}() : super('migrate_${name.toSlug()}_${DateTime.now().millisecondsSinceEpoch}');
+
+  @override
+  void up() {
+    /// @TODO: Add your migration SQL statements here
+    addSql('');
+  }
+
+  @override
+  void down() {
+    /// @TODO: Add your migration rollback SQL statements here
+    addSql('');
+  }
+}
+''';
+    }
   }
 }

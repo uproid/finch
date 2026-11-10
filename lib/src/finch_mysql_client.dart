@@ -1,3 +1,3 @@
 library;
 
-export 'package:mysql_client/mysql_client.dart';
+export 'package:mysql_client_plus/mysql_client_plus.dart';

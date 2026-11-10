@@ -40,6 +40,7 @@ doc_meta:
 29. [راهنمای میان‌افزار](29.middleware.md)
 30. [راهنمای کش مسیر](30.route_cache.md)
 31. [راهنمای سرور MCP](31.mcp_server.md)
+32. [تنظیمات Finch در pubspec.yaml](32.pubspec_configuration.md)
 
 ## امکانات
 
@@ -80,7 +81,7 @@ doc_meta:
 
 ### جامعه
 
-* ایمیل: info@uproid.com
+* ایمیل: info@finchdart.com
 * دیسکورد: https://discord.gg/YduDmJxCp9
 
 

@@ -17,7 +17,6 @@ import 'package:finch/src/tools/convertor/serializable/value_converter/json_valu
 import 'package:finch/src/tools/convertor/string_validator.dart';
 import 'package:finch/src/tools/convertor/translate_string.dart';
 import 'package:finch/src/tools/path.dart';
-import 'package:finch/src/widgets/widget_error.dart';
 import 'package:intl/intl.dart';
 import 'package:jinja/jinja.dart';
 import 'package:jinja/loaders.dart';
@@ -75,7 +74,7 @@ class Request {
   /// The [HttpRequest] instance associated with this request.
   final HttpRequest _rq;
   var _defaultContentType = ContentType.html;
-  static FinchStringWidget errorWidget = ErrorWidget();
+  static FinchStringWidget errorWidget = FinchApp.config.errorWidget;
 
   /// Manages assets like JavaScript and CSS for rendering.
   late final AssetManager assetManager = AssetManager();
@@ -180,24 +179,26 @@ class Request {
 
   /// Retrieves the current language based on URI, session, or settings.
   String getLanguage() {
-    var ln = uri.pathSegments.isNotEmpty ? uri.pathSegments[0] : '';
+    var segments = uri.safePathSegments;
+    var ln = segments.isNotEmpty ? segments[0] : '';
     if (ln.isNotEmpty && FinchApp.config.languages.contains(ln)) {
       changeLanguege(ln);
-      return ln;
-    }
-
-    if (isApiEndpoint && hasData('lang')) {
-      return data('lang', def: 'en');
-    }
-
-    ln = getCookie(
-      'language',
-      safe: false,
-      def: getSession(
+    } else if (isApiEndpoint && hasData('lang')) {
+      ln = data('lang', def: 'en');
+    } else {
+      ln = getCookie(
         'language',
-        def: _setting['language'] ?? 'en',
-      ).toString(),
-    );
+        safe: false,
+        def: getSession(
+          'language',
+          def: _setting['language'] ?? 'en',
+        ).toString(),
+      );
+    }
+
+    if (!FinchApp.config.languages.contains(ln)) {
+      ln = 'en';
+    }
 
     return ln.trim().toLowerCase();
   }
@@ -249,7 +250,7 @@ class Request {
     String content = "";
 
     // For GET
-    var params = _rq.uri.queryParameters;
+    var params = _rq.uri.safeQueryParameters;
     get.addAll(_checkValues<Map<String, dynamic>>(params));
 
     // For POST or PUT
@@ -1228,7 +1229,7 @@ class Request {
 
     var uri = Uri.parse(path);
     if (checkApiPath && isApiEndpoint) {
-      uri = uri.replace(pathSegments: ['api', ...uri.pathSegments]);
+      uri = uri.replace(pathSegments: ['api', ...uri.safePathSegments]);
     }
 
     uri = uri.normalizePath();
@@ -1326,8 +1327,8 @@ class Request {
         }
       }
 
-      var queryParams = Context.rq.uri.queryParameters
-          .map((key, value) => MapEntry(key, value));
+      var queryParams = Context.rq.uri.safeQueryParameters
+          .map((key, value) => MapEntry(key, value.toString()));
 
       var newUrl = Uri(
         queryParameters: {
@@ -1339,24 +1340,24 @@ class Request {
       return newUrl.toString();
     },
     'removeUrlQuery': (dynamic keys) {
-      var queryParams = Context.rq.uri.queryParameters
-          .map((key, value) => MapEntry(key, value));
+      var queryParams = Context.rq.uri.safeQueryParameters
+          .map((key, value) => MapEntry(key, value.toString()));
 
       for (var key in keys) {
         queryParams.remove(key);
       }
 
       var newUrl = Uri(
-        queryParameters: queryParams,
+        queryParameters: Map.from(queryParams),
       );
 
       return newUrl.toString();
     },
     'existUrlQuery': (dynamic keys) {
       for (var key in keys) {
-        if (Context.rq.uri.queryParameters.containsKey(key) &&
-            Context.rq.uri.queryParameters[key] != null &&
-            Context.rq.uri.queryParameters[key]!.isNotEmpty) {
+        if (Context.rq.uri.safeQueryParameters.containsKey(key) &&
+            Context.rq.uri.safeQueryParameters[key] != null &&
+            Context.rq.uri.safeQueryParameters[key]!.isNotEmpty) {
           return true;
         }
       }
@@ -1364,7 +1365,7 @@ class Request {
     },
     'endpointQuery': () {
       var endpoint = Context.rq.uri.path;
-      if (Context.rq.uri.queryParameters.isNotEmpty) {
+      if (Context.rq.uri.safeQueryParameters.isNotEmpty) {
         endpoint += '?${Context.rq.uri.query}';
       }
       return endpoint;
@@ -1464,7 +1465,7 @@ class Request {
         Map<String, Object?> params = const {},
         Map<String, Object?> query = const {},
       ]) {
-        var res = FinchRoute.getByKey(key)?.getUrl(params, query);
+        var res = FinchRoute.getByKey(key)?.getUrl(this, params, query);
         if (res == null) {
           throw Exception("The route key '$key' not found!");
         }
@@ -1483,18 +1484,17 @@ class Request {
       },
       'urlToLanguage': (String language) {
         var res = '';
-        if (_rq.requestedUri.pathSegments.isNotEmpty &&
-            _rq.requestedUri.pathSegments[0] == language) {
+        var segments = _rq.requestedUri.safePathSegments;
+        if (segments.isNotEmpty && segments[0] == language) {
           res = url(_rq.requestedUri.path);
-        } else if (_rq.requestedUri.pathSegments.isNotEmpty &&
-            _rq.requestedUri.pathSegments[0] == getLanguage()) {
-          var paths = _rq.requestedUri.pathSegments.sublist(1);
+        } else if (segments.isNotEmpty && segments[0] == getLanguage()) {
+          var paths = segments.sublist(1);
           res = url('/$language/${paths.join('/')}');
         } else {
           res = url('/$language${_rq.requestedUri.path}');
         }
 
-        res = Uri.decodeFull(uri.replace(path: res).toString());
+        res = SafeUri.safeDecodeFull(uri.replace(path: res).toString());
         return res;
       },
       'urlParam': (String path, Map<String, String> params) {

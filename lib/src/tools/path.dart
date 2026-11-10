@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -158,4 +159,76 @@ bool pathsEqual(
 String get pathApp {
   var scriptPath = Platform.script.toFilePath();
   return Directory(scriptPath).parent.parent.path;
+}
+
+/// Extension providing a crash-safe alternative to [Uri.pathSegments].
+extension SafeUri on Uri {
+  /// Like [Uri.pathSegments], but never throws a [FormatException] when the
+  /// path contains malformed percent-encoded sequences (e.g. `/%AF/zsssss`).
+  ///
+  /// Segments that cannot be decoded as valid UTF-8 are decoded leniently:
+  /// malformed bytes are replaced with the Unicode replacement character (�)
+  /// instead of throwing.
+  List<String> get safePathSegments {
+    try {
+      return pathSegments;
+    } on FormatException {
+      var raw = path;
+      if (raw.startsWith('/')) raw = raw.substring(1);
+      if (raw.isEmpty) return const [];
+      return List.unmodifiable(raw.split('/').map(safeDecodeUriComponent));
+    }
+  }
+
+  Map<String, String> get safeQueryParameters {
+    try {
+      return queryParameters;
+    } on FormatException {
+      return query.split("&").fold({}, (map, element) {
+        int index = element.indexOf("=");
+        if (index == -1) {
+          if (element != "") {
+            map[safeDecodeUriComponent(element)] = "";
+          }
+        } else if (index != 0) {
+          var key = element.substring(0, index);
+          var value = element.substring(index + 1);
+          map[safeDecodeUriComponent(key)] = safeDecodeUriComponent(value);
+        }
+        return map;
+      });
+    }
+  }
+
+  static String safeDecodeFull(String path) {
+    try {
+      return Uri.decodeFull(path);
+    } on FormatException {
+      return path.split('/').map(safeDecodeUriComponent).join('/');
+    }
+  }
+}
+
+/// Decodes a percent-encoded URI component without throwing on malformed
+/// UTF-8 sequences. Invalid escapes are kept as-is and invalid UTF-8 bytes
+/// are replaced with the Unicode replacement character (�).
+String safeDecodeUriComponent(String component) {
+  try {
+    return Uri.decodeComponent(component);
+  } on FormatException {
+    final bytes = <int>[];
+    for (var i = 0; i < component.length; i++) {
+      final char = component[i];
+      if (char == '%' && i + 2 < component.length) {
+        final hex = int.tryParse(component.substring(i + 1, i + 3), radix: 16);
+        if (hex != null) {
+          bytes.add(hex);
+          i += 2;
+          continue;
+        }
+      }
+      bytes.addAll(utf8.encode(char));
+    }
+    return utf8.decode(bytes, allowMalformed: true);
+  }
 }

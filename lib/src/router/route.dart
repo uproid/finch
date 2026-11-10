@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:finch/finch_route.dart';
 import '../finch_app.dart';
 import 'package:mime/mime.dart';
+import 'package:path/path.dart' as p;
 import '../tools/path.dart';
 
 /// A comprehensive route management and request processing system for web applications.
@@ -112,8 +113,30 @@ class Route {
   /// try to use nginx in production for better performance
   /// and security
   bool _readFromPublic() {
-    var path = Uri.decodeFull(rq.uri.path);
+    String path = SafeUri.safeDecodeFull(rq.uri.path);
+    List<String> invalidSegemnts = [
+      '/../',
+      '/./',
+      '/..',
+      '/.',
+      '\\..\\',
+      '\\.\\',
+      '\\..',
+      '\\.',
+    ];
+    if (invalidSegemnts.any((segment) => path.contains(segment))) {
+      rq.renderError(404, toData: rq.isApiEndpoint);
+      return false;
+    }
     var publicFile = getFileFromPublic(path);
+
+    var publicRoot = p.normalize(getPublicDirectory(''));
+    var resolvedPath = p.normalize(publicFile.path);
+    if (resolvedPath != publicRoot && !p.isWithin(publicRoot, resolvedPath)) {
+      rq.renderError(404, toData: rq.isApiEndpoint);
+      return false;
+    }
+
     try {
       if (publicFile.existsSync()) {
         renderFile(publicFile);
@@ -146,7 +169,7 @@ class Route {
     rq.addParams(route.params);
 
     // Check is param or not
-    if (key.contains("{")) {
+    if (key.contains("{") || key.contains(':')) {
       var paramPath = getParamsPath(path, endpoint);
       urlParams = paramPath.$2;
       endpoint = paramPath.$1;
@@ -173,7 +196,7 @@ class Route {
     }
 
     if (endpoint == path) {
-      if (!route.allowMethod()) {
+      if (!route.allowMethod(rq.method)) {
         return (found: false, urlParams: urlParams);
       }
 
@@ -329,8 +352,8 @@ class Route {
   /// Example:
   /// ```dart
   /// final result = getParamsPath('/users/123/posts/hello-world', '/users/{id}/posts/{slug}');
-  /// // result.$1 = '/users/123/posts/hello-world'
-  /// // result.$2 = {'id': '123', 'slug': 'hello-world'}
+  /// result.$1 = '/users/123/posts/hello-world'
+  /// result.$2 = {'id': '123', 'slug': 'hello-world'}
   /// ```
   (String, Map<String, Object?>) getParamsPath(
     String clientPath,
@@ -342,18 +365,27 @@ class Route {
     var serverUri = Uri(path: serverPath);
     var clientUri = Uri(path: clientPath);
 
-    if (serverUri.pathSegments.length != clientUri.pathSegments.length) {
+    var serverSegments = serverUri.safePathSegments;
+    var clientSegments = clientUri.safePathSegments;
+
+    if (serverSegments.length != clientSegments.length) {
       return (resultKey, resultParams);
     }
 
-    for (int i = 0; i < clientUri.pathSegments.length; i++) {
-      var key = Uri.decodeFull(serverUri.pathSegments[i]);
-      if (!key.startsWith("{") || !key.endsWith("}")) {
+    for (int i = 0; i < clientSegments.length; i++) {
+      var key = serverSegments[i];
+
+      if (!(key.startsWith("{") && key.endsWith("}")) && !key.startsWith(':')) {
         continue;
       } else {
-        key = key.replaceAll("{", "").replaceAll("}", "");
-        resultKey = resultKey.replaceFirst("{$key}", clientUri.pathSegments[i]);
-        resultParams[key] = clientUri.pathSegments[i];
+        if (key.startsWith(':')) {
+          key = key.substring(1);
+          resultKey = resultKey.replaceFirst(":$key", clientSegments[i]);
+        } else {
+          key = key.replaceAll("{", "").replaceAll("}", "");
+          resultKey = resultKey.replaceFirst("{$key}", clientSegments[i]);
+        }
+        resultParams[key] = clientSegments[i];
       }
     }
 

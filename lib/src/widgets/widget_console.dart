@@ -501,6 +501,25 @@ class DebuggerStatusBar {
         overflow-y: auto;
         color: #e2e8f0;
         background: #0f1117;
+        scrollbar-width: thin;
+        scrollbar-color: #2a2d3a #0f1117;
+      }
+
+      .wa-console .console-modal-body::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .wa-console .console-modal-body::-webkit-scrollbar-track {
+        background: #0f1117;
+      }
+
+      .wa-console .console-modal-body::-webkit-scrollbar-thumb {
+        background: #2a2d3a;
+        border-radius: 4px;
+      }
+
+      .wa-console .console-modal-body::-webkit-scrollbar-thumb:hover {
+        background: #3a3d4a;
       }
       
       .wa-console .error-summary {
@@ -842,7 +861,271 @@ class DebuggerStatusBar {
         font-size: 12px;
         opacity: 0.8;
       }
-      
+
+      /* Terminal Panel Styles */
+      .wa-console .terminal-modal-content {
+        display: flex;
+        flex-direction: column;
+        height: 500px;
+        width: 90%;
+        max-width: 1000px;
+        transition: width 0.2s ease, height 0.2s ease, max-width 0.2s ease, max-height 0.2s ease;
+      }
+
+      .wa-console .terminal-modal-content.fullscreen {
+        width: 96vw;
+        max-width: 96vw;
+        height: 92vh;
+        max-height: 92vh;
+      }
+
+      .wa-console .terminal-zoom-btn {
+        background: none;
+        border: none;
+        color: #71717a;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+        transition: all 0.2s ease;
+        margin-right: 4px;
+      }
+
+      .wa-console .terminal-zoom-btn:hover {
+        background: rgba(99, 102, 241, 0.15);
+        color: #e2e8f0;
+      }
+
+      .wa-console .terminal-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 12px 16px;
+        overflow: hidden;
+      }
+
+      .wa-console .terminal-status {
+        font-size: 10px;
+        color: #71717a;
+        margin-bottom: 8px;
+      }
+
+      .wa-console .terminal-status.connected {
+        color: #34d399;
+      }
+
+      .wa-console .terminal-status.disconnected {
+        color: #f87171;
+      }
+
+      .wa-console .terminal-output {
+        flex: 1;
+        overflow-y: auto;
+        background: #080a0f;
+        border: 1px solid #1e2030;
+        border-radius: 3px;
+        padding: 10px 12px;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
+        font-size: 11px;
+        color: #c4b5fd;
+        white-space: pre-wrap;
+        word-break: break-word;
+        line-height: 1.4;
+        scrollbar-width: thin;
+        scrollbar-color: #2a2d3a #080a0f;
+      }
+
+      .wa-console .terminal-output::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .wa-console .terminal-output::-webkit-scrollbar-track {
+        background: #080a0f;
+      }
+
+      .wa-console .terminal-output::-webkit-scrollbar-thumb {
+        background: #2a2d3a;
+        border-radius: 4px;
+      }
+
+      .wa-console .terminal-output::-webkit-scrollbar-thumb:hover {
+        background: #3a3d4a;
+      }
+
+      .wa-console .terminal-line {
+        min-height: 1.4em;
+      }
+
+      .wa-console .terminal-line-in {
+        color: #34d399;
+      }
+
+      .wa-console .terminal-line-err {
+        color: #f87171;
+      }
+
+      .wa-console .terminal-input-row {
+        display: flex;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .wa-console .terminal-input {
+        flex: 1;
+        background: #0f1117;
+        border: 1px solid #1e2030;
+        border-radius: 3px;
+        color: #e2e8f0;
+        padding: 8px 10px;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
+        font-size: 12px;
+        outline: none;
+      }
+
+      .wa-console .terminal-input:focus {
+        border-color: rgba(99, 102, 241, 0.5);
+      }
+
+      .wa-console .terminal-send-btn {
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        color: #e2e8f0;
+        padding: 8px 14px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      /* Dart DevTools Panel Styles */
+      .wa-console .devtools-modal-content {
+        display: flex;
+        flex-direction: column;
+        height: 85vh;
+        width: 95%;
+        max-width: 1600px;
+        transition: width 0.2s ease, height 0.2s ease, max-width 0.2s ease, max-height 0.2s ease;
+      }
+
+      .wa-console .devtools-modal-content.fullscreen {
+        width: 98vw;
+        max-width: 98vw;
+        height: 96vh;
+        max-height: 96vh;
+      }
+
+      .wa-console .devtools-header-btn {
+        background: none;
+        border: none;
+        color: #71717a;
+        font-size: 14px;
+        cursor: pointer;
+        padding: 0;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 3px;
+        transition: all 0.2s ease;
+        margin-right: 4px;
+      }
+
+      .wa-console .devtools-header-btn:hover {
+        background: rgba(99, 102, 241, 0.15);
+        color: #e2e8f0;
+      }
+
+      .wa-console .devtools-iframe-wrap {
+        flex: 1;
+        overflow: hidden;
+        background: #0f1117;
+        position: relative;
+      }
+
+      .wa-console .devtools-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+      }
+
+      .wa-console .devtools-note {
+        font-size: 10px;
+        color: #71717a;
+        padding: 8px 16px 0 16px;
+      }
+
+      .wa-console .devtools-overlay {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        background: #0f1117;
+        color: #a1a1aa;
+        font-size: 12px;
+        text-align: center;
+        padding: 24px;
+      }
+
+      .wa-console .devtools-spinner {
+        width: 28px;
+        height: 28px;
+        border: 3px solid rgba(99, 102, 241, 0.2);
+        border-top-color: #6366f1;
+        border-radius: 50%;
+        animation: devtools-spin 0.8s linear infinite;
+      }
+
+      @keyframes devtools-spin {
+        to { transform: rotate(360deg); }
+      }
+
+      .wa-console .devtools-error-title {
+        color: #f87171;
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .wa-console .devtools-error-code {
+        background: #080a0f;
+        border: 1px solid #1e2030;
+        border-radius: 3px;
+        padding: 6px 10px;
+        font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Consolas', monospace;
+        font-size: 11px;
+        color: #c4b5fd;
+      }
+
+      .wa-console .devtools-retry-btn {
+        background: rgba(99, 102, 241, 0.15);
+        border: 1px solid rgba(99, 102, 241, 0.3);
+        color: #e2e8f0;
+        padding: 6px 14px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 500;
+      }
+
+      .wa-console .devtools-retry-btn:hover {
+        background: rgba(99, 102, 241, 0.3);
+      }
+
+      .wa-console .terminal-send-btn:hover {
+        background: rgba(99, 102, 241, 0.3);
+      }
+
       @media (max-width: 768px) {
         .wa-console #debugger-container {
           height: 32px !important;
@@ -1193,12 +1476,16 @@ class DebuggerStatusBar {
     this.routesBtn = this.createDropdownItem('./', 'Routes');
     this.variablesBtn = this.createDropdownItem('{}', 'Variables');
     this.reinitBtn = this.createDropdownItem('@', 'Reinit');
+    this.devtoolsBtn = this.createDropdownItem('<>', 'Dart DevTools');
+    this.terminalBtn = this.createDropdownItem('>_', 'Terminal');
     // this.settingsBtn = this.createDropdownItem('A', 'Settings');
-    
+
     panelSection.appendChild(this.consoleBtn);
     panelSection.appendChild(this.routesBtn);
     panelSection.appendChild(this.variablesBtn);
     panelSection.appendChild(this.reinitBtn);
+    panelSection.appendChild(this.devtoolsBtn);
+    panelSection.appendChild(this.terminalBtn);
     // panelSection.appendChild(this.settingsBtn);
     
     // Assemble dropdown
@@ -1319,6 +1606,16 @@ class DebuggerStatusBar {
     });
     this.reinitBtn.addEventListener('click', () => {
       window.socketDebugger.send(JSON.stringify({ path: 'reinit' }));
+      this.closeDropdown();
+    });
+
+    this.devtoolsBtn.addEventListener('click', () => {
+      this.openDevTools();
+      this.closeDropdown();
+    });
+
+    this.terminalBtn.addEventListener('click', () => {
+      this.openTerminal();
       this.closeDropdown();
     });
     // this.settingsBtn.addEventListener('click', () => {
@@ -1854,6 +2151,615 @@ class DebuggerStatusBar {
     event.target.classList.add('active');
   const content = this.shadow.querySelector('#' + tabName + '-tab');
   if (content) content.classList.add('active');
+  }
+
+  openTerminal() {
+    if (!this.terminalCommandHistory) {
+      this.terminalCommandHistory = [];
+      this.terminalHistoryIndex = 0;
+    }
+
+    const existingModal = this.shadow.querySelector('.terminal-modal');
+    if (existingModal) {
+      existingModal.classList.add('active');
+      this.terminalWantsConnection = true;
+      this.connectTerminalSocket();
+      if (this.terminalInputElement) this.terminalInputElement.focus();
+      return;
+    }
+
+    const modal = document.createElement('div');
+    modal.className = 'console-modal terminal-modal';
+
+    const modalContent = document.createElement('div');
+    modalContent.className = 'console-modal-content terminal-modal-content';
+    this.terminalModalContentElement = modalContent;
+
+    const header = document.createElement('div');
+    header.className = 'console-modal-header';
+
+    const title = document.createElement('h3');
+    title.className = 'console-modal-title';
+    title.textContent = 'DEBUG CONSOLE - TERMINAL';
+
+    const zoomBtn = document.createElement('button');
+    zoomBtn.className = 'terminal-zoom-btn';
+    zoomBtn.innerHTML = '⛶';
+    zoomBtn.title = 'Toggle fullscreen';
+    zoomBtn.addEventListener('click', () => this.toggleTerminalFullscreen());
+    this.terminalZoomBtn = zoomBtn;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'console-modal-close';
+    closeBtn.innerHTML = 'X';
+    closeBtn.addEventListener('click', () => this.closeTerminal());
+
+    const headerActions = document.createElement('div');
+    headerActions.style.cssText = 'display:flex;align-items:center;';
+    headerActions.appendChild(zoomBtn);
+    headerActions.appendChild(closeBtn);
+
+    header.appendChild(title);
+    header.appendChild(headerActions);
+
+    const body = document.createElement('div');
+    body.className = 'terminal-body';
+
+    const status = document.createElement('div');
+    status.className = 'terminal-status';
+    status.textContent = 'Connecting...';
+    this.terminalStatusElement = status;
+
+    const output = document.createElement('div');
+    output.className = 'terminal-output';
+    this.terminalOutputElement = output;
+
+    const inputRow = document.createElement('div');
+    inputRow.className = 'terminal-input-row';
+
+    const input = document.createElement('input');
+    input.className = 'terminal-input';
+    input.type = 'text';
+    input.placeholder = "Type a command and press Enter (help, clear, ...)";
+    this.terminalInputElement = input;
+
+    const sendBtn = document.createElement('button');
+    sendBtn.className = 'terminal-send-btn';
+    sendBtn.textContent = 'Send';
+
+    const send = () => this.sendTerminalCommand();
+    sendBtn.addEventListener('click', send);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        send();
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        this.terminalHistoryUp();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        this.terminalHistoryDown();
+      }
+    });
+
+    inputRow.appendChild(input);
+    inputRow.appendChild(sendBtn);
+
+    body.appendChild(status);
+    body.appendChild(output);
+    body.appendChild(inputRow);
+
+    modalContent.appendChild(header);
+    modalContent.appendChild(body);
+    modal.appendChild(modalContent);
+
+  this.mainContainer.appendChild(modal);
+
+    setTimeout(() => {
+      modal.classList.add('active');
+    }, 10);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        this.closeTerminal();
+      }
+    });
+
+    // Escape restores from fullscreen first, only closing the panel on a
+    // second press (matches the console-modal's own Escape-to-close).
+    this.terminalEscapeHandler = (e) => {
+      if (e.key !== 'Escape') return;
+      if (modalContent.classList.contains('fullscreen')) {
+        this.toggleTerminalFullscreen();
+      } else {
+        this.closeTerminal();
+      }
+    };
+    document.addEventListener('keydown', this.terminalEscapeHandler);
+
+    this.terminalWantsConnection = true;
+    this.resetTerminalAnsiState();
+    this.connectTerminalSocket();
+    input.focus();
+  }
+
+  toggleTerminalFullscreen() {
+    if (!this.terminalModalContentElement) return;
+    const isFullscreen =
+      this.terminalModalContentElement.classList.toggle('fullscreen');
+    if (this.terminalZoomBtn) {
+      this.terminalZoomBtn.innerHTML = isFullscreen ? '⛶' : '⛶';
+      this.terminalZoomBtn.title =
+        isFullscreen ? 'Restore size' : 'Toggle fullscreen';
+    }
+  }
+
+  closeTerminal() {
+  const modal = this.shadow.querySelector('.terminal-modal');
+    if (modal) {
+      modal.classList.remove('active');
+    }
+    this.terminalWantsConnection = false;
+    if (this.terminalSocket) {
+      this.terminalSocket.close();
+      this.terminalSocket = null;
+    }
+    if (this.terminalEscapeHandler) {
+      document.removeEventListener('keydown', this.terminalEscapeHandler);
+      this.terminalEscapeHandler = null;
+    }
+  }
+
+  // Foreground/background colors for standard + bright ANSI SGR codes, so
+  // colored output from CappConsole (warnings, errors, tables, ...) renders
+  // with real colors instead of raw escape bytes.
+  terminalAnsiFg() {
+    return {
+      30: '#1a1c25', 31: '#f87171', 32: '#34d399', 33: '#fbbf24',
+      34: '#60a5fa', 35: '#c084fc', 36: '#22d3ee', 37: '#e2e8f0',
+      90: '#71717a', 91: '#fca5a5', 92: '#6ee7b7', 93: '#fde047',
+      94: '#93c5fd', 95: '#e9d5ff', 96: '#67e8f9', 97: '#f8fafc',
+    };
+  }
+
+  terminalAnsiBg() {
+    return {
+      40: '#000000', 41: '#dc2626', 42: '#059669', 43: '#d97706',
+      44: '#2563eb', 45: '#9333ea', 46: '#0891b2', 47: '#e2e8f0',
+      100: '#3f3f46', 101: '#f87171', 102: '#34d399', 103: '#fbbf24',
+      104: '#60a5fa', 105: '#c084fc', 106: '#22d3ee', 107: '#f8fafc',
+    };
+  }
+
+  resetTerminalAnsiState() {
+    this.terminalAnsiState = { fg: null, bg: null, bold: false };
+    this.terminalPendingEscape = '';
+    this.terminalCurrentLineEl = null;
+  }
+
+  applyAnsiSgr(params) {
+    if (!this.terminalAnsiState) this.resetTerminalAnsiState();
+    const fg = this.terminalAnsiFg();
+    const bg = this.terminalAnsiBg();
+    const codes = params === '' ? [0] : params.split(';').map(n => parseInt(n, 10));
+    for (const code of codes) {
+      if (isNaN(code) || code === 0) {
+        this.terminalAnsiState = { fg: null, bg: null, bold: false };
+      } else if (code === 1) {
+        this.terminalAnsiState.bold = true;
+      } else if (code === 22) {
+        this.terminalAnsiState.bold = false;
+      } else if (code === 39) {
+        this.terminalAnsiState.fg = null;
+      } else if (code === 49) {
+        this.terminalAnsiState.bg = null;
+      } else if (fg[code]) {
+        this.terminalAnsiState.fg = fg[code];
+      } else if (bg[code]) {
+        this.terminalAnsiState.bg = bg[code];
+      }
+    }
+  }
+
+  terminalEnsureLine() {
+    if (!this.terminalCurrentLineEl) {
+      this.terminalCurrentLineEl = document.createElement('div');
+      this.terminalCurrentLineEl.className = 'terminal-line';
+      this.terminalOutputElement.appendChild(this.terminalCurrentLineEl);
+    }
+    return this.terminalCurrentLineEl;
+  }
+
+  terminalAppendStyledText(str) {
+    if (str === '') return;
+    const line = this.terminalEnsureLine();
+    const span = document.createElement('span');
+    const style = this.terminalAnsiState;
+    if (style.bold) span.style.fontWeight = '700';
+    if (style.fg) span.style.color = style.fg;
+    if (style.bg) {
+      span.style.backgroundColor = style.bg;
+      span.style.padding = '0 2px';
+    }
+    span.textContent = str;
+    line.appendChild(span);
+  }
+
+  // Renders a raw chunk of process output: interprets ANSI SGR color codes,
+  // a carriage return as an in-place line overwrite (used by CappConsole's
+  // progress spinners), an ANSI clear-screen sequence as a real screen clear
+  // (CappConsole.clear()), and carries any escape sequence split across
+  // WebSocket messages over to the next chunk instead of printing it as
+  // garbage.
+  writeTerminalChunk(rawText) {
+    if (!this.terminalOutputElement) return;
+    if (!this.terminalAnsiState) this.resetTerminalAnsiState();
+
+    const text = (this.terminalPendingEscape || '') + rawText;
+    this.terminalPendingEscape = '';
+
+    const tokenPattern = /\\x1B\\[[0-?]*[ -\\/]*[@-~]|\\r\\n|\\r|\\n/g;
+    let lastIndex = 0;
+    let match;
+
+    while ((match = tokenPattern.exec(text)) !== null) {
+      this.terminalAppendStyledText(text.slice(lastIndex, match.index));
+      lastIndex = tokenPattern.lastIndex;
+      const token = match[0];
+
+      if (token === '\\n' || token === '\\r\\n') {
+        this.terminalCurrentLineEl = null;
+      } else if (token === '\\r') {
+        if (this.terminalCurrentLineEl) {
+          this.terminalCurrentLineEl.innerHTML = '';
+        }
+      } else {
+        const finalByte = token[token.length - 1];
+        if (finalByte === 'm') {
+          this.applyAnsiSgr(token.slice(2, -1));
+        } else if (finalByte === 'J') {
+          this.terminalOutputElement.innerHTML = '';
+          this.terminalCurrentLineEl = null;
+        }
+        // Cursor movement/visibility sequences etc. carry no meaning in a
+        // scrolling log view, so they're dropped silently.
+      }
+    }
+
+    const remaining = text.slice(lastIndex);
+    const escStart = remaining.lastIndexOf('\\x1B');
+    if (escStart !== -1 && (remaining.length - escStart) < 64) {
+      this.terminalAppendStyledText(remaining.slice(0, escStart));
+      this.terminalPendingEscape = remaining.slice(escStart);
+    } else {
+      this.terminalAppendStyledText(remaining);
+    }
+
+    this.terminalOutputElement.scrollTop = this.terminalOutputElement.scrollHeight;
+  }
+
+  appendTerminalLine(text, cls) {
+    if (!this.terminalOutputElement) return;
+    const line = document.createElement('div');
+    line.className = cls ? 'terminal-line ' + cls : 'terminal-line';
+    line.textContent = text;
+    this.terminalOutputElement.appendChild(line);
+    // Status/echo lines are always their own complete line, so any
+    // in-progress streamed line resumes fresh below them.
+    this.terminalCurrentLineEl = null;
+    this.terminalOutputElement.scrollTop = this.terminalOutputElement.scrollHeight;
+  }
+
+  connectTerminalSocket() {
+    if (this.terminalSocket &&
+        (this.terminalSocket.readyState === WebSocket.OPEN ||
+         this.terminalSocket.readyState === WebSocket.CONNECTING)) {
+      return;
+    }
+
+    const port = window.FINCH_TERMINAL_PORT;
+    if (!port) {
+      if (this.terminalStatusElement) {
+        this.terminalStatusElement.textContent =
+          "Terminal not available. Run the project with 'finch serve'.";
+        this.terminalStatusElement.className = 'terminal-status disconnected';
+      }
+      return;
+    }
+
+    const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const url = protocol + '//' + location.hostname + ':' + port;
+
+    try {
+      this.terminalSocket = new WebSocket(url);
+    } catch (e) {
+      this.appendTerminalLine('Failed to connect: ' + e, 'terminal-line-err');
+      return;
+    }
+
+    this.terminalSocket.onopen = () => {
+      this.resetTerminalAnsiState();
+      if (this.terminalStatusElement) {
+        this.terminalStatusElement.textContent = 'Connected to ' + url;
+        this.terminalStatusElement.className = 'terminal-status connected';
+      }
+    };
+
+    this.terminalSocket.onmessage = (e) => {
+      this.writeTerminalChunk(e.data);
+    };
+
+    this.terminalSocket.onclose = () => {
+      if (this.terminalStatusElement) {
+        this.terminalStatusElement.textContent = 'Disconnected. Reconnecting in 3s...';
+        this.terminalStatusElement.className = 'terminal-status disconnected';
+      }
+      if (this.terminalWantsConnection) {
+        setTimeout(() => this.connectTerminalSocket(), 3000);
+      }
+    };
+
+    this.terminalSocket.onerror = () => {
+      this.appendTerminalLine('WebSocket error', 'terminal-line-err');
+    };
+  }
+
+  sendTerminalCommand() {
+    if (!this.terminalInputElement) return;
+    const value = this.terminalInputElement.value;
+    if (!value.trim()) return;
+
+    if (!this.terminalCommandHistory) {
+      this.terminalCommandHistory = [];
+      this.terminalHistoryIndex = 0;
+    }
+    if (this.terminalCommandHistory[this.terminalCommandHistory.length - 1] !== value) {
+      this.terminalCommandHistory.push(value);
+    }
+    this.terminalHistoryIndex = this.terminalCommandHistory.length;
+
+    if (this.terminalSocket && this.terminalSocket.readyState === WebSocket.OPEN) {
+      this.terminalSocket.send(value);
+      this.appendTerminalLine('> ' + value, 'terminal-line-in');
+    } else {
+      this.appendTerminalLine('Not connected to terminal', 'terminal-line-err');
+    }
+
+    this.terminalInputElement.value = '';
+  }
+
+  // Arrow Up/Down browse terminalCommandHistory the same way a real shell
+  // does. terminalHistoryIndex === history.length means "not browsing" (a
+  // fresh, empty line) — mirrors the CLI's own stdin history in commands.dart.
+  terminalHistoryUp() {
+    if (!this.terminalCommandHistory || this.terminalCommandHistory.length === 0) return;
+    if (this.terminalHistoryIndex > 0) {
+      this.terminalHistoryIndex--;
+      this.terminalInputElement.value = this.terminalCommandHistory[this.terminalHistoryIndex];
+      this.terminalMoveCursorToEnd();
+    }
+  }
+
+  terminalHistoryDown() {
+    if (!this.terminalCommandHistory) return;
+    if (this.terminalHistoryIndex < this.terminalCommandHistory.length - 1) {
+      this.terminalHistoryIndex++;
+      this.terminalInputElement.value = this.terminalCommandHistory[this.terminalHistoryIndex];
+    } else {
+      this.terminalHistoryIndex = this.terminalCommandHistory.length;
+      this.terminalInputElement.value = '';
+    }
+    this.terminalMoveCursorToEnd();
+  }
+
+  terminalMoveCursorToEnd() {
+    const input = this.terminalInputElement;
+    const len = input.value.length;
+    input.setSelectionRange(len, len);
+  }
+
+  // The Dart VM service (and its bundled DevTools web app) defaults to port
+  // 8181 when the app is started with `--enable-vm-service` and no explicit
+  // port, which is exactly what `finch serve` does — see docker-compose.yaml
+  // and the Dockerfile, which both hardcode this same port.
+  getDevToolsUrl() {
+    const httpProtocol = location.protocol === 'https:' ? 'https:' : 'http:';
+    const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const port = window.FINCH_VM_SERVICE_PORT || 8181;
+    const host = location.hostname;
+    return httpProtocol + '//' + host + ':' + port + '/devtools/?uri=' +
+      wsProtocol + '//' + host + ':' + port + '/ws';
+  }
+
+  openDevTools() {
+    const existingModal = this.shadow.querySelector('.devtools-modal');
+    if (existingModal) {
+      existingModal.classList.add('active');
+      this.loadDevTools();
+      return;
+    }
+
+    const modal = document.createElement('div');
+    modal.className = 'console-modal devtools-modal';
+
+    const modalContent = document.createElement('div');
+    modalContent.className = 'console-modal-content devtools-modal-content';
+    this.devtoolsModalContentElement = modalContent;
+
+    const header = document.createElement('div');
+    header.className = 'console-modal-header';
+
+    const title = document.createElement('h3');
+    title.className = 'console-modal-title';
+    title.textContent = 'DEBUG CONSOLE - DART DEVTOOLS';
+
+    const openBtn = document.createElement('button');
+    openBtn.className = 'devtools-header-btn';
+    openBtn.innerHTML = '↗';
+    openBtn.title = 'Open in a new tab';
+    openBtn.addEventListener('click', () => {
+      window.open(this.getDevToolsUrl(), '_blank');
+    });
+
+    const zoomBtn = document.createElement('button');
+    zoomBtn.className = 'devtools-header-btn';
+    zoomBtn.innerHTML = '⛶';
+    zoomBtn.title = 'Toggle fullscreen';
+    zoomBtn.addEventListener('click', () => this.toggleDevToolsFullscreen());
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'console-modal-close';
+    closeBtn.innerHTML = 'X';
+    closeBtn.addEventListener('click', () => this.closeDevTools());
+
+    const headerActions = document.createElement('div');
+    headerActions.style.cssText = 'display:flex;align-items:center;';
+    headerActions.appendChild(openBtn);
+    headerActions.appendChild(zoomBtn);
+    headerActions.appendChild(closeBtn);
+
+    header.appendChild(title);
+    header.appendChild(headerActions);
+
+    const note = document.createElement('div');
+    note.className = 'devtools-note';
+    note.textContent =
+      "Dart VM service / DevTools on port " + (window.FINCH_VM_SERVICE_PORT || 8181) +
+      ". Enabled automatically by 'finch serve'.";
+
+    const iframeWrap = document.createElement('div');
+    iframeWrap.className = 'devtools-iframe-wrap';
+
+    const iframe = document.createElement('iframe');
+    iframe.className = 'devtools-iframe';
+    iframe.style.display = 'none';
+    iframe.setAttribute('allow', 'clipboard-read; clipboard-write');
+    this.devtoolsIframeElement = iframe;
+
+    const loading = document.createElement('div');
+    loading.className = 'devtools-overlay';
+    loading.innerHTML =
+      '<div class="devtools-spinner"></div><div>Loading Dart DevTools...</div>';
+    this.devtoolsLoadingElement = loading;
+
+    const error = document.createElement('div');
+    error.className = 'devtools-overlay';
+    error.style.display = 'none';
+    this.devtoolsErrorElement = error;
+
+    iframeWrap.appendChild(iframe);
+    iframeWrap.appendChild(loading);
+    iframeWrap.appendChild(error);
+
+    modalContent.appendChild(header);
+    modalContent.appendChild(note);
+    modalContent.appendChild(iframeWrap);
+    modal.appendChild(modalContent);
+
+  this.mainContainer.appendChild(modal);
+
+    setTimeout(() => {
+      modal.classList.add('active');
+    }, 10);
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        this.closeDevTools();
+      }
+    });
+
+    this.devtoolsEscapeHandler = (e) => {
+      if (e.key !== 'Escape') return;
+      if (modalContent.classList.contains('fullscreen')) {
+        this.toggleDevToolsFullscreen();
+      } else {
+        this.closeDevTools();
+      }
+    };
+    document.addEventListener('keydown', this.devtoolsEscapeHandler);
+
+    this.loadDevTools();
+  }
+
+  // Cross-origin iframes fire 'load' even on a browser network-error page,
+  // so a plain onload can't tell "DevTools rendered" apart from "connection
+  // refused". A no-cors probe request resolves only if something actually
+  // answers on that host/port, which gives a real reachability check before
+  // committing the iframe to it — then the iframe's own 'load' event just
+  // clears the spinner once the (now known-good) app finishes rendering.
+  loadDevTools() {
+    if (!this.devtoolsIframeElement) return;
+    const port = window.FINCH_VM_SERVICE_PORT || 8181;
+    const url = this.getDevToolsUrl();
+    const probeUrl =
+      (location.protocol === 'https:' ? 'https:' : 'http:') +
+      '//' + location.hostname + ':' + port + '/';
+
+    this.devtoolsIframeElement.style.display = 'none';
+    if (this.devtoolsErrorElement) this.devtoolsErrorElement.style.display = 'none';
+    if (this.devtoolsLoadingElement) {
+      this.devtoolsLoadingElement.innerHTML =
+        '<div class="devtools-spinner"></div><div>Loading Dart DevTools...</div>';
+      this.devtoolsLoadingElement.style.display = 'flex';
+    }
+
+    const timeout = (ms) => new Promise((_, reject) => {
+      setTimeout(() => reject(new Error('timeout')), ms);
+    });
+
+    Promise.race([
+      fetch(probeUrl, { mode: 'no-cors', cache: 'no-store' }),
+      timeout(6000),
+    ]).then(() => {
+      this.devtoolsIframeElement.onload = () => {
+        // DevTools is a Flutter web app that keeps bootstrapping for a bit
+        // after the raw iframe 'load' event fires, so give it a short grace
+        // period before swapping away from the spinner — otherwise the
+        // spinner disappears too early and reveals a blank frame while the
+        // app is still rendering.
+        setTimeout(() => {
+          if (this.devtoolsLoadingElement) this.devtoolsLoadingElement.style.display = 'none';
+          this.devtoolsIframeElement.style.display = 'block';
+        }, 1500);
+      };
+      this.devtoolsIframeElement.src = url;
+    }).catch(() => {
+      this.showDevToolsError(port);
+    });
+  }
+
+  showDevToolsError(port) {
+    if (!this.devtoolsErrorElement) return;
+    this.devtoolsErrorElement.innerHTML =
+      '<div class="devtools-error-title">Could not reach Dart DevTools on port ' + port + '</div>' +
+      '<div>Make sure the app was started with the VM service enabled and bound to all interfaces:</div>' +
+      '<div class="devtools-error-code">--enable-vm-service=' + port + '/0.0.0.0</div>' +
+      "<div>This is set automatically when the app is started with 'finch serve'.</div>";
+
+    const retryBtn = document.createElement('button');
+    retryBtn.className = 'devtools-retry-btn';
+    retryBtn.textContent = 'Retry';
+    retryBtn.addEventListener('click', () => this.loadDevTools());
+    this.devtoolsErrorElement.appendChild(retryBtn);
+
+    this.devtoolsErrorElement.style.display = 'flex';
+    if (this.devtoolsLoadingElement) this.devtoolsLoadingElement.style.display = 'none';
+    if (this.devtoolsIframeElement) this.devtoolsIframeElement.style.display = 'none';
+  }
+
+  toggleDevToolsFullscreen() {
+    if (!this.devtoolsModalContentElement) return;
+    this.devtoolsModalContentElement.classList.toggle('fullscreen');
+  }
+
+  closeDevTools() {
+  const modal = this.shadow.querySelector('.devtools-modal');
+    if (modal) {
+      modal.classList.remove('active');
+    }
+    if (this.devtoolsEscapeHandler) {
+      document.removeEventListener('keydown', this.devtoolsEscapeHandler);
+      this.devtoolsEscapeHandler = null;
+    }
   }
 }
 

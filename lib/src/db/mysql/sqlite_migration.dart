@@ -1,9 +1,9 @@
 import 'dart:io';
+import 'package:finch/src/db/dart_migraion.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 import 'package:sqlite3/sqlite3.dart';
 import 'package:finch/src/tools/console.dart';
-import 'package:finch/src/tools/convertor/convert_strings.dart';
 import 'package:finch/src/tools/path.dart';
 import 'package:finch/src/finch_app.dart';
 import 'package:finch/finch_mysql.dart';
@@ -72,24 +72,75 @@ class SqliteMigration {
   /// before the rollback marker is executed during migration.
   /// Returns a success message listing the executed migration files,
   /// or a message indicating no migrations were needed.
-  Future<List<String>> migrateInit() async {
+  Future<List<String>> migrateInit({
+    List<DartMigration> migrations = const [],
+  }) async {
     await _createTable();
-    var files = await getMigrationFiles();
+    var files = await _getMigrationFiles();
     var executedFiles = <String>[];
-    for (var file in files) {
-      var filename = path.basename(file.path);
-      var exists = await checkExcutedMigration(filename);
-      if (exists) continue;
+    if (migrations.isNotEmpty) {
+      for (var migration in migrations) {
+        var check = await _checkExcutedMigration(migration.uniqueName);
+        if (check.exist) continue;
 
-      var sqlContent = await file.readAsString();
-      sqlContent = sqlContent.split('-- ## ROLL BACK:')[0];
-      if (sqlContent.isEmpty) continue;
-      db.executeString(sqlContent);
-      executedFiles.add(filename);
-      await migrationTable.insert(db, {
-        'file': QVar(filename),
-        'sort': QVar(DateTime.now().millisecondsSinceEpoch.toString()),
-      });
+        try {
+          await db.executeString('BEGIN TRANSACTION;');
+          final sqls = migration.upSQLs;
+          for (var sql in sqls) {
+            var res = await db.executeString(sql, separateStatements: true);
+            if (res.error) {
+              throw res.errorMsg;
+            }
+          }
+          await db.executeString('COMMIT;');
+          executedFiles.add(migration.uniqueName);
+          await migrationTable.insert(db, {
+            'file': QVar(migration.uniqueName),
+            'sort': QVar(DateTime.now().millisecondsSinceEpoch.toString()),
+          });
+        } catch (e) {
+          await db.executeString('ROLLBACK;');
+          throw Exception(
+            'Error executing migration: ${migration.uniqueName}\nError message: $e',
+          );
+        }
+      }
+    } else if (files.isEmpty) {
+      throw Exception(
+        'No migration files found in the migrations directory.',
+      );
+    } else {
+      for (var file in files) {
+        var filename = path.basename(file.path);
+        var exists = await _checkExcutedMigration(filename);
+        if (exists.exist) continue;
+
+        var sqlContent = await file.readAsString();
+        sqlContent = sqlContent.split('-- ## ROLL BACK:')[0];
+        if (sqlContent.isEmpty) continue;
+        try {
+          await db.executeString('BEGIN TRANSACTION;');
+          var res = await db.executeString(
+            sqlContent,
+            separateStatements: true,
+          );
+          if (res.success) {
+            executedFiles.add(filename);
+            await migrationTable.insert(db, {
+              'file': QVar(filename),
+              'sort': QVar(DateTime.now().millisecondsSinceEpoch.toString()),
+            });
+          } else {
+            throw res.errorMsg;
+          }
+          await db.executeString('COMMIT;');
+        } catch (e) {
+          await db.executeString('ROLLBACK;');
+          throw Exception(
+            'Error executing migration file: $filename\nError message: $e',
+          );
+        }
+      }
     }
 
     if (executedFiles.isEmpty) {
@@ -107,7 +158,10 @@ class SqliteMigration {
   /// Migration files must contain a rollback section marked with
   /// `-- ## ROLL BACK:` followed by the SQL statements to undo the migration.
   /// Returns a success message listing the rolled back migration files.
-  Future<String> migrateRollback(int deep) async {
+  Future<List<String>> migrateRollback(
+    int deep, {
+    List<DartMigration> dartMigrations = const [],
+  }) async {
     List<String> successRollbackFiles = [];
     var resMigrations = await migrationTable.select(
       db,
@@ -124,19 +178,53 @@ class SqliteMigration {
       if (filename == null || filename.isEmpty) continue;
       migrations.add(filename);
     }
-
     for (var migration in migrations) {
+      List<String> rollbackContent = [];
       var filename = migration;
+      var rollbackTarget = '';
       if (filename.isEmpty) continue;
-      var file = File(
-          path.join(pathTo(FinchApp.config.pathMigrationSQLite), filename));
-      if (!file.existsSync()) continue;
-      var sqlContent = await file.readAsString();
-      if (!sqlContent.contains('-- ## ROLL BACK:')) continue;
-      var rollbackContent = sqlContent.split('-- ## ROLL BACK:')[1];
+      if (dartMigrations.isNotEmpty) {
+        for (var dartMigration in dartMigrations.reversed) {
+          if (dartMigration.uniqueName == filename) {
+            if (dartMigration.uniqueName.isEmpty) continue;
+            rollbackTarget = dartMigration.uniqueName;
+            for (var sql in dartMigration.downSQLs) {
+              rollbackContent.add(sql.trim());
+            }
+            break;
+          }
+        }
+      } else {
+        var file = File(path.join(
+          pathTo(
+            FinchApp.config.pathMigrationSQLite,
+          ),
+          filename,
+        ));
+        if (!file.existsSync()) continue;
+        var sqlContent = await file.readAsString();
+        if (!sqlContent.contains('-- ## ROLL BACK:')) continue;
+        rollbackContent.add(sqlContent.split('-- ## ROLL BACK:')[1].trim());
+        rollbackTarget = file.path;
+      }
       if (rollbackContent.isEmpty) continue;
+      // trans action rollback
+      try {
+        await db.executeString('BEGIN TRANSACTION;');
+        for (var sql in rollbackContent) {
+          var res = await db.executeString(sql, separateStatements: true);
+          if (res.error) {
+            throw Exception(
+              'Error executing rollback for migration: $filename,$rollbackTarget\nError message: ${res.errorMsg}',
+            );
+          }
+        }
+        await db.executeString('COMMIT;');
+      } catch (e) {
+        await db.executeString('ROLLBACK;');
+        rethrow;
+      }
 
-      db.executeString(rollbackContent);
       await migrationTable.delete(
         db,
         Sqler()
@@ -147,60 +235,29 @@ class SqliteMigration {
           )
           ..addParam('file', QVar(filename)),
       );
-      successRollbackFiles.add(file.path);
+      successRollbackFiles.add(rollbackTarget);
     }
 
-    return 'Rollback completed successfully for: \n${successRollbackFiles.join('\n')}';
-  }
-
-  /// Creates a new migration file template.
-  /// This method generates a new SQL migration file in the migrations directory
-  /// with a timestamp-based filename. The file contains a basic template with
-  /// sections for:
-  /// - Migration SQL statements (-- ## NEW VERSION:)
-  /// - Rollback SQL statements (-- ## ROLL BACK:)
-  /// The filename format is: `{timestamp}_migration.sql`
-  /// Returns a success message with the path of the created file.
-  Future<String> migrateCreate({
-    String name = '',
-  }) async {
-    File file = File(
-      path.join(
-        pathTo(FinchApp.config.pathMigrationSQLite),
-        '${DateTime.now().millisecondsSinceEpoch}_'
-        '${name.isNotEmpty ? '${name.toSlug().replaceAll('-', '_')}_' : ''}'
-        'migration.sql',
-      ),
-    );
-
-    file.createSync(recursive: true);
-    file.writeAsString(
-      '-- ${DateTime.now()} \n'
-      '-- SQLite Migration File \n'
-      '${name.isNotEmpty ? '-- Name: $name \n' : ''}'
-      '-- ## NEW VERSION:\n\n\n\n'
-      '-- ## ROLL BACK:\n\n\n\n',
-    );
-    Console.i('Migration file created: ${file.path}');
-    return 'Create migration file command executed successfully.';
+    return successRollbackFiles;
   }
 
   /// Checks if a migration file has already been executed.
   /// [filename] The name of the migration file to check
   /// Returns `true` if the migration has been executed, `false` otherwise.
-  Future<bool> checkExcutedMigration(String filename) async {
+  Future<({bool exist, String createdAt})> _checkExcutedMigration(
+    String filename,
+  ) async {
     var query = Sqler()
-      ..from(QField(migrationTable.name))
-      ..addSelect(SQL.count<Sqlite>(QField('file', as: 'count_records')))
+      ..from(migrationTable.qName)
+      ..addSelect(QSelectAll())
       ..where(
         WhereOne(QField('file'), QO.EQ, QParam('file')),
       )
       ..addParam('file', QVar(filename));
-    var res = await migrationTable.select(
-      db,
-      query,
-    );
-    return res.countRecords > 0;
+    var res = await migrationTable.select(db, query);
+    var exist = res.numRows > 0;
+    var createdAt = res.assocFirst?['created_at']?.toString() ?? '';
+    return (exist: exist, createdAt: createdAt);
   }
 
   /// Retrieves all migration files from the migrations directory.
@@ -212,7 +269,7 @@ class SqliteMigration {
   /// order based on their timestamp prefixes.
   /// Returns a list of [File] objects representing the migration files.
   /// Returns an empty list if the migrations directory doesn't exist.
-  Future<List<File>> getMigrationFiles() async {
+  Future<List<File>> _getMigrationFiles() async {
     // Get all migration files from the migrations directory
     var dir = Directory(pathTo(FinchApp.config.pathMigrationSQLite));
     if (!dir.existsSync()) {
@@ -229,19 +286,38 @@ class SqliteMigration {
     return res;
   }
 
-  Future<List<List<String>>> checkMigrationStatus() async {
-    var migrationFiles = await getMigrationFiles();
+  Future<List<List<String>>> checkMigrationStatus({
+    List<DartMigration> migrations = const [],
+  }) async {
     var statusList = <List<String>>[];
-    var index = 1;
-    for (var file in migrationFiles) {
-      var fileName = path.basename(file.path);
-      var executed = await checkExcutedMigration(fileName);
-      statusList.add([
-        "${index++}",
-        fileName,
-        executed ? 'Yes' : 'No',
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(file.statSync().modified),
-      ]);
+    if (migrations.isNotEmpty) {
+      var index = 1;
+      for (var migration in migrations) {
+        var executed = await _checkExcutedMigration(migration.uniqueName);
+        statusList.add([
+          "${index++}",
+          migration.uniqueName,
+          executed.exist ? 'Yes' : 'No',
+          executed.createdAt.isNotEmpty
+              ? DateFormat('yyyy-MM-dd HH:mm:ss').format(
+                  DateTime.parse(executed.createdAt),
+                )
+              : '',
+        ]);
+      }
+    } else {
+      var migrationFiles = await _getMigrationFiles();
+      var index = 1;
+      for (var file in migrationFiles) {
+        var fileName = path.basename(file.path);
+        var executed = await _checkExcutedMigration(fileName);
+        statusList.add([
+          "${index++}",
+          fileName,
+          executed.exist ? 'Yes' : 'No',
+          DateFormat('yyyy-MM-dd HH:mm:ss').format(file.statSync().modified),
+        ]);
+      }
     }
 
     return statusList;

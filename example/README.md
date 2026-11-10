@@ -5,9 +5,9 @@ docker compose up --build
 ```
 
 ## Examples
-  Please refer to the documentation and the GitHub page for a comprehensive review of the examples. You can also view the example as a [Demo](https://example.uproid.com).
+  Please refer to the documentation and the GitHub page for a comprehensive review of the examples. You can also view the example as a [Demo](https://example.finchdart.com).
 
-### [View Examples](https://github.com/uproid/finch/tree/master/example)  |  [Live Demo](https://example.uproid.com) | [Documentations](https://github.com/uproid/finch/tree/master/doc)
+### [View Examples](https://github.com/uproid/finch/tree/master/example)  |  [Live Demo](https://example.finchdart.com) | [Documentations](https://finchdart.com)
 
 ```dart
 import 'package:finch/finch_console.dart';
@@ -19,23 +19,23 @@ import 'lib/route/socket_route.dart';
 import 'lib/route/web_route.dart';
 
 FinchConfigs configs = FinchConfigs(
-  widgetsPath: pathTo(env['WIDGETS_PATH'] ?? "./lib/widgets"),
-  widgetsType: env['WIDGETS_TYPE'] ?? 'j2.html',
-  languagePath: pathTo(env['LANGUAGE_PATH'] ?? "./lib/languages"),
-  publicDir: pathTo(env['PUBLIC_DIR'] ?? './public'),
+  widgetsPath: pathTo(env.get('WIDGETS_PATH', './lib/widgets')),
+  widgetsType: env.get('WIDGETS_TYPE', 'j2.html'),
+  languagePath: pathTo(env.get('LANGUAGE_PATH', './lib/languages')),
+  publicDir: pathTo(env.get('PUBLIC_DIR', './public')),
   dbConfig: FinchDBConfig(
     enable: true,
     dbName: 'example',
     auth: 'admin',
     pass: 'PasswordMongoDB',
-    host: env['MONGO_CONNECTION'] ?? 'localhost',
-    port: env['MONGO_PORT'] ?? '27018',
+    host: env.get('MONGO_CONNECTION', 'localhost'),
+    port: env.get('MONGO_PORT', '27018'),
     user: 'root',
   ),
-  port: (env['DOMAIN_PORT'] ?? '8085').toInt(def: 8085),
+  port: env.getInt('DOMAIN_PORT', 8085),
   mysqlConfig: FinchMysqlConfig(
     enable: true,
-    host: env['MYSQL_HOST'] ?? 'localhost',
+    host: env.get('MYSQL_HOST', 'localhost'),
     port: 3306,
     user: 'example_user',
     pass: 'example_password',
@@ -43,12 +43,12 @@ FinchConfigs configs = FinchConfigs(
   ),
 
   /// Enable local debugger
-  enableLocalDebugger: (env['ENABLE_LOCAL_DEBUGGER'] ?? true).toString().toBool,
+  enableLocalDebugger: env.getBool('ENABLE_LOCAL_DEBUGGER', true),
 
   /// SQLite configuration
   sqliteConfig: FinchSqliteConfig(
     enable: true,
-    filePath: env['SQLITE_PATH'] ?? './example_database.sqlite',
+    filePath: env.get('SQLITE_PATH', './example_database.sqlite'),
   ),
 );
 

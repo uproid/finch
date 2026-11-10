@@ -21,4 +21,4 @@ RUN finch -u
 
 EXPOSE 8085 8181
 
-CMD ["finch", "serve", "-p", "/www/lib/watcher.dart", "--args=\"migrate --init --sqlite\""]
+CMD ["finch", "serve", "-p", "/www/lib/watcher.dart", "--args=\"migrate --init --and migrate_sqlite --init\""]

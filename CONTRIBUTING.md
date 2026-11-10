@@ -87,9 +87,9 @@ If you have any questions or need further assistance, please reach out to the ma
 
 ## Additional Resources
 
-- [Project Wiki/Documentation](https://github.com/uproid/finch/tree/master/doc)
+- [Project Wiki/Documentation](https://finchdart.com)
 - [Coding Style Guide](https://dart.dev/effective-dart/style)
 
 Thank you for contributing to Finch!
 ### Contact us
-info@uproid.com
+info@finchdart.com

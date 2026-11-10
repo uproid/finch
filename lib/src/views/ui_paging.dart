@@ -150,7 +150,7 @@ class UIPaging extends FinchView {
     }
 
     if (useRequsetQueries) {
-      rq.uri.queryParameters.forEach((key, value) {
+      rq.uri.safeQueryParameters.forEach((key, value) {
         if (key != prefix && !otherQuery.containsKey(key)) {
           otherQuery[key] = value;
         }

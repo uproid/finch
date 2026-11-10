@@ -53,7 +53,11 @@ class SocketManager {
   /// The [rq] parameter is the WebRequest that initiated the WebSocket upgrade.
   /// The optional [userId] parameter associates the WebSocket connection with a specific user.
   Future<Request> requestHandle(Request rq, {String? userId}) async {
-    var socket = await WebSocketTransformer.upgrade(Context.rq.httpRequest);
+    if (!WebSocketTransformer.isUpgradeRequest(rq.httpRequest)) {
+      throw WebSocketException('Invalid WebSocket upgrade request');
+    }
+
+    var socket = await WebSocketTransformer.upgrade(rq.httpRequest);
     final id = rq.headers['sec-websocket-key']!.first;
     session.add(
       id,

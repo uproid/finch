@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:finch/finch_tools.dart';
 import 'package:finch/src/render/request.dart';
-import 'package:mcp_models/mcp_models.dart';
+import 'package:mcp_models/mcp_models_v2026.dart' as v26;
+import 'package:mcp_models/mcp_models_v2025.dart' as v25;
 import 'package:mongo_dart/mongo_dart.dart';
 
 /// Provides utility methods for encoding and decoding JSON data.
@@ -37,7 +38,9 @@ class FinchJson {
       if (obj is Duration) {
         return obj.toString();
       }
-
+      if (obj is v26.MCP || obj is v25.MCP) {
+        return obj.toMap();
+      }
       if (obj is Map) {
         return encodeMaps(obj);
       }
@@ -46,9 +49,6 @@ class FinchJson {
       }
       if (obj is int) {
         return obj;
-      }
-      if (obj is MCP) {
-        return obj.toMap();
       }
       return obj.toString();
     });

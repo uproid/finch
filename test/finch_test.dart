@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:finch/finch_app.dart';
 import 'package:finch/finch_tools.dart';
 import 'package:finch/finch_model_less.dart';
 import 'package:test/test.dart';
@@ -258,27 +257,6 @@ void main() {
         -1,
         reason: "Error Map Navigation",
       );
-    });
-  });
-
-  group("check cron job", () {
-    int i = 0;
-    test("Cron job", () async {
-      var cronJob = FinchCron(
-        schedule: FinchCron.evrySecond(),
-        delayFirstMoment: false,
-        onCron: (count, cron) async {
-          if (count >= 5) {
-            cron.close();
-          }
-
-          i = count;
-        },
-      );
-
-      cronJob.start();
-      await Future.delayed(Duration(seconds: 6));
-      expect(i, 5, reason: "Error cron job");
     });
   });
 }

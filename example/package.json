@@ -7,9 +7,9 @@
     "tailwind:watch": "tailwindcss -c tailwind.config.js -i ./public/assets/tailwind.input.css -o ./public/assets/generated-tailwind.css --watch --minify"
   },
   "devDependencies": {
-    "autoprefixer": "^10.5.0",
-    "postcss": "^8.5.15",
-    "tailwindcss": "^4.3.0",
-    "@tailwindcss/cli": "^4.3.0"
+    "autoprefixer": "^10.5.4",
+    "postcss": "^8.5.25",
+    "tailwindcss": "^4.3.3",
+    "@tailwindcss/cli": "^4.3.3"
   }
 }

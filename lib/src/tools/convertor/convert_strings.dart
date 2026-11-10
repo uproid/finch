@@ -1,9 +1,10 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:base32/base32.dart';
-import 'package:crypto/crypto.dart';
 import 'package:html_unescape/html_unescape.dart';
 import 'package:intl/intl.dart';
 import 'package:mongo_dart/mongo_dart.dart';
+import 'package:pointycastle/export.dart';
 
 /// Extension methods for [String] to provide various utilities for string manipulation,
 /// encoding, decoding, and hashing.
@@ -16,10 +17,10 @@ extension ConvertString on String {
   /// and returns the hash as a hexadecimal string.
   /// Returns a [String] representing the MD5 hash of the original string.
   String toMd5() {
-    List<int> bytes = utf8.encode(this);
-    Digest md5Result = md5.convert(bytes);
-    String md5String = md5Result.toString();
-    return md5String;
+    final digest = MD5Digest();
+    final bytes = utf8.encode(this);
+    final hash = digest.process(Uint8List.fromList(bytes));
+    return hash.map((byte) => byte.toRadixString(16).padLeft(2, '0')).join();
   }
 
   /// Decodes the string from Base64 encoding and returns the resulting string.
@@ -75,6 +76,18 @@ extension ConvertString on String {
     slug = slug.replaceAll(RegExp(r'\s+'), '-');
     slug = slug.replaceAll(RegExp(r'[^a-z0-9\-]'), '');
     return slug;
+  }
+
+  /// Convert slug to PascalCase.
+  String toPascalCase() {
+    String slug = toSlug();
+    List<String> words = slug.split('-');
+    String pascalCase = words
+        .map((word) => word.isNotEmpty
+            ? '${word[0].toUpperCase()}${word.substring(1)}'
+            : '')
+        .join();
+    return pascalCase;
   }
 
   /// Checks if the string is a valid slug.
