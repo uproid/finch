@@ -200,6 +200,12 @@ class Route {
         return (found: false, urlParams: urlParams);
       }
 
+      if (route.auth != null) {
+        seenAuth = route.auth;
+        var res = await route.auth!.auth();
+        if (res == false) return (found: false, urlParams: urlParams);
+      }
+
       if (route.widget.isNotEmpty) {
         if (!await checkPermission(seenAuth)) {
           return (found: false, urlParams: urlParams);
@@ -207,12 +213,6 @@ class Route {
         rq.addParams(urlParams);
         renderWidget(route.widget);
         return (found: true, urlParams: urlParams);
-      }
-
-      if (route.auth != null) {
-        seenAuth = route.auth;
-        var res = await route.auth!.auth();
-        if (res == false) return (found: false, urlParams: urlParams);
       }
 
       // Handle middleware before executing controller or index

@@ -24,6 +24,7 @@ void main() async {
       ),
     ),
   );
+  final widgetAuthController = AppAuthController(false);
 
   Future<List<FinchRoute>> routing() async {
     return [
@@ -312,6 +313,11 @@ void main() async {
             },
           ),
           FinchRoute(
+            path: "api/auth/widget",
+            auth: widgetAuthController,
+            widget: 'example/auth',
+          ),
+          FinchRoute(
             path: '/check_param_classic/:key1/:key2',
             index: () async {
               return Context.rq.renderData(data: {
@@ -526,6 +532,23 @@ void main() async {
       reason: "Response success should be false",
     );
     expect(req.status, 404, reason: "Status code should be 404");
+  });
+
+  test("Test Authenticator runs before rendering a widget", () async {
+    var req = await FinchHttp.get(
+      Uri.parse("http://localhost:${httpServer.port}/api/auth/widget"),
+    );
+
+    expect(
+      (
+        authCalled: widgetAuthController.authCalled,
+        status: req.status,
+      ),
+      (
+        authCalled: true,
+        status: 404,
+      ),
+    );
   });
 
   test("Test Cookies", () async {
@@ -890,10 +913,12 @@ void main() async {
 
 class AppAuthController extends AuthController<String> {
   bool testResult = false;
+  bool authCalled = false;
   AppAuthController(this.testResult);
 
   @override
   Future<bool> auth() async {
+    authCalled = true;
     return testResult;
   }
 
