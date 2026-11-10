@@ -10,7 +10,7 @@ services:
       context: .
       dockerfile: docker-live/Dockerfile
     enviroment:
-      SQLITE_PATH: /var/www/sqlite/example_database.sqlite
+      - SQLITE_PATH: /var/www/sqlite/example_database.sqlite
     volumes:
       - /home/example_finch/sqlite/:/var/www/sqlite/
     # depends_on:
