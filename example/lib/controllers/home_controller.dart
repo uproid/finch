@@ -194,8 +194,8 @@ class HomeController extends Controller {
     var paginationA = UIPaging(
       widget: 'template/paging',
       page: pageA,
-      total: 1000,
-      pageSize: 10,
+      total: 20,
+      pageSize: 5,
       prefix: 'page_a',
       otherQuery: {
         'page_b': pageB.toString(),
@@ -208,9 +208,9 @@ class HomeController extends Controller {
     var paginationB = UIPaging(
       widget: 'template/paging',
       page: pageB,
-      total: 500,
-      pageSize: 10,
-      widthSide: 5,
+      total: 50,
+      pageSize: 5,
+      widthSide: 3,
       prefix: 'page_b',
       otherQuery: {
         'page_a': pageA.toString(),
@@ -223,8 +223,8 @@ class HomeController extends Controller {
     var paginationC = UIPaging(
       widget: 'template/paging',
       page: pageC,
-      total: 1000,
-      pageSize: 100,
+      total: 50,
+      pageSize: 10,
       prefix: 'page_c',
       otherQuery: {
         'page_a': pageA.toString(),
