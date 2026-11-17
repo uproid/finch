@@ -36,15 +36,25 @@ class ProjectCommands {
     return CappConsole("dart pub get", CappColors.info);
   }
 
-  Future<CappConsole> runner(CappController controller) async {
-    await Process.start(
+  Future<CappConsole> runner(CappController c) async {
+    List<String> restArguments = c.manager.args
+        .where(
+          (element) => element != 'runner',
+        )
+        .toList();
+    if (restArguments.isEmpty) {
+      await Process.start(
         'dart',
-        [
-          'run',
-          'build_runner',
-          'build',
-        ],
-        mode: ProcessStartMode.inheritStdio);
+        ['run', 'build_runner', 'build'],
+        mode: ProcessStartMode.inheritStdio,
+      );
+    } else {
+      await Process.start(
+        'dart',
+        ['run', 'build_runner', ...restArguments],
+        mode: ProcessStartMode.inheritStdio,
+      );
+    }
     return CappConsole('dart run build_runner build', CappColors.none);
   }
 

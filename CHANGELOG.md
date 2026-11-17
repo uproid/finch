@@ -1,4 +1,11 @@
 
+## 1.6.2
+- Added automatic reconnect for database connections: `DBManager.recoverFromError()` reconnects a connection that dropped on its own (MongoDB server restart, network blip, ...) from the app's existing request-error handler, instead of polling on a timer or checking on every request
+  - New `DBConnection.reconnect()` on the connection interface (default: close then reconnect); `MongodbConn` overrides it to re-open the *same* `Db` instance so long-lived references (e.g. `DBCollectionFree.db`) keep working after a reconnect
+- Added `FinchHttp.download()`: streams a file download to disk and reports progress via `DownloadProgress` (received/total/percent/isDone)
+- Fixed the `create` CLI command: downloading the project template now shows a progress bar (via `FinchHttp.download()`/`CappConsole.progressPercent`) and failures no longer crash the CLI (wrapped in `try/catch`)
+- The `runner` command now forwards any extra CLI arguments to `build_runner` (e.g. `finch runner watch`) instead of always running a plain `build`
+
 ## 1.6.1
 - Fixed [#88](https://github.com/uproid/finch/issues/88): unique field validation now reads the count from the query result via `res.assoc.first` instead of `res.rows.first.assoc()`
 - `FinchApp._runCommands()` is now public as `runCommands()`, with a new `direct` parameter to process commands once instead of opening the interactive prompt
